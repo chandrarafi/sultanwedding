@@ -14,5 +14,8 @@ class DatabaseSeeder extends Seeder
         $this->db->query('SET FOREIGN_KEY_CHECKS=1');
 
         $this->call('UserSeeder');
+        $this->call('KategoriSeeder');
+        $this->call('BarangSeeder');
+        $this->call('PaketSeeder');
     }
 }
