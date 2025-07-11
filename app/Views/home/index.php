@@ -1,5 +1,6 @@
 <?= $this->extend('home/layouts/main') ?>
 <?= $this->section('content') ?>
+<!-- ini coba -->
 <!-- Hero Section -->
 <section class="relative bg-cover bg-center h-screen" style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop');">
     <div class="absolute inset-0 bg-black bg-opacity-50"></div>
