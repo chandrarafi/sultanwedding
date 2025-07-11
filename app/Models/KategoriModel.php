@@ -52,10 +52,21 @@ class KategoriModel extends Model
 
         // Order
         if (!empty($postData['order'])) {
-            $dt->orderBy(
-                $this->allowedFields[$postData['order']['0']['column']],
-                $postData['order']['0']['dir']
-            );
+            $column_idx = intval($postData['order']['0']['column']);
+
+            // Mapping kolom dari DataTables ke kolom database
+            $columns = [
+                0 => 'kdkategori', // No (menggunakan primary key)
+                1 => 'namakategori',
+                2 => 'created_at',
+                3 => 'kdkategori' // Aksi (tidak diurutkan)
+            ];
+
+            if (isset($columns[$column_idx])) {
+                $dt->orderBy($columns[$column_idx], $postData['order']['0']['dir']);
+            } else {
+                $dt->orderBy('kdkategori', 'DESC');
+            }
         } else {
             $dt->orderBy('kdkategori', 'DESC');
         }
@@ -68,11 +79,11 @@ class KategoriModel extends Model
         $results = $dt->get()->getResultArray();
 
         // Count filtered results
-        $this->select('COUNT(*) as total');
+        $builder = $this->builder();
         if (!empty($postData['search']['value'])) {
-            $this->like('namakategori', $postData['search']['value']);
+            $builder->like('namakategori', $postData['search']['value']);
         }
-        $recordsFiltered = $this->first()['total'];
+        $recordsFiltered = $builder->countAllResults();
 
         // Count total results
         $recordsTotal = $this->countAllResults();

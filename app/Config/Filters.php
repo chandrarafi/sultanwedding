@@ -68,8 +68,6 @@ class Filters extends BaseFilters
     /**
      * List of filter aliases that are always
      * applied before and after every request.
-     *
-     * @var array<string, array<string, array<string, string>>>|array<string, list<string>>
      */
     public array $globals = [
         'before' => [
@@ -78,6 +76,7 @@ class Filters extends BaseFilters
             // 'invalidchars',
         ],
         'after' => [
+            'toolbar',
             // 'honeypot',
             // 'secureheaders',
         ],
@@ -88,13 +87,11 @@ class Filters extends BaseFilters
      * particular HTTP method (GET, POST, etc.).
      *
      * Example:
-     * 'POST' => ['foo', 'bar']
+     * 'post' => ['foo', 'bar']
      *
      * If you use this, you should disable auto-routing because auto-routing
      * permits any HTTP method to access a controller. Accessing the controller
      * with a method you don't expect could bypass the filter.
-     *
-     * @var array<string, list<string>>
      */
     public array $methods = [];
 
@@ -104,8 +101,10 @@ class Filters extends BaseFilters
      *
      * Example:
      * 'isLoggedIn' => ['before' => ['account/*', 'profiles/*']]
-     *
-     * @var array<string, array<string, list<string>>>
      */
-    public array $filters = [];
+    public array $filters = [
+        'auth' => ['before' => ['admin/*', 'admin']],
+        'role:admin' => ['before' => ['admin/*', 'admin']],
+        'role:pelanggan' => ['before' => ['pelanggan/*', 'pelanggan']]
+    ];
 }

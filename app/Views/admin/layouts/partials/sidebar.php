@@ -1,103 +1,105 @@
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-brand">
-        <div class="text-center">
-            <h3>SULTAN</h3>
-            <p class="small">Wedding Organizer</p>
+<!--sidebar wrapper -->
+<div class="sidebar-wrapper" data-simplebar="true">
+    <div class="sidebar-header">
+        <div>
+            <img src="<?= base_url('assets/images/logo-icon.png') ?>" class="logo-icon" alt="logo icon">
+        </div>
+        <div>
+            <h4 class="logo-text">SULTAN</h4>
+        </div>
+        <div class="toggle-icon ms-auto"><i class='bx bx-arrow-back'></i>
         </div>
     </div>
-    <hr class="sidebar-divider">
-    <ul class="nav flex-column">
-        <li class="nav-item">
-            <a class="nav-link <?= $title == 'Dashboard' ? 'active' : '' ?>" href="<?= site_url('admin') ?>">
-                <i class="bi bi-speedometer2"></i>
-                <span>Dashboard</span>
+    <!--navigation-->
+    <ul class="metismenu" id="menu">
+        <li>
+            <a href="<?= site_url('admin') ?>">
+                <div class="parent-icon"><i class='bx bx-home-alt'></i>
+                </div>
+                <div class="menu-title">Dashboard</div>
+            </a>
+        </li>
+        <!-- Master Data -->
+        <li>
+            <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class="bx bx-data"></i>
+                </div>
+                <div class="menu-title">Master Data</div>
+            </a>
+            <ul>
+                <li> <a href="<?= site_url('admin/kategori') ?>"><i class="bx bx-right-arrow-alt"></i>Kategori</a>
+                </li>
+                <li> <a href="<?= site_url('admin/barang') ?>"><i class="bx bx-right-arrow-alt"></i>Barang</a>
+                </li>
+                <li> <a href="<?= site_url('admin/paket') ?>"><i class="bx bx-right-arrow-alt"></i>Paket</a>
+                </li>
+                <li> <a href="<?= site_url('admin/pelanggan') ?>"><i class="bx bx-right-arrow-alt"></i>Pelanggan</a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="menu-label">TRANSAKSI</li>
+        <li>
+            <a href="<?= site_url('admin/pemesananbarang') ?>">
+                <div class="parent-icon"><i class='bx bx-cart'></i>
+                </div>
+                <div class="menu-title">Pemesanan Barang</div>
+            </a>
+        </li>
+        <li>
+            <a href="<?= site_url('admin/pemesananpaket') ?>">
+                <div class="parent-icon"><i class='bx bx-package'></i>
+                </div>
+                <div class="menu-title">Pemesanan Paket</div>
+            </a>
+        </li>
+        <li>
+            <a href="<?= site_url('admin/pembayaran') ?>">
+                <div class="parent-icon"><i class='bx bx-money'></i>
+                </div>
+                <div class="menu-title">Pembayaran</div>
             </a>
         </li>
 
-        <li class="nav-header mt-3">MASTER DATA</li>
-        <li class="nav-item">
-            <a class="nav-link <?= $title == 'Kategori' ? 'active' : '' ?>" href="<?= site_url('admin/kategori') ?>">
-                <i class="bi bi-tags"></i>
-                <span>Kategori</span>
+        <li class="menu-label">LAPORAN</li>
+        <li>
+            <a href="<?= site_url('admin/laporan/pemesanan') ?>">
+                <div class="parent-icon"><i class='bx bx-file'></i>
+                </div>
+                <div class="menu-title">Laporan Pemesanan</div>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link <?= $title == 'Barang' ? 'active' : '' ?>" href="<?= site_url('admin/barang') ?>">
-                <i class="bi bi-box-seam"></i>
-                <span>Barang</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link <?= $title == 'Paket' ? 'active' : '' ?>" href="<?= site_url('admin/paket') ?>">
-                <i class="bi bi-gift"></i>
-                <span>Paket</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link <?= $title == 'Pelanggan' ? 'active' : '' ?>" href="<?= site_url('admin/pelanggan') ?>">
-                <i class="bi bi-people"></i>
-                <span>Pelanggan</span>
+        <li>
+            <a href="<?= site_url('admin/laporan/pendapatan') ?>">
+                <div class="parent-icon"><i class='bx bx-line-chart'></i>
+                </div>
+                <div class="menu-title">Laporan Pendapatan</div>
             </a>
         </li>
 
-        <li class="nav-header mt-3">TRANSAKSI</li>
-        <li class="nav-item">
-            <a class="nav-link <?= $title == 'Pemesanan Barang' ? 'active' : '' ?>" href="<?= site_url('admin/pemesananbarang') ?>">
-                <i class="bi bi-cart"></i>
-                <span>Pemesanan Barang</span>
+        <li class="menu-label">PENGATURAN</li>
+        <li>
+            <a href="<?= site_url('admin/users') ?>">
+                <div class="parent-icon"><i class='bx bx-user-circle'></i>
+                </div>
+                <div class="menu-title">User Management</div>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link <?= $title == 'Pemesanan Paket' ? 'active' : '' ?>" href="<?= site_url('admin/pemesananpaket') ?>">
-                <i class="bi bi-bag-check"></i>
-                <span>Pemesanan Paket</span>
+        <li>
+            <a href="<?= site_url('admin/profile') ?>">
+                <div class="parent-icon"><i class='bx bx-user-pin'></i>
+                </div>
+                <div class="menu-title">Profil</div>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link <?= $title == 'Pembayaran' ? 'active' : '' ?>" href="<?= site_url('admin/pembayaran') ?>">
-                <i class="bi bi-cash-coin"></i>
-                <span>Pembayaran</span>
-            </a>
-        </li>
-
-        <li class="nav-header mt-3">LAPORAN</li>
-        <li class="nav-item">
-            <a class="nav-link <?= $title == 'Laporan Pemesanan' ? 'active' : '' ?>" href="<?= site_url('admin/laporan/pemesanan') ?>">
-                <i class="bi bi-file-earmark-text"></i>
-                <span>Laporan Pemesanan</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link <?= $title == 'Laporan Pendapatan' ? 'active' : '' ?>" href="<?= site_url('admin/laporan/pendapatan') ?>">
-                <i class="bi bi-graph-up"></i>
-                <span>Laporan Pendapatan</span>
-            </a>
-        </li>
-
-        <li class="nav-header mt-3">PENGATURAN</li>
-        <li class="nav-item">
-            <a class="nav-link <?= $title == 'User Management' ? 'active' : '' ?>" href="<?= site_url('admin/users') ?>">
-                <i class="bi bi-person-gear"></i>
-                <span>User Management</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link <?= $title == 'Profil' ? 'active' : '' ?>" href="<?= site_url('admin/profile') ?>">
-                <i class="bi bi-person-circle"></i>
-                <span>Profil</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal" style="cursor: pointer;">
-                <i class="bi bi-box-arrow-left"></i>
-                <span>Logout</span>
+        <li>
+            <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                <div class="parent-icon"><i class='bx bx-log-out'></i>
+                </div>
+                <div class="menu-title">Logout</div>
             </a>
         </li>
     </ul>
+    <!--end navigation-->
 </div>
-
-<!-- Mobile Toggle Button -->
-<div class="sidebar-toggle d-lg-none" id="sidebarToggle">
-    <i class="bi bi-list"></i>
-</div>
+<!--end sidebar wrapper -->
