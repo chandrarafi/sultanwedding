@@ -101,4 +101,98 @@ class PelangganModel extends Model
             return false;
         }
     }
+
+    /**
+     * Get data for DataTables
+     * 
+     * @param array $postData
+     * @return array
+     */
+    public function getDataTables($postData = null)
+    {
+        $builder = $this->db->table('pelanggan p')
+            ->select('p.*, u.username, u.email')
+            ->join('users u', 'u.id = p.iduser', 'left');
+
+        // Jika ada postData untuk pencarian
+        if ($postData && isset($postData['search']['value']) && !empty($postData['search']['value'])) {
+            $searchValue = $postData['search']['value'];
+            $builder->groupStart()
+                ->like('p.namapelanggan', $searchValue)
+                ->orLike('p.alamat', $searchValue)
+                ->orLike('p.nohp', $searchValue)
+                ->orLike('u.username', $searchValue)
+                ->orLike('u.email', $searchValue)
+                ->groupEnd();
+        }
+
+        // Pengurutan
+        if ($postData && isset($postData['order'])) {
+            $columns = ['', 'p.namapelanggan', 'p.alamat', 'p.nohp', 'u.username', ''];
+            $columnIndex = $postData['order'][0]['column'];
+            $columnName = $columns[$columnIndex];
+            $columnSortOrder = $postData['order'][0]['dir'];
+
+            if (!empty($columnName)) {
+                $builder->orderBy($columnName, $columnSortOrder);
+            }
+        } else {
+            $builder->orderBy('p.namapelanggan', 'ASC');
+        }
+
+        // Limit & offset
+        if ($postData && isset($postData['start']) && isset($postData['length'])) {
+            $builder->limit($postData['length'], $postData['start']);
+        }
+
+        $result = $builder->get()->getResultArray();
+
+        // Hitung total records
+        $totalRecords = $this->db->table('pelanggan')->countAllResults();
+
+        // Hitung total records dengan filter
+        $totalRecordsWithFilter = $totalRecords;
+        if ($postData && isset($postData['search']['value']) && !empty($postData['search']['value'])) {
+            $searchBuilder = $this->db->table('pelanggan p')
+                ->select('p.kdpelanggan')
+                ->join('users u', 'u.id = p.iduser', 'left');
+
+            $searchValue = $postData['search']['value'];
+            $searchBuilder->groupStart()
+                ->like('p.namapelanggan', $searchValue)
+                ->orLike('p.alamat', $searchValue)
+                ->orLike('p.nohp', $searchValue)
+                ->orLike('u.username', $searchValue)
+                ->orLike('u.email', $searchValue)
+                ->groupEnd();
+
+            $totalRecordsWithFilter = $searchBuilder->countAllResults();
+        }
+
+        // Format response untuk DataTables
+        $response = [
+            "draw" => intval($postData['draw'] ?? 0),
+            "recordsTotal" => $totalRecords,
+            "recordsFiltered" => $totalRecordsWithFilter,
+            "data" => $result
+        ];
+
+        return $response;
+    }
+
+    /**
+     * Get pelanggan with user data
+     * 
+     * @param int $kdpelanggan
+     * @return array|null
+     */
+    public function getPelangganWithUser($kdpelanggan)
+    {
+        return $this->db->table('pelanggan p')
+            ->select('p.*, u.id as iduser, u.username, u.email')
+            ->join('users u', 'u.id = p.iduser', 'left')
+            ->where('p.kdpelanggan', $kdpelanggan)
+            ->get()
+            ->getRowArray();
+    }
 }

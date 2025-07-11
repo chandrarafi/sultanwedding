@@ -38,6 +38,19 @@
     </div>
 <?php endif; ?>
 
+<?php if (session()->has('error')) : ?>
+    <div class="alert border-0 border-start border-5 border-danger alert-dismissible fade show py-2">
+        <div class="d-flex align-items-center">
+            <div class="font-35 text-danger"><i class="bx bx-x-circle"></i></div>
+            <div class="ms-3">
+                <h6 class="mb-0 text-danger">Error</h6>
+                <p class="mb-0"><?= session('error') ?></p>
+            </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+
 <div class="card">
     <div class="card-body">
         <div class="border p-4 rounded">
@@ -74,17 +87,6 @@
                             <input type="number" class="form-control" id="harga" name="harga" value="<?= old('harga', $paket['harga']) ?>" min="0" required>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <label for="kdbarang" class="form-label">Barang (Opsional)</label>
-                        <select class="form-select" id="kdbarang" name="kdbarang">
-                            <option value="">Pilih Barang</option>
-                            <?php foreach ($barang as $b) : ?>
-                                <option value="<?= $b['kdbarang'] ?>" <?= old('kdbarang', $paket['kdbarang']) == $b['kdbarang'] ? 'selected' : '' ?>>
-                                    <?= $b['namabarang'] ?> - <?= $b['satuan'] ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -114,11 +116,119 @@
                     </div>
                 </div>
 
+                <!-- Detail Barang Section -->
+                <div class="card mt-4 mb-4">
+                    <div class="card-header bg-light">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">Detail Barang dalam Paket</h6>
+                            <button type="button" class="btn btn-sm btn-primary" id="btnOpenBarangModal">
+                                <i class="bx bx-plus"></i> Tambah Barang
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered" id="detailPaketTable">
+                                <thead>
+                                    <tr>
+                                        <th width="35%">Nama Barang</th>
+                                        <th width="15%">Jumlah</th>
+                                        <th width="20%">Harga</th>
+                                        <th width="20%">Keterangan</th>
+                                        <th width="10%">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="detailItems">
+                                    <?php if (isset($paket['items']) && count($paket['items']) > 0) : ?>
+                                        <?php foreach ($paket['items'] as $index => $item) : ?>
+                                            <tr class="detail-item">
+                                                <td>
+                                                    <?= $item['namabarang'] ?> (<?= $item['satuan'] ?>)
+                                                    <input type="hidden" name="detail_barang[]" value="<?= $item['kdbarang'] ?>">
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="detail_jumlah[]" class="form-control detail-jumlah" value="<?= $item['jumlah'] ?>" min="1" required onchange="updateTotalHarga()">
+                                                </td>
+                                                <td>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Rp</span>
+                                                        <input type="number" name="detail_harga[]" class="form-control detail-harga" value="<?= $item['harga'] ?>" min="0" required onchange="updateTotalHarga()">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="detail_keterangan[]" class="form-control detail-keterangan" value="<?= $item['keterangan'] ?>">
+                                                </td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-sm btn-danger btn-remove-item">
+                                                        <i class="bx bx-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else : ?>
+                                        <tr class="empty-row">
+                                            <td colspan="5" class="text-center">Belum ada item barang</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-primary">
+                                        <th colspan="2" class="text-end">Total Harga Barang</th>
+                                        <th colspan="3" id="totalHargaBarang">Rp 0</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="d-flex justify-content-end gap-3">
                     <a href="<?= base_url('admin/paket') ?>" class="btn btn-secondary px-4">Batal</a>
                     <button type="submit" class="btn btn-primary px-4">Update</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Pilih Barang -->
+<div class="modal fade" id="barangModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Pilih Barang</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="searchBarang" placeholder="Cari barang...">
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered" id="barangTable">
+                        <thead>
+                            <tr>
+                                <th>Nama Barang</th>
+                                <th>Satuan</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="barangList">
+                            <!-- Data barang akan diisi melalui AJAX -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="loadingBarang" class="text-center d-none">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <div id="noBarangFound" class="alert alert-info d-none">
+                    Tidak ada barang yang ditemukan.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
         </div>
     </div>
 </div>
@@ -141,6 +251,165 @@
                 $('.preview-container').addClass('d-none');
             }
         });
+
+        // Initialize barang modal
+        const barangModal = new bootstrap.Modal(document.getElementById('barangModal'));
+
+        // Load barang when opening modal
+        $('#btnOpenBarangModal').click(function() {
+            loadBarang();
+            barangModal.show();
+        });
+
+        // Search barang
+        let searchTimer;
+        $('#searchBarang').on('input', function() {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(loadBarang, 500);
+        });
+
+        // Load barang list
+        function loadBarang() {
+            const search = $('#searchBarang').val();
+            $('#barangList').html('');
+            $('#loadingBarang').removeClass('d-none');
+            $('#noBarangFound').addClass('d-none');
+
+            $.ajax({
+                url: '<?= base_url('admin/paket/getBarang') ?>',
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    search: search
+                },
+                success: function(response) {
+                    $('#loadingBarang').addClass('d-none');
+
+                    if (response.status && response.data.length > 0) {
+                        $.each(response.data, function(i, barang) {
+                            const row = `
+                                <tr>
+                                    <td>${barang.namabarang}</td>
+                                    <td>${barang.satuan}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-success btn-pilih-barang" 
+                                            data-id="${barang.kdbarang}" 
+                                            data-nama="${barang.namabarang}" 
+                                            data-satuan="${barang.satuan}" 
+                                            data-harga="${barang.hargasewa}">
+                                            <i class="bx bx-check"></i> Pilih
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                            $('#barangList').append(row);
+                        });
+                    } else {
+                        $('#noBarangFound').removeClass('d-none');
+                    }
+                },
+                error: function() {
+                    $('#loadingBarang').addClass('d-none');
+                    $('#noBarangFound').removeClass('d-none');
+                    $('#noBarangFound').text('Terjadi kesalahan saat memuat data barang.');
+                }
+            });
+        }
+
+        // Handle pilih barang
+        $(document).on('click', '.btn-pilih-barang', function() {
+            const id = $(this).data('id');
+            const nama = $(this).data('nama');
+            const satuan = $(this).data('satuan');
+            const harga = $(this).data('harga');
+
+            addBarangToTable(id, nama, satuan, harga);
+            barangModal.hide();
+        });
+
+        // Add barang to table
+        function addBarangToTable(id, nama, satuan, harga) {
+            $('.empty-row').remove();
+
+            // Periksa apakah barang sudah ada di tabel
+            let barangExists = false;
+            $('input[name="detail_barang[]"]').each(function() {
+                if ($(this).val() == id) {
+                    barangExists = true;
+                    const row = $(this).closest('tr');
+                    const jumlah = parseInt(row.find('.detail-jumlah').val()) + 1;
+                    row.find('.detail-jumlah').val(jumlah);
+                    return false;
+                }
+            });
+
+            if (barangExists) {
+                updateTotalHarga();
+                return;
+            }
+
+            const rowHtml = `
+                <tr class="detail-item">
+                    <td>
+                        ${nama} (${satuan})
+                        <input type="hidden" name="detail_barang[]" value="${id}">
+                    </td>
+                    <td>
+                        <input type="number" name="detail_jumlah[]" class="form-control detail-jumlah" value="1" min="1" required onchange="updateTotalHarga()">
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-text">Rp</span>
+                            <input type="number" name="detail_harga[]" class="form-control detail-harga" value="${harga}" min="0" required onchange="updateTotalHarga()">
+                        </div>
+                    </td>
+                    <td>
+                        <input type="text" name="detail_keterangan[]" class="form-control detail-keterangan">
+                    </td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-sm btn-danger btn-remove-item">
+                            <i class="bx bx-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+
+            $('#detailItems').append(rowHtml);
+            updateTotalHarga();
+        }
+
+        // Handle hapus item detail paket
+        $(document).on('click', '.btn-remove-item', function() {
+            $(this).closest('tr').remove();
+            if ($('#detailItems tr').length === 0) {
+                $('#detailItems').html(`
+                    <tr class="empty-row">
+                        <td colspan="5" class="text-center">Belum ada item barang</td>
+                    </tr>
+                `);
+            }
+            updateTotalHarga();
+        });
+
+        // Format number
+        function formatNumber(num) {
+            return new Intl.NumberFormat('id-ID').format(num);
+        }
+
+        // Update total harga
+        window.updateTotalHarga = function() {
+            let total = 0;
+            $('.detail-item').each(function() {
+                const harga = parseFloat($(this).find('.detail-harga').val()) || 0;
+                const jumlah = parseInt($(this).find('.detail-jumlah').val()) || 0;
+                total += (harga * jumlah);
+            });
+
+            $('#totalHargaBarang').text('Rp ' + formatNumber(total));
+        }
+
+        // Hitung total harga saat halaman dimuat
+        updateTotalHarga();
     });
 </script>
 <?= $this->endSection() ?>

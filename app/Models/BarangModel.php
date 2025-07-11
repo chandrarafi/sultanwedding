@@ -16,7 +16,10 @@ class BarangModel extends Model
         'namabarang',
         'satuan',
         'jumlah',
-        'hargasewa'
+        'hargasewa',
+        'foto',
+        'created_at',
+        'updated_at'
     ];
 
     // Dates
@@ -69,4 +72,18 @@ class BarangModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    /**
+     * Get barang information
+     */
+    public function getBarangWithKategori($kdbarang = null)
+    {
+        $builder = $this->db->table('barang b');
+
+        if ($kdbarang !== null) {
+            return $builder->where('b.kdbarang', $kdbarang)->get()->getRowArray();
+        }
+
+        return $builder->get()->getResultArray();
+    }
 }

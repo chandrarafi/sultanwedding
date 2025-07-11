@@ -66,10 +66,6 @@
                         <span class="text-secondary">Rp <?= number_format($paket['harga'], 0, ',', '.') ?></span>
                     </div>
                     <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap py-3">
-                        <span class="fw-bold">Barang Terkait</span>
-                        <span class="text-secondary"><?= $paket['namabarang'] ?? 'Tidak ada' ?></span>
-                    </div>
-                    <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap py-3">
                         <span class="fw-bold">Tanggal Dibuat</span>
                         <span class="text-secondary"><?= date('d F Y H:i', strtotime($paket['created_at'])) ?></span>
                     </div>
@@ -93,6 +89,55 @@
                         <p class="text-muted fst-italic">Tidak ada detail untuk paket ini</p>
                     <?php endif; ?>
                 </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <h5 class="mb-0">Daftar Barang dalam Paket</h5>
+                </div>
+                <?php if (isset($paket['items']) && count($paket['items']) > 0) : ?>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Barang</th>
+                                    <th>Jumlah</th>
+                                    <th>Harga</th>
+                                    <th>Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($paket['items'] as $index => $item) : ?>
+                                    <tr>
+                                        <td><?= $index + 1 ?></td>
+                                        <td><?= $item['namabarang'] ?> (<?= $item['satuan'] ?>)</td>
+                                        <td><?= $item['jumlah'] ?></td>
+                                        <td>Rp <?= number_format($item['harga'], 0, ',', '.') ?></td>
+                                        <td><?= $item['keterangan'] ?: '-' ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                            <tfoot>
+                                <tr class="table-primary">
+                                    <th colspan="3" class="text-end">Total Harga Barang</th>
+                                    <th colspan="2">
+                                        <?php
+                                        $totalHarga = array_reduce($paket['items'], function ($total, $item) {
+                                            return $total + ($item['harga'] * $item['jumlah']);
+                                        }, 0);
+                                        echo 'Rp ' . number_format($totalHarga, 0, ',', '.');
+                                        ?>
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                <?php else : ?>
+                    <p class="text-muted fst-italic">Tidak ada barang yang ditambahkan ke paket ini</p>
+                <?php endif; ?>
             </div>
         </div>
     </div>

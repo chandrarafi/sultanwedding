@@ -11,6 +11,8 @@ $routes->get('/', 'Home::index');
 $routes->get('about', 'Home::about');
 $routes->get('paket', 'Home::paket');
 $routes->get('paket/(:num)', 'Home::paketDetail/$1');
+$routes->get('barang', 'Home::barang');
+$routes->get('barang/(:num)', 'Home::barangDetail/$1');
 $routes->get('galeri', 'Home::galeri');
 $routes->get('kontak', 'Home::kontak');
 
@@ -78,8 +80,12 @@ $routes->group('admin', ['filter' => 'role:admin'], function ($routes) {
     $routes->post('paket/store', 'Admin\Paket::store');
     $routes->get('paket/edit/(:num)', 'Admin\Paket::edit/$1');
     $routes->post('paket/update/(:num)', 'Admin\Paket::update/$1');
-    $routes->delete('paket/delete/(:num)', 'Admin\Paket::delete/$1');
+    $routes->post('paket/delete/(:num)', 'Admin\Paket::delete/$1');
     $routes->get('paket/detail/(:num)', 'Admin\Paket::detail/$1');
+    $routes->get('paket/getDetailPaket/(:num)', 'Admin\Paket::getDetailPaket/$1');
+    $routes->get('paket/getBarang', 'Admin\Paket::getBarang');
+    $routes->get('paket/getBarang/(:num)', 'Admin\Paket::getBarang/$1');
+    $routes->get('paket/getAllBarang', 'Admin\Paket::getAllBarang');
 
     // Pelanggan routes
     $routes->get('pelanggan', 'Admin\Pelanggan::index');

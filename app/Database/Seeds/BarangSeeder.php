@@ -65,6 +65,22 @@ class BarangSeeder extends Seeder
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],
+            [
+                'namabarang' => 'Paket Catering Premium',
+                'satuan'     => 'Porsi',
+                'jumlah'     => 1000,
+                'hargasewa'  => 100000,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'namabarang' => 'Kamera DSLR + Videografer',
+                'satuan'     => 'Set',
+                'jumlah'     => 2,
+                'hargasewa'  => 3000000,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
         ];
 
         // Using Query Builder
