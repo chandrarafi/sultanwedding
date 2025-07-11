@@ -18,7 +18,6 @@ class PaketModel extends Model
         'harga',
         'foto',
         'kdkategori',
-        'kdbarang',
         'created_at',
         'updated_at'
     ];
@@ -36,7 +35,6 @@ class PaketModel extends Model
         'detailpaket'  => 'permit_empty',
         'harga'        => 'required|numeric|greater_than_equal_to[0]',
         'kdkategori'   => 'required|integer|is_not_unique[kategori.kdkategori]',
-        'kdbarang'     => 'permit_empty|integer|is_not_unique[barang.kdbarang,kdbarang,{kdbarang}]',
     ];
 
     protected $validationMessages = [
@@ -54,10 +52,6 @@ class PaketModel extends Model
             'required'      => 'Kategori harus dipilih',
             'integer'       => 'Kategori tidak valid',
             'is_not_unique' => 'Kategori tidak ditemukan',
-        ],
-        'kdbarang' => [
-            'integer'       => 'Barang tidak valid',
-            'is_not_unique' => 'Barang tidak ditemukan',
         ],
     ];
 
@@ -88,20 +82,38 @@ class PaketModel extends Model
             return $builder->where('p.kdpaket', $kdpaket)->get()->getRowArray();
         }
 
-        return $builder->get()->getResultArray();
+        return $builder->orderBy('p.created_at', 'DESC')->get()->getResultArray();
     }
 
     /**
-     * Get paket with kategori and barang information
+     * Get paket with kategori information
      */
     public function getPaketDetail($kdpaket)
     {
         $builder = $this->db->table('paket p')
-            ->select('p.*, k.namakategori, b.namabarang')
+            ->select('p.*, k.namakategori')
             ->join('kategori k', 'k.kdkategori = p.kdkategori')
-            ->join('barang b', 'b.kdbarang = p.kdbarang', 'left')
             ->where('p.kdpaket', $kdpaket);
 
         return $builder->get()->getRowArray();
+    }
+
+    /**
+     * Get paket with kategori, barang, and detail paket items
+     */
+    public function getPaketWithItems($kdpaket)
+    {
+        // Get paket data
+        $paket = $this->getPaketDetail($kdpaket);
+
+        if (!$paket) {
+            return null;
+        }
+
+        // Get detail paket items
+        $detailPaketModel = new DetailPaketModel();
+        $paket['items'] = $detailPaketModel->getDetailPaket($kdpaket);
+
+        return $paket;
     }
 }

@@ -3,22 +3,39 @@
 namespace App\Controllers;
 
 use App\Models\PaketModel;
+use App\Models\DetailPaketModel;
+use App\Models\KategoriModel;
+use App\Models\BarangModel;
 
 class Home extends BaseController
 {
     protected $paketModel;
+    protected $detailPaketModel;
+    protected $kategoriModel;
+    protected $barangModel;
 
     public function __construct()
     {
         $this->paketModel = new PaketModel();
+        $this->detailPaketModel = new DetailPaketModel();
+        $this->kategoriModel = new KategoriModel();
+        $this->barangModel = new BarangModel();
     }
 
     public function index()
     {
-        // Ambil beberapa paket untuk ditampilkan di landing page
+        // Ambil 3 paket terbaru dengan kategori
+        $pakets = $this->paketModel->getPaketWithKategori();
+        $pakets = array_slice($pakets, 0, 3); // Ambil 3 paket terbaru
+
+        // Ambil 6 barang terbaru dengan kategori
+        $barangs = $this->barangModel->getBarangWithKategori();
+        $barangs = array_slice($barangs, 0, 6); // Ambil 6 barang terbaru
+
         $data = [
             'title' => 'Beranda',
-            'pakets' => $this->paketModel->findAll(3)
+            'pakets' => $pakets,
+            'barangs' => $barangs
         ];
 
         return view('home/index', $data);
@@ -35,9 +52,13 @@ class Home extends BaseController
 
     public function paket()
     {
+        // Ambil semua paket dengan kategori
+        $pakets = $this->paketModel->getPaketWithKategori();
+
         $data = [
             'title' => 'Paket Wedding',
-            'pakets' => $this->paketModel->findAll()
+            'pakets' => $pakets,
+            'kategori' => $this->kategoriModel->findAll()
         ];
 
         return view('home/paket', $data);
@@ -45,7 +66,8 @@ class Home extends BaseController
 
     public function paketDetail($id)
     {
-        $paket = $this->paketModel->find($id);
+        // Ambil detail paket dengan barang
+        $paket = $this->paketModel->getPaketWithItems($id);
 
         if (!$paket) {
             return redirect()->to('paket')->with('error', 'Paket tidak ditemukan');
@@ -57,6 +79,36 @@ class Home extends BaseController
         ];
 
         return view('home/paket_detail', $data);
+    }
+
+    public function barang()
+    {
+        // Ambil semua barang
+        $barangs = $this->barangModel->getBarangWithKategori();
+
+        $data = [
+            'title' => 'Sewa Barang',
+            'barangs' => $barangs
+        ];
+
+        return view('home/barang', $data);
+    }
+
+    public function barangDetail($id)
+    {
+        // Ambil detail barang
+        $barang = $this->barangModel->getBarangWithKategori($id);
+
+        if (!$barang) {
+            return redirect()->to('barang')->with('error', 'Barang tidak ditemukan');
+        }
+
+        $data = [
+            'title' => 'Detail Barang: ' . $barang['namabarang'],
+            'barang' => $barang
+        ];
+
+        return view('home/barang_detail', $data);
     }
 
     public function galeri()

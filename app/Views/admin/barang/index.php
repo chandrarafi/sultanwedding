@@ -52,7 +52,7 @@
                 <h5 class="modal-title" id="modalBarangLabel">Tambah Barang</h5>
                 <button type="button" class="btn-close" id="btnClose" aria-label="Close"></button>
             </div>
-            <form id="formBarang">
+            <form id="formBarang" enctype="multipart/form-data">
                 <div class="modal-body">
                     <input type="hidden" id="id" name="kdbarang">
 
@@ -81,6 +81,16 @@
                             <input type="number" class="form-control" id="hargasewa" name="hargasewa" min="0" required>
                         </div>
                         <div class="invalid-feedback" id="hargasewa-error"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="foto" class="form-label">Foto Barang</label>
+                        <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
+                        <div class="form-text">Upload foto barang (opsional). Format: JPG, PNG, GIF. Maks: 2MB.</div>
+                        <div class="invalid-feedback" id="foto-error"></div>
+                        <div id="preview-container" class="mt-2 d-none">
+                            <img id="preview-image" class="img-thumbnail" style="max-height: 200px;">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -248,30 +258,39 @@
                 dataType: 'json',
                 success: function(response) {
                     if (response.status) {
-                        // Clear table first
+                        // Clear table
                         table.clear();
 
-                        // Add rows
-                        $.each(response.data, function(i, item) {
+                        // Add data to table
+                        $.each(response.data, function(index, item) {
+                            let no = index + 1;
+                            let hargaFormatted = formatRupiah(item.hargasewa);
+                            let actions = `
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-info btn-detail" data-id="${item.kdbarang}" title="Detail">
+                                        <i class="bx bx-show"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-warning btn-edit" data-id="${item.kdbarang}" title="Edit">
+                                        <i class="bx bx-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger btn-delete" data-id="${item.kdbarang}" data-name="${item.namabarang}" title="Hapus">
+                                        <i class="bx bx-trash"></i>
+                                    </button>
+                                </div>
+                            `;
+
                             table.row.add([
-                                i + 1,
+                                no,
                                 item.namabarang,
                                 item.satuan,
                                 item.jumlah,
-                                formatRupiah(item.hargasewa),
-                                `<div class="d-flex align-items-center gap-3 fs-6">
-                                    <a href="javascript:;" class="text-primary" onclick="viewBarang(${item.kdbarang})" title="Lihat Detail">
-                                        <i class="bx bx-show"></i>
-                                    </a>
-                                    <a href="javascript:;" class="text-warning" onclick="editBarang(${item.kdbarang})" title="Edit">
-                                        <i class="bx bx-edit"></i>
-                                    </a>
-                                    <a href="javascript:;" class="text-danger" onclick="deleteBarang(${item.kdbarang})" title="Hapus">
-                                        <i class="bx bx-trash"></i>
-                                    </a>
-                                </div>`
-                            ]).draw(false);
+                                'Rp ' + hargaFormatted,
+                                actions
+                            ]);
                         });
+
+                        // Draw table
+                        table.draw();
                     } else {
                         Swal.fire('Error', 'Gagal memuat data barang', 'error');
                     }
@@ -282,17 +301,18 @@
             });
         }
 
-        // Reset form
+        // Function to reset form
         function resetForm() {
-            $('#formBarang')[0].reset();
             $('#id').val('');
+            $('#formBarang')[0].reset();
             $('.is-invalid').removeClass('is-invalid');
             $('#modalBarangLabel').text('Tambah Barang');
+            $('#preview-container').addClass('d-none');
         }
 
-        // Format Rupiah
-        function formatRupiah(angka) {
-            return 'Rp ' + new Intl.NumberFormat('id-ID').format(angka);
+        // Format number to Rupiah
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID').format(number);
         }
 
         // Make functions globally accessible
@@ -391,6 +411,93 @@
                 }
             });
         };
+
+        // Preview image when file is selected
+        $('#foto').change(function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#preview-image').attr('src', e.target.result);
+                    $('#preview-container').removeClass('d-none');
+                }
+                reader.readAsDataURL(file);
+            } else {
+                $('#preview-container').addClass('d-none');
+            }
+        });
+
+        // Edit barang
+        $(document).on('click', '.btn-edit', function() {
+            const id = $(this).data('id');
+            $.ajax({
+                url: '<?= base_url('admin/barang/getById') ?>/' + id,
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status) {
+                        const barang = response.data;
+                        $('#id').val(barang.kdbarang);
+                        $('#namabarang').val(barang.namabarang);
+                        $('#satuan').val(barang.satuan);
+                        $('#jumlah').val(barang.jumlah);
+                        $('#hargasewa').val(barang.hargasewa);
+
+                        // Show image preview if exists
+                        if (barang.foto) {
+                            $('#preview-image').attr('src', '<?= base_url('uploads/barang') ?>/' + barang.foto);
+                            $('#preview-container').removeClass('d-none');
+                        } else {
+                            $('#preview-container').addClass('d-none');
+                        }
+
+                        $('#modalBarangLabel').text('Edit Barang');
+                        $('#modalBarang').modal('show');
+                    } else {
+                        Swal.fire('Error', response.message, 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire('Error', 'Terjadi kesalahan saat mengambil data', 'error');
+                }
+            });
+        });
+
+        // Show detail barang
+        $(document).on('click', '.btn-detail', function() {
+            const id = $(this).data('id');
+            $.ajax({
+                url: '<?= base_url('admin/barang/getById') ?>/' + id,
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status) {
+                        const barang = response.data;
+                        $('#detailNama').text(barang.namabarang);
+                        $('#detailSatuan').text(barang.satuan);
+                        $('#detailJumlah').text(barang.jumlah);
+                        $('#detailHarga').text('Rp ' + formatRupiah(barang.hargasewa));
+
+                        // Show image if exists
+                        if (barang.foto) {
+                            $('#detailImage').attr('src', '<?= base_url('uploads/barang') ?>/' + barang.foto);
+                            $('#detailImage').parent().show();
+                        } else {
+                            // Show default image or hide image container
+                            $('#detailImage').attr('src', '<?= base_url('assets/images/products/01.png') ?>');
+                            $('#detailImage').parent().show();
+                        }
+
+                        $('#modalDetail').modal('show');
+                    } else {
+                        Swal.fire('Error', response.message, 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire('Error', 'Terjadi kesalahan saat mengambil data', 'error');
+                }
+            });
+        });
     });
 </script>
 <?= $this->endSection() ?>

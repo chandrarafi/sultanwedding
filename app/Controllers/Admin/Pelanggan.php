@@ -94,7 +94,8 @@ class Pelanggan extends BaseController
                         'password' => $this->request->getPost('password'),
                         'name' => $data['namapelanggan'],
                         'role' => 'pelanggan',
-                        'status' => 'active'
+                        'status' => 'active',
+                        'is_verified' => 1 // Admin membuat akun langsung terverifikasi
                     ];
 
                     // Validasi data user

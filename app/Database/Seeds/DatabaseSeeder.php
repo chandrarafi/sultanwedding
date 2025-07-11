@@ -8,14 +8,17 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        // Truncate the table first to ensure clean data
-        $this->db->query('SET FOREIGN_KEY_CHECKS=0');
-        $this->db->table('users')->truncate();
-        $this->db->query('SET FOREIGN_KEY_CHECKS=1');
+        // Jalankan seeder dalam urutan yang benar untuk menjaga integritas referensial
 
-        $this->call('UserSeeder');
+        // 1. Kategori harus dijalankan pertama karena menjadi referensi untuk barang dan paket
         $this->call('KategoriSeeder');
+
+        // 2. Barang dijalankan setelah kategori karena bergantung pada kategori
         $this->call('BarangSeeder');
+
+        // 3. Paket dijalankan terakhir karena bergantung pada barang dan kategori
         $this->call('PaketSeeder');
+
+        echo "Database seeding berhasil dijalankan.\n";
     }
 }

@@ -141,127 +141,64 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Paket 1 -->
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:shadow-xl">
-                <div class="p-8 bg-primary-600 text-white text-center">
-                    <h3 class="text-2xl font-semibold">Paket Silver</h3>
-                    <div class="mt-4 text-4xl font-bold">Rp 25.000.000</div>
+            <?php if (empty($pakets)) : ?>
+                <div class="col-span-3 text-center py-12">
+                    <h3 class="text-2xl font-medium text-secondary-900">Tidak ada paket yang tersedia saat ini</h3>
+                    <p class="mt-4 text-secondary-600">Silakan coba lagi nanti atau hubungi kami untuk informasi lebih lanjut</p>
                 </div>
-                <div class="p-8">
-                    <ul class="space-y-4">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
-                            <span>Dekorasi pelaminan standar</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
-                            <span>Katering untuk 300 orang</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
-                            <span>Dokumentasi foto</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
-                            <span>Rias pengantin</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
-                            <span>MC acara</span>
-                        </li>
-                    </ul>
-                    <a href="<?= site_url('paket/1') ?>" class="mt-8 block w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium text-center rounded-md transition-colors duration-300">
-                        Lihat Detail
-                    </a>
-                </div>
-            </div>
-
-            <!-- Paket 2 -->
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:shadow-xl relative transform scale-110">
-                <div class="absolute top-0 right-0 bg-yellow-500 text-white px-4 py-1 rounded-bl-lg font-medium">
-                    Terpopuler
-                </div>
-                <div class="p-8 bg-primary-700 text-white text-center">
-                    <h3 class="text-2xl font-semibold">Paket Gold</h3>
-                    <div class="mt-4 text-4xl font-bold">Rp 45.000.000</div>
-                </div>
-                <div class="p-8">
-                    <ul class="space-y-4">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
-                            <span>Dekorasi pelaminan premium</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
-                            <span>Katering untuk 500 orang</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
-                            <span>Dokumentasi foto dan video</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
-                            <span>Rias pengantin dan keluarga</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
-                            <span>MC profesional</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
-                            <span>Entertainment</span>
-                        </li>
-                    </ul>
-                    <a href="<?= site_url('paket/2') ?>" class="mt-8 block w-full py-3 px-4 bg-primary-700 hover:bg-primary-800 text-white font-medium text-center rounded-md transition-colors duration-300">
-                        Lihat Detail
-                    </a>
-                </div>
-            </div>
-
-            <!-- Paket 3 -->
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:shadow-xl">
-                <div class="p-8 bg-primary-600 text-white text-center">
-                    <h3 class="text-2xl font-semibold">Paket Platinum</h3>
-                    <div class="mt-4 text-4xl font-bold">Rp 75.000.000</div>
-                </div>
-                <div class="p-8">
-                    <ul class="space-y-4">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
-                            <span>Dekorasi pelaminan mewah</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
-                            <span>Katering untuk 1000 orang</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
-                            <span>Dokumentasi foto, video, dan drone</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
-                            <span>Rias pengantin, keluarga, dan bridesmaid</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
-                            <span>MC selebriti</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
-                            <span>Entertainment dan live music</span>
-                        </li>
-                    </ul>
-                    <a href="<?= site_url('paket/3') ?>" class="mt-8 block w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium text-center rounded-md transition-colors duration-300">
-                        Lihat Detail
-                    </a>
-                </div>
-            </div>
+            <?php else : ?>
+                <?php foreach ($pakets as $paket) : ?>
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:shadow-xl">
+                        <!-- Tambahkan gambar paket -->
+                        <div class="h-48 overflow-hidden">
+                            <?php if (!empty($paket['foto'])) : ?>
+                                <img src="<?= base_url('uploads/paket/' . $paket['foto']) ?>" alt="<?= $paket['namapaket'] ?>" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                            <?php else : ?>
+                                <img src="<?= base_url('assets/images/wedding-' . ($paket['kdpaket'] % 3 + 1) . '.jpg') ?>" alt="<?= $paket['namapaket'] ?>" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                            <?php endif; ?>
+                        </div>
+                        <div class="p-8 bg-primary-600 text-white text-center">
+                            <h3 class="text-2xl font-semibold"><?= $paket['namapaket'] ?></h3>
+                            <div class="mt-4 text-4xl font-bold">Rp <?= number_format($paket['harga'], 0, ',', '.') ?></div>
+                        </div>
+                        <div class="p-8">
+                            <?php if (isset($paket['items']) && count($paket['items']) > 0) : ?>
+                                <ul class="space-y-4">
+                                    <?php
+                                    $count = 0;
+                                    foreach ($paket['items'] as $item) :
+                                        if ($count >= 5) break; // Tampilkan max 5 item
+                                    ?>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
+                                            <span><?= $item['namabarang'] ?> (<?= $item['jumlah'] ?> <?= $item['satuan'] ?>)</span>
+                                        </li>
+                                    <?php
+                                        $count++;
+                                    endforeach;
+                                    ?>
+                                    <?php if (count($paket['items']) > 5) : ?>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-plus-circle text-primary-600 mt-1 mr-3"></i>
+                                            <span>Dan <?= count($paket['items']) - 5 ?> item lainnya</span>
+                                        </li>
+                                    <?php endif; ?>
+                                </ul>
+                            <?php else : ?>
+                                <p class="text-center text-secondary-600 mb-4">Tidak ada detail barang</p>
+                            <?php endif; ?>
+                            <a href="<?= site_url('paket/' . $paket['kdpaket']) ?>" class="mt-8 block w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium text-center rounded-md transition-colors duration-300">
+                                Lihat Detail
+                            </a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
 
         <div class="text-center mt-12">
-            <a href="<?= site_url('paket') ?>" class="inline-flex items-center px-8 py-3 border-2 border-primary-600 text-primary-600 font-medium rounded-md hover:bg-primary-600 hover:text-white transition-colors duration-300 text-lg">
-                Lihat Semua Paket
-                <i class="fas fa-arrow-right ml-2"></i>
+            <a href="<?= site_url('paket') ?>" class="inline-flex items-center px-8 py-3 border border-primary-600 text-primary-600 hover:bg-primary-50 font-medium rounded-md transition-colors duration-300">
+                Lihat Semua Paket <i class="fas fa-arrow-right ml-2"></i>
             </a>
         </div>
     </div>
@@ -406,6 +343,67 @@
             <a href="<?= site_url('kontak') ?>" class="inline-flex items-center px-8 py-4 bg-white text-primary-600 font-medium rounded-md hover:bg-gray-100 transition-colors duration-300 text-lg">
                 Konsultasi Sekarang
                 <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Barang Section -->
+<section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-serif font-bold text-secondary-900">Sewa Barang</h2>
+            <div class="w-24 h-1 bg-primary-500 mx-auto mt-4"></div>
+            <p class="mt-6 text-xl text-secondary-600 max-w-3xl mx-auto">
+                Kami menyediakan berbagai barang berkualitas untuk disewa sesuai kebutuhan acara Anda.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <?php if (empty($barangs)) : ?>
+                <div class="col-span-3 text-center py-12">
+                    <h3 class="text-2xl font-medium text-secondary-900">Tidak ada barang yang tersedia saat ini</h3>
+                    <p class="mt-4 text-secondary-600">Silakan coba lagi nanti atau hubungi kami untuk informasi lebih lanjut</p>
+                </div>
+            <?php else : ?>
+                <?php foreach ($barangs as $barang) : ?>
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:shadow-xl hover:scale-105">
+                        <div class="h-48 overflow-hidden">
+                            <?php if (!empty($barang['foto'])) : ?>
+                                <img src="<?= base_url('uploads/barang/' . $barang['foto']) ?>" alt="<?= $barang['namabarang'] ?>" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                            <?php else : ?>
+                                <?php
+                                // Menggunakan gambar dari gallery berdasarkan id barang
+                                $imageIndex = ($barang['kdbarang'] % 37) + 1;
+                                $imageIndex = str_pad($imageIndex, 2, '0', STR_PAD_LEFT);
+                                ?>
+                                <img src="<?= base_url('assets/images/gallery/' . $imageIndex . '.png') ?>" alt="<?= $barang['namabarang'] ?>" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                            <?php endif; ?>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-semibold text-secondary-900"><?= $barang['namabarang'] ?></h3>
+                            </div>
+                            <div class="mb-4">
+                                <div class="text-lg font-bold text-primary-600">
+                                    Rp <?= number_format($barang['hargasewa'], 0, ',', '.') ?> / <?= $barang['satuan'] ?>
+                                </div>
+                                <div class="text-sm text-secondary-500">
+                                    Stok: <?= $barang['jumlah'] ?>
+                                </div>
+                            </div>
+                            <a href="<?= site_url('barang/' . $barang['kdbarang']) ?>" class="mt-4 block w-full py-2 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium text-center rounded-md transition-colors duration-300">
+                                Lihat Detail
+                            </a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+
+        <div class="text-center mt-12">
+            <a href="<?= site_url('barang') ?>" class="inline-flex items-center px-8 py-3 border border-primary-600 text-primary-600 hover:bg-primary-50 font-medium rounded-md transition-colors duration-300">
+                Lihat Semua Barang <i class="fas fa-arrow-right ml-2"></i>
             </a>
         </div>
     </div>
