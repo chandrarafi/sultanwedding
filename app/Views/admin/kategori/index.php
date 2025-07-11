@@ -1,32 +1,43 @@
 <?= $this->extend('admin/layouts/main') ?>
 
 <?= $this->section('content') ?>
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Data Kategori</h5>
-                <button type="button" class="btn btn-primary" id="btnAdd">
-                    <i class="bi bi-plus-lg"></i> Tambah Kategori
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+    <div class="breadcrumb-title pe-3">Master Data</div>
+    <div class="ps-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 p-0">
+                <li class="breadcrumb-item"><a href="<?= site_url('admin') ?>"><i class="bx bx-home-alt"></i></a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Kategori</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+            <h5 class="mb-0">Data Kategori</h5>
+            <div class="ms-auto">
+                <button type="button" class="btn btn-primary px-3 radius-30" id="btnAdd">
+                    <i class="bx bx-plus"></i>Tambah Kategori
                 </button>
             </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover table-striped" id="tableKategori">
-                        <thead>
-                            <tr>
-                                <th width="5%">No</th>
-                                <th>Nama Kategori</th>
-                                <th>Tanggal Dibuat</th>
-                                <th width="15%">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Data akan diisi oleh DataTables -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0 table-hover table-striped" id="tableKategori" width="100%">
+                <thead class="table-light">
+                    <tr>
+                        <th width="5%" class="text-center">No</th>
+                        <th width="55%">Nama Kategori</th>
+                        <th width="25%">Tanggal Dibuat</th>
+                        <th width="15%" class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data akan diisi oleh DataTables -->
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -79,19 +90,94 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
+<style>
+    /* Perbaikan tampilan DataTables */
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter {
+        margin-bottom: 10px;
+    }
+
+    .dataTables_wrapper .dataTables_length {
+        float: left;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        float: right;
+    }
+
+    .dataTables_wrapper .dataTables_info {
+        clear: both;
+        float: left;
+        padding-top: 10px;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        float: right;
+        padding-top: 10px;
+    }
+
+    /* Style untuk icon aksi */
+    .action-icon {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    }
+
+    .action-icon.edit {
+        background-color: rgba(255, 193, 7, 0.15);
+        color: #ffc107;
+    }
+
+    .action-icon.edit:hover {
+        background-color: #ffc107;
+        color: #fff;
+    }
+
+    .action-icon.delete {
+        background-color: rgba(220, 53, 69, 0.15);
+        color: #dc3545;
+    }
+
+    .action-icon.delete:hover {
+        background-color: #dc3545;
+        color: #fff;
+    }
+
+    /* Perbaikan tampilan pada perangkat mobile */
+    @media (max-width: 767px) {
+
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_paginate {
+            float: none;
+            text-align: center;
+        }
+    }
+</style>
+
 <script>
     $(document).ready(function() {
         // Inisialisasi DataTables
         var table = $('#tableKategori').DataTable({
             processing: true,
             serverSide: true,
+            responsive: true,
             ajax: {
                 url: "<?= site_url('admin/kategori/getAll') ?>",
                 type: "POST",
+                data: function(d) {
+                    return d;
+                }
             },
             columns: [{
                     data: null,
                     "sortable": false,
+                    className: "text-center",
                     render: function(data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }
@@ -102,20 +188,39 @@
                 {
                     data: "created_at",
                     render: function(data, type, row) {
-                        return moment(data).format('DD MMM YYYY HH:mm');
+                        // Format tanggal tanpa moment.js
+                        if (!data) return "-";
+
+                        // Parsing tanggal dari string
+                        var date = new Date(data);
+
+                        // Array nama bulan dalam bahasa Indonesia
+                        var bulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+
+                        // Format tanggal: DD MMM YYYY HH:MM
+                        var tanggal = date.getDate();
+                        var namaBulan = bulan[date.getMonth()];
+                        var tahun = date.getFullYear();
+                        var jam = date.getHours().toString().padStart(2, '0');
+                        var menit = date.getMinutes().toString().padStart(2, '0');
+
+                        return tanggal + ' ' + namaBulan + ' ' + tahun + ' ' + jam + ':' + menit;
                     }
                 },
                 {
                     data: null,
+                    className: "text-center",
                     "sortable": false,
                     render: function(data, type, row) {
                         return `
-                            <button class="btn btn-sm btn-info btn-edit" data-id="${row.kdkategori}">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-danger btn-delete" data-id="${row.kdkategori}">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                <a href="javascript:;" class="action-icon edit btn-edit" data-id="${row.kdkategori}" title="Edit">
+                                    <i class="bx bx-edit-alt"></i>
+                                </a>
+                                <a href="javascript:;" class="action-icon delete btn-delete" data-id="${row.kdkategori}" title="Hapus">
+                                    <i class="bx bx-trash-alt"></i>
+                                </a>
+                            </div>
                         `;
                     }
                 }
@@ -124,6 +229,7 @@
                 [2, 'desc']
             ],
             language: {
+                processing: '<i class="bx bx-loader bx-spin font-medium-5"></i><span class="ms-1">Loading...</span>',
                 search: "Cari:",
                 lengthMenu: "Tampilkan _MENU_ data per halaman",
                 zeroRecords: "Tidak ada data yang cocok",
@@ -136,7 +242,10 @@
                     next: "Selanjutnya",
                     previous: "Sebelumnya"
                 }
-            }
+            },
+            dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
         });
 
         // Tambah Kategori
@@ -167,10 +276,11 @@
                         $('#modalKategoriLabel').text('Edit Kategori');
                         $('#modalKategori').modal('show');
                     } else {
-                        Swal.fire('Error', response.messages, 'error');
+                        Swal.fire('Error', response.message || 'Terjadi kesalahan', 'error');
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error:', errorThrown);
                     Swal.fire('Error', 'Terjadi kesalahan saat mengambil data', 'error');
                 }
             });
@@ -206,11 +316,12 @@
                         });
                         table.ajax.reload();
                     } else {
-                        Swal.fire('Error', response.message, 'error');
+                        Swal.fire('Error', response.message || 'Gagal menghapus data', 'error');
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     $('#deleteModal').modal('hide');
+                    console.error('Error:', errorThrown);
                     Swal.fire('Error', 'Terjadi kesalahan saat menghapus data', 'error');
                 }
             });
@@ -250,27 +361,30 @@
                         });
                         table.ajax.reload();
                     } else {
-                        if (response.messages) {
-                            let errors = response.messages;
-                            if (errors.namakategori) {
-                                $('#namakategori').addClass('is-invalid');
-                                $('#namakategori-error').text(errors.namakategori);
-                            }
+                        if (response.errors) {
+                            showErrors(response.errors);
                         } else {
-                            Swal.fire('Error', `Gagal ${actionText} data: ${response.message}`, 'error');
+                            Swal.fire('Error', response.message || 'Gagal menyimpan data', 'error');
                         }
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    Swal.fire('Error', `Terjadi kesalahan saat ${actionText} data`, 'error');
+                    console.error('Error:', errorThrown);
+                    Swal.fire('Error', 'Terjadi kesalahan saat ' + actionText + ' data', 'error');
                 }
             });
         });
 
-        // Helper function to clear validation errors
         function clearErrors() {
+            $('#namakategori-error').html('');
             $('#namakategori').removeClass('is-invalid');
-            $('#namakategori-error').text('');
+        }
+
+        function showErrors(errors) {
+            if (errors.namakategori) {
+                $('#namakategori').addClass('is-invalid');
+                $('#namakategori-error').html(errors.namakategori);
+            }
         }
     });
 </script>

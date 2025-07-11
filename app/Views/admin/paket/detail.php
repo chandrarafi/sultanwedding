@@ -1,87 +1,96 @@
 <?= $this->extend('admin/layouts/main') ?>
 
 <?= $this->section('content') ?>
-<div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Detail Paket</h1>
-        <div>
-            <a href="<?= base_url('admin/paket/edit/' . $paket['kdpaket']) ?>" class="btn btn-sm btn-primary shadow-sm">
-                <i class="fas fa-edit fa-sm text-white-50"></i> Edit
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+    <div class="breadcrumb-title pe-3">Master Data</div>
+    <div class="ps-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 p-0">
+                <li class="breadcrumb-item"><a href="<?= site_url('admin') ?>"><i class="bx bx-home-alt"></i></a>
+                </li>
+                <li class="breadcrumb-item"><a href="<?= site_url('admin/paket') ?>">Paket</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Detail</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="ms-auto">
+        <div class="d-flex gap-3">
+            <a href="<?= base_url('admin/paket/edit/' . $paket['kdpaket']) ?>" class="btn btn-warning px-3 radius-30">
+                <i class="bx bx-edit"></i>Edit
             </a>
-            <a href="<?= base_url('admin/paket') ?>" class="btn btn-sm btn-secondary shadow-sm ml-2">
-                <i class="fas fa-arrow-left fa-sm text-white-50"></i> Kembali
+            <a href="<?= base_url('admin/paket') ?>" class="btn btn-light px-3 radius-30">
+                <i class="bx bx-arrow-back"></i>Kembali
             </a>
         </div>
     </div>
+</div>
 
-    <div class="row">
-        <div class="col-lg-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Foto Paket</h6>
+<div class="row">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <h5 class="mb-0">Foto Paket</h5>
                 </div>
-                <div class="card-body text-center">
+                <div class="text-center">
                     <?php if (!empty($paket['foto'])) : ?>
-                        <img src="<?= base_url('uploads/paket/' . $paket['foto']) ?>" class="img-fluid img-thumbnail" alt="<?= $paket['namapaket'] ?>">
+                        <img src="<?= base_url('uploads/paket/' . $paket['foto']) ?>" class="img-fluid rounded" alt="<?= $paket['namapaket'] ?>">
                     <?php else : ?>
-                        <div class="alert alert-info">
-                            <i class="fas fa-image fa-3x mb-3"></i>
-                            <p>Tidak ada foto untuk paket ini</p>
+                        <div class="border border-3 border-light py-5 rounded">
+                            <div class="font-45 text-light-3"><i class="bx bx-image-alt"></i></div>
+                            <h5 class="mb-0 text-light-3">Tidak ada foto</h5>
                         </div>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
-        <div class="col-lg-8">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Informasi Paket</h6>
+    </div>
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <h5 class="mb-0">Informasi Paket</h5>
                 </div>
-                <div class="card-body">
-                    <table class="table table-borderless">
-                        <tr>
-                            <th width="30%">Nama Paket</th>
-                            <td width="5%">:</td>
-                            <td><?= $paket['namapaket'] ?></td>
-                        </tr>
-                        <tr>
-                            <th>Kategori</th>
-                            <td>:</td>
-                            <td><?= $paket['namakategori'] ?></td>
-                        </tr>
-                        <tr>
-                            <th>Harga</th>
-                            <td>:</td>
-                            <td>Rp <?= number_format($paket['harga'], 0, ',', '.') ?></td>
-                        </tr>
-                        <tr>
-                            <th>Barang Terkait</th>
-                            <td>:</td>
-                            <td><?= $paket['namabarang'] ?? 'Tidak ada' ?></td>
-                        </tr>
-                        <tr>
-                            <th>Tanggal Dibuat</th>
-                            <td>:</td>
-                            <td><?= date('d F Y H:i', strtotime($paket['created_at'])) ?></td>
-                        </tr>
-                        <tr>
-                            <th>Terakhir Diupdate</th>
-                            <td>:</td>
-                            <td><?= date('d F Y H:i', strtotime($paket['updated_at'])) ?></td>
-                        </tr>
-                    </table>
+                <div class="list-group-flush">
+                    <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap py-3">
+                        <span class="fw-bold">Nama Paket</span>
+                        <span class="text-secondary"><?= $paket['namapaket'] ?></span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap py-3">
+                        <span class="fw-bold">Kategori</span>
+                        <span class="text-secondary"><?= $paket['namakategori'] ?></span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap py-3">
+                        <span class="fw-bold">Harga</span>
+                        <span class="text-secondary">Rp <?= number_format($paket['harga'], 0, ',', '.') ?></span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap py-3">
+                        <span class="fw-bold">Barang Terkait</span>
+                        <span class="text-secondary"><?= $paket['namabarang'] ?? 'Tidak ada' ?></span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap py-3">
+                        <span class="fw-bold">Tanggal Dibuat</span>
+                        <span class="text-secondary"><?= date('d F Y H:i', strtotime($paket['created_at'])) ?></span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap py-3">
+                        <span class="fw-bold">Terakhir Diupdate</span>
+                        <span class="text-secondary"><?= date('d F Y H:i', strtotime($paket['updated_at'])) ?></span>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Detail Paket</h6>
+        <div class="card mt-3">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <h5 class="mb-0">Detail Paket</h5>
                 </div>
-                <div class="card-body">
+                <div class="p-3">
                     <?php if (!empty($paket['detailpaket'])) : ?>
                         <p><?= nl2br($paket['detailpaket']) ?></p>
                     <?php else : ?>
-                        <p class="text-muted">Tidak ada detail untuk paket ini</p>
+                        <p class="text-muted fst-italic">Tidak ada detail untuk paket ini</p>
                     <?php endif; ?>
                 </div>
             </div>

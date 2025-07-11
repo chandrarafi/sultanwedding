@@ -1,30 +1,50 @@
 <?= $this->extend('admin/layouts/main') ?>
 
 <?= $this->section('content') ?>
-<div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Tambah Paket</h1>
-        <a href="<?= base_url('admin/paket') ?>" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
-            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Kembali
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+    <div class="breadcrumb-title pe-3">Master Data</div>
+    <div class="ps-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 p-0">
+                <li class="breadcrumb-item"><a href="<?= site_url('admin') ?>"><i class="bx bx-home-alt"></i></a>
+                </li>
+                <li class="breadcrumb-item"><a href="<?= site_url('admin/paket') ?>">Paket</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Tambah</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="ms-auto">
+        <a href="<?= base_url('admin/paket') ?>" class="btn btn-light px-3 radius-30">
+            <i class="bx bx-arrow-back"></i>Kembali
         </a>
     </div>
+</div>
 
-    <?php if (session()->has('errors')) : ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <ul class="mb-0">
-                <?php foreach (session('errors') as $error) : ?>
-                    <li><?= esc($error) ?></li>
-                <?php endforeach ?>
-            </ul>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<?php if (session()->has('errors')) : ?>
+    <div class="alert border-0 border-start border-5 border-danger alert-dismissible fade show py-2">
+        <div class="d-flex align-items-center">
+            <div class="font-35 text-danger"><i class="bx bx-x-circle"></i></div>
+            <div class="ms-3">
+                <h6 class="mb-0 text-danger">Error</h6>
+                <ul class="mb-0">
+                    <?php foreach (session('errors') as $error) : ?>
+                        <li><?= esc($error) ?></li>
+                    <?php endforeach ?>
+                </ul>
+            </div>
         </div>
-    <?php endif; ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
 
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Form Tambah Paket</h6>
-        </div>
-        <div class="card-body">
+<div class="card">
+    <div class="card-body">
+        <div class="border p-4 rounded">
+            <div class="card-title d-flex align-items-center">
+                <h5 class="mb-0">Form Tambah Paket</h5>
+            </div>
+            <hr />
             <form action="<?= base_url('admin/paket/store') ?>" method="post" enctype="multipart/form-data">
                 <?= csrf_field() ?>
 
@@ -35,7 +55,7 @@
                     </div>
                     <div class="col-md-6">
                         <label for="kdkategori" class="form-label">Kategori <span class="text-danger">*</span></label>
-                        <select class="form-control" id="kdkategori" name="kdkategori" required>
+                        <select class="form-select" id="kdkategori" name="kdkategori" required>
                             <option value="">Pilih Kategori</option>
                             <?php foreach ($kategori as $k) : ?>
                                 <option value="<?= $k['kdkategori'] ?>" <?= old('kdkategori') == $k['kdkategori'] ? 'selected' : '' ?>>
@@ -56,7 +76,7 @@
                     </div>
                     <div class="col-md-6">
                         <label for="kdbarang" class="form-label">Barang (Opsional)</label>
-                        <select class="form-control" id="kdbarang" name="kdbarang">
+                        <select class="form-select" id="kdbarang" name="kdbarang">
                             <option value="">Pilih Barang</option>
                             <?php foreach ($barang as $b) : ?>
                                 <option value="<?= $b['kdbarang'] ?>" <?= old('kdbarang') == $b['kdbarang'] ? 'selected' : '' ?>>
@@ -81,13 +101,13 @@
                 <div class="preview-container mt-3 mb-3 d-none">
                     <label class="form-label">Preview</label>
                     <div class="text-center">
-                        <img id="imagePreview" class="img-fluid img-thumbnail" style="max-height: 200px;">
+                        <img id="imagePreview" class="rounded" style="max-height: 200px;">
                     </div>
                 </div>
 
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button type="reset" class="btn btn-secondary me-md-2">Reset</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                <div class="d-flex justify-content-end gap-3">
+                    <button type="reset" class="btn btn-secondary px-4">Reset</button>
+                    <button type="submit" class="btn btn-primary px-4">Simpan</button>
                 </div>
             </form>
         </div>

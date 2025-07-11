@@ -13,7 +13,7 @@ class UserModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['username', 'email', 'password', 'role', 'name', 'status', 'last_login', 'remember_token'];
+    protected $allowedFields    = ['username', 'email', 'password', 'role', 'name', 'status', 'last_login', 'remember_token', 'is_verified', 'verification_code', 'verification_expiry'];
 
     // Dates
     protected $useTimestamps = true;
@@ -68,7 +68,7 @@ class UserModel extends Model
                 ]
             ],
             'role' => [
-                'rules' => 'required|in_list[admin,manager,user]',
+                'rules' => 'required|in_list[admin,pimpinan,pelanggan]',
                 'errors' => [
                     'required' => 'Role harus dipilih',
                     'in_list' => 'Role tidak valid'
@@ -112,5 +112,59 @@ class UserModel extends Model
         $data['data']['password'] = password_hash($data['data']['password'], PASSWORD_DEFAULT);
 
         return $data;
+    }
+
+    /**
+     * Generate OTP code for verification
+     * 
+     * @param int $userId
+     * @return string
+     */
+    public function generateOTP($userId)
+    {
+        // Generate random 6 digit code
+        $code = random_int(100000, 999999);
+
+        // Set expiry to 24 hours from now
+        $expiry = date('Y-m-d H:i:s', strtotime('+24 hours'));
+
+        // Update user with verification code and expiry
+        $this->update($userId, [
+            'verification_code' => $code,
+            'verification_expiry' => $expiry,
+            'is_verified' => 0 // Ensure user is marked as unverified
+        ]);
+
+        return $code;
+    }
+
+    /**
+     * Verify user's OTP code
+     * 
+     * @param int $userId
+     * @param string $code
+     * @return bool
+     */
+    public function verifyOTP($userId, $code)
+    {
+        $user = $this->find($userId);
+
+        if (!$user) {
+            return false;
+        }
+
+        // Check if code matches and hasn't expired
+        if ($user['verification_code'] == $code && strtotime($user['verification_expiry']) > time()) {
+            // Update user as verified
+            $this->update($userId, [
+                'is_verified' => 1,
+                'verification_code' => null,
+                'verification_expiry' => null
+            ]);
+
+            return true;
+        }
+
+        return false;
     }
 }

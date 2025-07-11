@@ -34,13 +34,28 @@ class Admin extends BaseController
         // Parameters for DataTables
         $start = $request->getGet('start') ?? 0;
         $length = $request->getGet('length') ?? 10;
-        $search = $request->getGet('search')['value'] ?? '';
+        $search = $request->getGet('search');
+        $searchValue = '';
+
+        // Pastikan search adalah array dan memiliki key 'value'
+        if (is_array($search) && isset($search['value'])) {
+            $searchValue = $search['value'];
+        } elseif (is_string($search)) {
+            $searchValue = $search;
+        }
+
         $order = $request->getGet('order') ?? [];
         $roleFilter = $request->getGet('role') ?? '';
         $statusFilter = $request->getGet('status') ?? '';
 
-        $orderColumn = $order[0]['column'] ?? 0;
-        $orderDir = $order[0]['dir'] ?? 'asc';
+        // Pastikan order adalah array sebelum mengakses index
+        $orderColumn = 0;
+        $orderDir = 'asc';
+
+        if (is_array($order) && !empty($order) && isset($order[0]['column'])) {
+            $orderColumn = $order[0]['column'];
+            $orderDir = $order[0]['dir'] ?? 'asc';
+        }
 
         // Columns for ordering
         $columns = ['id', 'username', 'email', 'name', 'role', 'status', 'last_login'];
@@ -50,12 +65,12 @@ class Admin extends BaseController
         $builder = $this->userModel->builder();
 
         // Filtering
-        if (!empty($search)) {
+        if (!empty($searchValue)) {
             $builder->groupStart()
-                ->like('username', $search)
-                ->orLike('email', $search)
-                ->orLike('name', $search)
-                ->orLike('role', $search)
+                ->like('username', $searchValue)
+                ->orLike('email', $searchValue)
+                ->orLike('name', $searchValue)
+                ->orLike('role', $searchValue)
                 ->groupEnd();
         }
 
@@ -92,17 +107,23 @@ class Admin extends BaseController
         return $this->response->setJSON($response);
     }
 
+    // Alias untuk getUsers yang dipanggil oleh DataTables
+    public function getAllUsers()
+    {
+        return $this->getUsers();
+    }
+
     protected function handleUserSave($data, $isNew = true)
     {
         if ($this->userModel->save($data)) {
             return $this->response->setJSON([
-                'status' => 'success',
+                'status' => true,
                 'message' => $isNew ? 'User berhasil ditambahkan' : 'User berhasil diperbarui'
             ]);
         }
 
         return $this->response->setStatusCode(400)->setJSON([
-            'status' => 'error',
+            'status' => false,
             'message' => $isNew ? 'Gagal menambahkan user' : 'Gagal memperbarui user',
             'errors' => $this->userModel->errors()
         ]);
@@ -115,7 +136,7 @@ class Admin extends BaseController
 
     public function createUser()
     {
-        return $this->handleUserSave($this->request->getJSON(true), true);
+        return $this->handleUserSave($this->request->getPost(), true);
     }
 
     public function getUser($id = null)
@@ -124,13 +145,13 @@ class Admin extends BaseController
 
         if ($data) {
             return $this->response->setJSON([
-                'status' => 'success',
+                'status' => true,
                 'data' => $data
             ]);
         }
 
         return $this->response->setStatusCode(404)->setJSON([
-            'status' => 'error',
+            'status' => false,
             'message' => 'User tidak ditemukan'
         ]);
     }
@@ -149,7 +170,7 @@ class Admin extends BaseController
         // Validasi ID
         if (empty($id)) {
             return $this->response->setStatusCode(400)->setJSON([
-                'status' => 'error',
+                'status' => false,
                 'message' => 'ID user tidak valid',
                 'errors' => ['id' => 'ID user tidak ditemukan']
             ]);
@@ -159,7 +180,7 @@ class Admin extends BaseController
         $existingUser = $this->userModel->find($id);
         if (!$existingUser) {
             return $this->response->setStatusCode(404)->setJSON([
-                'status' => 'error',
+                'status' => false,
                 'message' => 'User tidak ditemukan',
                 'errors' => ['id' => 'User dengan ID tersebut tidak ditemukan']
             ]);
@@ -172,13 +193,13 @@ class Admin extends BaseController
     {
         if ($this->userModel->delete($id)) {
             return $this->response->setJSON([
-                'status' => 'success',
+                'status' => true,
                 'message' => 'User berhasil dihapus'
             ]);
         }
 
         return $this->response->setStatusCode(400)->setJSON([
-            'status' => 'error',
+            'status' => false,
             'message' => 'Gagal menghapus user'
         ]);
     }
@@ -186,7 +207,11 @@ class Admin extends BaseController
     public function getRoles()
     {
         // Daftar role yang tersedia
-        $roles = ['admin', 'manager', 'user'];
+        $roles = [
+            ['name' => 'admin'],
+            ['name' => 'pimpinan'],
+            ['name' => 'pelanggan']
+        ];
 
         return $this->response->setJSON([
             'status' => 'success',

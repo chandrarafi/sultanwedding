@@ -1,223 +1,192 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Admin Panel</title>
+    <title>Login - Sultan Wedding Organizer</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Konfigurasi Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#fdf2f8',
+                            100: '#fce7f3',
+                            200: '#fbcfe8',
+                            300: '#f9a8d4',
+                            400: '#f472b6',
+                            500: '#ec4899',
+                            600: '#db2777',
+                            700: '#be185d',
+                            800: '#9d174d',
+                            900: '#831843',
+                            950: '#500724',
+                        },
+                        secondary: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        :root {
-            --primary-color: #4e73df;
-            --secondary-color: #224abe;
-            --accent-color: #f8f9fc;
-        }
-
         body {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
         }
 
-        .login-container {
-            max-width: 420px;
-            margin: 0 auto;
-            padding: 20px;
+        .font-serif {
+            font-family: 'Playfair Display', serif;
         }
 
-        .login-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            overflow: hidden;
-        }
-
-        .login-header {
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-            padding: 25px 20px;
-            text-align: center;
-            border-radius: 15px 15px 0 0;
-        }
-
-        .login-header h4 {
-            color: white;
-            margin: 0;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .login-body {
-            padding: 30px;
-        }
-
-        .form-control {
-            border-radius: 8px;
-            padding: 12px;
-            border: 1px solid #e1e1e1;
-            font-size: 0.95rem;
-        }
-
-        .form-control:focus {
-            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
-            border-color: var(--primary-color);
-        }
-
-        .input-group-text {
-            border-radius: 8px 0 0 8px;
-            border: 1px solid #e1e1e1;
-            background-color: #f8f9fa;
-        }
-
-        .btn-login {
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-            border: none;
-            border-radius: 8px;
-            padding: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-login:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 5px 15px rgba(78, 115, 223, 0.3);
-        }
-
-        .form-check-input:checked {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .alert {
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .brand-logo {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 10px;
-        }
-
-        .loading-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            border-radius: 15px;
-        }
-
-        .form-label {
-            font-weight: 500;
-            color: #495057;
-        }
-
-        .remember-me {
-            color: #6c757d;
-        }
-
-        .input-group {
-            margin-bottom: 5px;
-        }
-
-        .invalid-feedback {
-            font-size: 0.85rem;
-            margin-left: 5px;
+        .login-bg {
+            background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="login-container">
-            <div class="login-card position-relative">
-                <!-- Loading Overlay -->
-                <div class="loading-overlay" id="loadingOverlay">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
+    <div class="min-h-screen flex flex-col md:flex-row">
+        <!-- Left Side - Image -->
+        <div class="hidden md:block md:w-1/2 login-bg">
+            <div class="h-full w-full bg-black bg-opacity-50 flex items-center justify-center p-12">
+                <div class="text-center">
+                    <h1 class="text-4xl font-serif font-bold text-white mb-6">Sultan Wedding</h1>
+                    <p class="text-white text-lg mb-8">Wujudkan pernikahan impian Anda bersama kami</p>
+                    <div class="w-24 h-1 bg-primary-500 mx-auto"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Login Form -->
+        <div class="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12">
+            <div class="w-full max-w-md">
+                <!-- Logo for Mobile -->
+                <div class="md:hidden text-center mb-8">
+                    <h1 class="text-3xl font-serif font-bold text-secondary-800">Sultan Wedding</h1>
+                    <div class="w-24 h-1 bg-primary-500 mx-auto mt-2"></div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg p-8">
+                    <div class="text-center mb-6">
+                        <h2 class="text-2xl font-serif font-bold text-secondary-800">Masuk ke Akun Anda</h2>
+                        <p class="text-secondary-500 mt-2">Masukkan username/email dan password Anda</p>
                     </div>
-                </div>
 
-                <div class="login-header">
-                    <!-- Anda bisa menambahkan logo perusahaan di sini -->
-                    <img src="<?= base_url('assets/images/logo.png') ?>" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
-                    <h4><i class="bi bi-shield-lock me-2"></i>Login Admin</h4>
-                </div>
-
-                <div class="login-body">
                     <!-- Alert untuk pesan error/success -->
                     <?php if (session()->getFlashdata('message')) : ?>
-                        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <div class="bg-blue-50 border-l-4 border-blue-500 text-blue-700 p-4 mb-6" role="alert">
                             <?= session()->getFlashdata('message') ?>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     <?php endif; ?>
 
                     <!-- Alert untuk error -->
-                    <div id="loginError" class="alert alert-danger alert-dismissible fade show" style="display: none;" role="alert">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
+                    <div id="loginError" class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 hidden" role="alert">
                         <span id="errorMessage"></span>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
 
                     <form id="loginForm" method="post">
-                        <div class="mb-4">
-                            <label for="username" class="form-label">Username atau Email</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                <input type="text" class="form-control" id="username" name="username" required
-                                    placeholder="Masukkan username atau email">
+                        <div class="mb-6">
+                            <label for="username" class="block text-secondary-700 font-medium mb-2">Username atau Email</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-secondary-500">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                                <input type="text" class="w-full pl-10 pr-4 py-3 border border-secondary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" id="username" name="username" required placeholder="Masukkan username atau email">
                             </div>
                         </div>
 
-                        <div class="mb-4">
-                            <label for="password" class="form-label">Password</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-key"></i></span>
-                                <input type="password" class="form-control" id="password" name="password" required
-                                    placeholder="Masukkan password">
-                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                    <i class="bi bi-eye"></i>
+                        <div class="mb-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <label for="password" class="block text-secondary-700 font-medium">Password</label>
+                                <a href="#" class="text-sm text-primary-600 hover:text-primary-800">Lupa password?</a>
+                            </div>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-secondary-500">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                <input type="password" class="w-full pl-10 pr-10 py-3 border border-secondary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" id="password" name="password" required placeholder="Masukkan password">
+                                <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 flex items-center pr-3 text-secondary-500 hover:text-secondary-700">
+                                    <i class="fas fa-eye"></i>
                                 </button>
                             </div>
                         </div>
 
-                        <div class="mb-4">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                                <label class="form-check-label remember-me" for="remember">
-                                    Ingat saya
-                                </label>
-                            </div>
+                        <div class="mb-6 flex items-center">
+                            <input type="checkbox" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-secondary-300 rounded" id="remember" name="remember">
+                            <label for="remember" class="ml-2 block text-sm text-secondary-600">
+                                Ingat saya
+                            </label>
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-login w-100" id="btnLogin">
-                            <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                        <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-4 rounded-md transition duration-300 flex items-center justify-center" id="btnLogin">
+                            <i class="fas fa-sign-in-alt mr-2"></i>
+                            Masuk
                         </button>
+
+                        <div class="text-center mt-6">
+                            <p class="text-secondary-600">
+                                Belum punya akun?
+                                <a href="<?= site_url('auth/register') ?>" class="text-primary-600 hover:text-primary-800 font-medium">Daftar sekarang</a>
+                            </p>
+                        </div>
                     </form>
+                </div>
+
+                <div class="text-center mt-8">
+                    <a href="<?= site_url() ?>" class="text-secondary-600 hover:text-secondary-800 flex items-center justify-center">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Kembali ke Beranda
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-5 rounded-lg shadow-lg flex items-center">
+            <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-600 mr-3"></div>
+            <span class="text-secondary-800">Memproses...</span>
+        </div>
+    </div>
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function() {
@@ -228,62 +197,72 @@
 
                 if (passwordInput.attr('type') === 'password') {
                     passwordInput.attr('type', 'text');
-                    icon.removeClass('bi-eye').addClass('bi-eye-slash');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
                 } else {
                     passwordInput.attr('type', 'password');
-                    icon.removeClass('bi-eye-slash').addClass('bi-eye');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
                 }
             });
 
             // Handle form submission
-            $('#loginForm').on('submit', function(e) {
+            $('#loginForm').submit(function(e) {
                 e.preventDefault();
 
+                // Hide previous error
+                $('#loginError').addClass('hidden');
+
                 // Show loading overlay
-                $('#loadingOverlay').css('display', 'flex');
+                $('#loadingOverlay').removeClass('hidden');
 
-                // Disable form
-                $('#loginForm :input').prop('disabled', true);
-
-                // Get form data
-                const username = $('#username').val();
-                const password = $('#password').val();
-                const remember = $('#remember').prop('checked') ? 'on' : 'off';
+                // Disable button
+                $('#btnLogin').html('<i class="fas fa-spinner fa-spin mr-2"></i> Memproses...');
+                $('#btnLogin').prop('disabled', true);
 
                 $.ajax({
-                    url: '<?= site_url('auth/login') ?>',
+                    url: '<?= site_url('auth/loginProcess') ?>',
                     type: 'POST',
-                    data: {
-                        username: username,
-                        password: password,
-                        remember: remember
-                    },
+                    data: $(this).serialize(),
                     dataType: 'json',
                     success: function(response) {
                         if (response.status === 'success') {
-                            window.location.href = response.redirect;
+                            // Show success message
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Login Berhasil',
+                                text: response.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(function() {
+                                // Redirect
+                                window.location.href = response.redirect;
+                            });
                         } else {
+                            // Show error message
                             $('#errorMessage').text(response.message);
-                            $('#loginError').show();
+                            $('#loginError').removeClass('hidden');
+
+                            // Reset button
+                            $('#btnLogin').html('<i class="fas fa-sign-in-alt mr-2"></i> Masuk');
+                            $('#btnLogin').prop('disabled', false);
+
+                            // Hide loading overlay
+                            $('#loadingOverlay').addClass('hidden');
                         }
                     },
-                    error: function() {
+                    error: function(xhr, status, error) {
+                        // Show error message
                         $('#errorMessage').text('Terjadi kesalahan. Silakan coba lagi.');
-                        $('#loginError').show();
-                    },
-                    complete: function() {
+                        $('#loginError').removeClass('hidden');
+
+                        // Reset button
+                        $('#btnLogin').html('<i class="fas fa-sign-in-alt mr-2"></i> Masuk');
+                        $('#btnLogin').prop('disabled', false);
+
                         // Hide loading overlay
-                        $('#loadingOverlay').hide();
-                        // Enable form
-                        $('#loginForm :input').prop('disabled', false);
+                        $('#loadingOverlay').addClass('hidden');
                     }
                 });
             });
-
-            // Auto-hide alerts after 5 seconds
-            setTimeout(function() {
-                $('.alert').not('#loginError').alert('close');
-            }, 5000);
         });
     </script>
 </body>
