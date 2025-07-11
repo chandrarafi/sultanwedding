@@ -8,6 +8,7 @@
             <h1 class="text-4xl md:text-6xl font-serif font-bold text-white leading-tight">
                 Wujudkan Pernikahan Impian Anda
             </h1>
+            <!-- perubahan disini -->
             <p class="mt-6 text-xl text-white opacity-90">
                 Sultan Wedding Organizer menyediakan layanan pernikahan terbaik dengan sentuhan elegansi dan keindahan yang akan membuat hari spesial Anda menjadi kenangan tak terlupakan.
             </p>
