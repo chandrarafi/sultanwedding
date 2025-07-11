@@ -1,5 +1,4 @@
 <?= $this->extend('home/layouts/main') ?>
-<!-- live nya disini -->
 <?= $this->section('content') ?>
 <!-- Hero Section -->
 <section class="relative bg-cover bg-center h-screen" style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop');">
@@ -9,7 +8,6 @@
             <h1 class="text-4xl md:text-6xl font-serif font-bold text-white leading-tight">
                 Wujudkan Pernikahan Impian Anda
             </h1>
-            <!-- perubahan disini -->
             <p class="mt-6 text-xl text-white opacity-90">
                 Sultan Wedding Organizer menyediakan layanan pernikahan terbaik dengan sentuhan elegansi dan keindahan yang akan membuat hari spesial Anda menjadi kenangan tak terlupakan.
             </p>
