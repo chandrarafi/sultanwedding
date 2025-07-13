@@ -10,10 +10,8 @@ class CreatePemesananpaketTable extends Migration
     {
         $this->forge->addField([
             'kdpemesananpaket' => [
-                'type'           => 'INT',
-                'constraint'     => 11,
-                'unsigned'       => true,
-                'auto_increment' => true,
+                'type'           => 'VARCHAR',
+                'constraint'     => 20,
             ],
             'tgl' => [
                 'type'       => 'DATE',
@@ -53,10 +51,14 @@ class CreatePemesananpaketTable extends Migration
                 'constraint' => '15,2',
                 'default'    => 0,
             ],
+            'status' => [
+                'type'       => 'ENUM',
+                'constraint' => ['pending', 'process', 'completed', 'cancelled'],
+                'default'    => 'pending',
+            ],
             'kdpembayaran' => [
-                'type'       => 'INT',
-                'constraint' => 11,
-                'unsigned'   => true,
+                'type'       => 'VARCHAR',
+                'constraint' => 20,
                 'null'       => true,
             ],
             'created_at' => [

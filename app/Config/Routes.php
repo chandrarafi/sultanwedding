@@ -29,9 +29,14 @@ $routes->group('auth', function ($routes) {
     $routes->post('resendOTP', 'Auth::resendOTP');
 });
 
+// Debug routes can be added here if needed in the future
+
 // Admin Routes
 $routes->group('admin', ['filter' => 'role:admin'], function ($routes) {
-    $routes->get('/', 'Admin::index');
+    $routes->get('/', 'Admin\Dashboard::index');
+    $routes->get('profile', 'Admin\Profile::index');
+    $routes->post('profile/update', 'Admin\Profile::update');
+    $routes->post('profile/update-password', 'Admin\Profile::updatePassword');
 
     // User Management (hanya admin)
     $routes->group('', ['filter' => 'role:admin'], function ($routes) {
@@ -50,6 +55,37 @@ $routes->group('admin', ['filter' => 'role:admin'], function ($routes) {
         $routes->delete('users/delete/(:num)', 'Admin::deleteUser/$1'); // Route untuk delete user
         $routes->get('getRoles', 'Admin::getRoles');
     });
+
+    // PemesananPaket routes
+    $routes->get('pemesananpaket', 'Admin\PemesananPaket::index');
+    $routes->get('pemesananpaket/create', 'Admin\PemesananPaket::create');
+    $routes->get('pemesananpaket/detail/(:any)', 'Admin\PemesananPaket::detail/$1');
+    $routes->post('pemesananpaket/update-status/(:any)', 'Admin\PemesananPaket::updateStatus/$1');
+    $routes->post('pemesananpaket/cancel/(:any)', 'Admin\PemesananPaket::cancel/$1');
+    $routes->post('pemesananpaket/store', 'Admin\PemesananPaket::store');
+    $routes->get('pemesananpaket/edit/(:any)', 'Admin\PemesananPaket::edit/$1');
+    $routes->post('pemesananpaket/update/(:any)', 'Admin\PemesananPaket::update/$1');
+    $routes->get('pemesananpaket/delete/(:any)', 'Admin\PemesananPaket::delete/$1');
+
+    // Pemesanan routes (for walk-in customers)
+    $routes->get('pemesanan', 'Admin\PemesananPaket::index');
+    $routes->get('pemesanan/create', 'Admin\PemesananPaket::create');
+    $routes->post('pemesanan/store', 'Admin\PemesananPaket::store');
+    $routes->get('pemesanan/detail/(:any)', 'Admin\PemesananPaket::detail/$1');
+    $routes->get('pemesanan/edit/(:any)', 'Admin\PemesananPaket::edit/$1');
+    $routes->post('pemesanan/update/(:any)', 'Admin\PemesananPaket::update/$1');
+    $routes->get('pemesanan/delete/(:any)', 'Admin\PemesananPaket::delete/$1');
+    $routes->get('pemesanan/cancel/(:any)', 'Admin\PemesananPaket::cancel/$1');
+
+    // Pembayaran routes
+    $routes->get('pembayaran', 'Admin\Pembayaran::index');
+    $routes->get('pembayaran/detail/(:any)', 'Admin\Pembayaran::detail/$1');
+    $routes->post('pembayaran/konfirmasi-dp/(:any)', 'Admin\Pembayaran::konfirmasiDP/$1');
+    $routes->post('pembayaran/konfirmasi-h1/(:any)', 'Admin\Pembayaran::konfirmasiH1/$1');
+    $routes->post('pembayaran/konfirmasi-pelunasan/(:any)', 'Admin\Pembayaran::konfirmasiPelunasan/$1');
+    $routes->post('pembayaran/tolak/(:any)', 'Admin\Pembayaran::tolak/$1');
+    $routes->get('pembayaran/bayar-h1/(:any)', 'Admin\Pembayaran::bayarH1/$1');
+    $routes->get('pembayaran/bayar-pelunasan/(:any)', 'Admin\Pembayaran::bayarPelunasan/$1');
 
     // Kategori routes
     $routes->get('kategori', 'Admin\Kategori::index');
@@ -121,4 +157,28 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 
     // Lainnya
     $routes->get('dashboard', 'Pelanggan::index');
+});
+
+// Tambahkan route untuk pemesanan paket
+$routes->group('pelanggan', ['filter' => 'role:pelanggan'], function ($routes) {
+    $routes->get('/', 'Pelanggan\Dashboard::index');
+    $routes->get('profile', 'Pelanggan\Profile::index');
+    $routes->post('profile/update', 'Pelanggan\Profile::update');
+    $routes->post('profile/update-password', 'Pelanggan\Profile::updatePassword');
+
+    // Pemesanan paket routes
+    $routes->get('pemesanan/paket/(:num)', 'Pelanggan\PemesananController::pemesanPaket/$1');
+    $routes->post('pemesanan/process', 'Pelanggan\PemesananController::processPemesanan');
+    $routes->get('pemesanan/pembayaran/(:any)', 'Pelanggan\PemesananController::pembayaran/$1');
+    $routes->get('pemesanan/bayar/(:any)', 'Pelanggan\PemesananController::pembayaran/$1'); // Route alternatif
+    $routes->post('pemesanan/pembayaran/upload', 'Pelanggan\PemesananController::uploadBuktiPembayaran');
+    $routes->post('pemesanan/upload-bukti', 'Pelanggan\PemesananController::uploadBuktiPembayaran');
+    $routes->post('pemesanan/pembayaran/h1', 'Pelanggan\PemesananController::processH1Payment');
+    $routes->post('pemesanan/pembayaran/full', 'Pelanggan\PemesananController::processFullPayment');
+    $routes->get('pemesanan', 'Pelanggan\PemesananController::daftarPemesanan');
+    $routes->get('pemesanan/check-status/(:any)', 'Pelanggan\PemesananController::checkPaymentStatus/$1');
+
+    // Notifikasi Routes
+    $routes->get('pemesanan/check-rejected-payments', 'Pelanggan\Notifikasi::checkRejectedPayments');
+    $routes->get('notifikasi', 'Pelanggan\Notifikasi::index');
 });

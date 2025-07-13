@@ -10,10 +10,8 @@ class CreatePembayaranTable extends Migration
     {
         $this->forge->addField([
             'kdpembayaran' => [
-                'type'           => 'INT',
-                'constraint'     => 11,
-                'unsigned'       => true,
-                'auto_increment' => true,
+                'type'           => 'VARCHAR',
+                'constraint'     => 20,
             ],
             'tgl' => [
                 'type'       => 'DATE',
@@ -26,7 +24,13 @@ class CreatePembayaranTable extends Migration
             'tipepembayaran' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 20,
-                'comment'    => 'dp, lunas',
+                'comment'    => 'dp, dp2, lunas',
+            ],
+            'jumlahbayar' => [
+                'type'       => 'DECIMAL',
+                'constraint' => '15,2',
+                'default'    => 0,
+                'comment'    => 'jumlah yang dibayarkan pada transaksi ini',
             ],
             'sisa' => [
                 'type'       => 'DECIMAL',
@@ -37,12 +41,19 @@ class CreatePembayaranTable extends Migration
                 'type'       => 'DECIMAL',
                 'constraint' => '15,2',
                 'default'    => 0,
+                'comment'    => 'total yang sudah dibayarkan',
+            ],
+            'buktipembayaran' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 255,
+                'null'       => true,
+                'comment'    => 'bukti pembayaran (foto/file)',
             ],
             'status' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 20,
+                'type'       => 'ENUM',
+                'constraint' => ['pending', 'partial', 'success', 'failed'],
                 'default'    => 'pending',
-                'comment'    => 'pending, success, failed',
+                'comment'    => 'status pembayaran',
             ],
             'created_at' => [
                 'type' => 'DATETIME',

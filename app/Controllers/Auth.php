@@ -66,6 +66,8 @@ class Auth extends BaseController
         $password = $this->request->getPost('password');
         $remember = $this->request->getPost('remember') == 'on';
 
+        log_message('debug', 'Login attempt for username: ' . $username);
+
         $user = $this->userModel->where('username', $username)
             ->orWhere('email', $username)
             ->first();
@@ -85,6 +87,7 @@ class Auth extends BaseController
             }
 
             if ($user['status'] !== 'active') {
+                log_message('debug', 'Login failed: Account inactive for username: ' . $username);
                 return $this->response->setJSON([
                     'status' => 'error',
                     'message' => 'Akun Anda tidak aktif. Silakan hubungi administrator.'
@@ -92,6 +95,8 @@ class Auth extends BaseController
             }
 
             if (password_verify($password, $user['password'])) {
+                log_message('debug', 'Login successful for user ID: ' . $user['id'] . ', role: ' . $user['role']);
+
                 // Update last login
                 $this->userModel->update($user['id'], [
                     'last_login' => date('Y-m-d H:i:s')
@@ -106,7 +111,21 @@ class Auth extends BaseController
                     'role' => $user['role'],
                     'logged_in' => true
                 ];
+
+                // Tambahkan kdpelanggan ke session jika user role adalah pelanggan
+                if ($user['role'] === 'pelanggan') {
+                    $pelangganModel = new \App\Models\PelangganModel();
+                    $pelanggan = $pelangganModel->getByUserId($user['id']);
+                    if ($pelanggan) {
+                        $sessionData['kdpelanggan'] = $pelanggan['kdpelanggan'];
+                        log_message('debug', 'Setting kdpelanggan in session: ' . $pelanggan['kdpelanggan']);
+                    } else {
+                        log_message('error', 'No pelanggan record found for user ID: ' . $user['id']);
+                    }
+                }
+
                 session()->set($sessionData);
+                log_message('debug', 'Session data set: ' . json_encode($sessionData));
 
                 // Handle remember me
                 if ($remember) {
@@ -117,12 +136,18 @@ class Auth extends BaseController
                 $redirectUrl = session()->get('redirect_url') ?? $this->getRedirectUrl($user['role']);
                 session()->remove('redirect_url');
 
+                log_message('debug', 'Redirecting to: ' . $redirectUrl);
+
                 return $this->response->setJSON([
                     'status' => 'success',
                     'message' => 'Login berhasil',
                     'redirect' => $redirectUrl
                 ]);
+            } else {
+                log_message('debug', 'Login failed: Invalid password for username: ' . $username);
             }
+        } else {
+            log_message('debug', 'Login failed: User not found for username: ' . $username);
         }
 
         return $this->response->setJSON([

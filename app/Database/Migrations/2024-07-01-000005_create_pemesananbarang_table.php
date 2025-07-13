@@ -39,9 +39,8 @@ class CreatePemesananbarangTable extends Migration
                 'default'    => 0,
             ],
             'kdpembayaran' => [
-                'type'       => 'INT',
-                'constraint' => 11,
-                'unsigned'   => true,
+                'type'       => 'VARCHAR',
+                'constraint' => 20,
                 'null'       => true,
             ],
             'created_at' => [

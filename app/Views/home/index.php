@@ -1,7 +1,6 @@
-<?= $this->extend('home/layouts/main') ?>
+<?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
-<!-- ini coba -->
-<!-- ini coba lagu -->
+
 <!-- Hero Section -->
 <section class="relative bg-cover bg-center h-screen" style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop');">
     <div class="absolute inset-0 bg-black bg-opacity-50"></div>
@@ -24,9 +23,6 @@
         </div>
     </div>
 </section>
-<!-- saya coba dini -->
-<!-- saya coba  lagi disini -->
-
 <!-- Layanan Section -->
 <section id="layanan" class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -164,32 +160,8 @@
                             <h3 class="text-2xl font-semibold"><?= $paket['namapaket'] ?></h3>
                             <div class="mt-4 text-4xl font-bold">Rp <?= number_format($paket['harga'], 0, ',', '.') ?></div>
                         </div>
-                        <div class="p-8">
-                            <?php if (isset($paket['items']) && count($paket['items']) > 0) : ?>
-                                <ul class="space-y-4">
-                                    <?php
-                                    $count = 0;
-                                    foreach ($paket['items'] as $item) :
-                                        if ($count >= 5) break; // Tampilkan max 5 item
-                                    ?>
-                                        <li class="flex items-start">
-                                            <i class="fas fa-check-circle text-primary-600 mt-1 mr-3"></i>
-                                            <span><?= $item['namabarang'] ?> (<?= $item['jumlah'] ?> <?= $item['satuan'] ?>)</span>
-                                        </li>
-                                    <?php
-                                        $count++;
-                                    endforeach;
-                                    ?>
-                                    <?php if (count($paket['items']) > 5) : ?>
-                                        <li class="flex items-start">
-                                            <i class="fas fa-plus-circle text-primary-600 mt-1 mr-3"></i>
-                                            <span>Dan <?= count($paket['items']) - 5 ?> item lainnya</span>
-                                        </li>
-                                    <?php endif; ?>
-                                </ul>
-                            <?php else : ?>
-                                <p class="text-center text-secondary-600 mb-4">Tidak ada detail barang</p>
-                            <?php endif; ?>
+                        <div class="p-8 text-center">
+                            <p class="text-secondary-600 mb-4">Lihat detail paket untuk informasi lengkap</p>
                             <a href="<?= site_url('paket/' . $paket['kdpaket']) ?>" class="mt-8 block w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium text-center rounded-md transition-colors duration-300">
                                 Lihat Detail
                             </a>

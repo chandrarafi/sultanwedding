@@ -1,4 +1,4 @@
-<?= $this->extend('home/layouts/main') ?>
+<?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
 <!-- Hero Section -->
@@ -51,16 +51,7 @@
                         data-harga="<?= $barang['hargasewa'] ?>"
                         data-nama="<?= $barang['namabarang'] ?>">
                         <div class="h-48 overflow-hidden">
-                            <?php if (!empty($barang['foto'])) : ?>
-                                <img src="<?= base_url('uploads/barang/' . $barang['foto']) ?>" alt="<?= $barang['namabarang'] ?>" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
-                            <?php else : ?>
-                                <?php
-                                // Menggunakan gambar dari gallery berdasarkan id barang
-                                $imageIndex = ($barang['kdbarang'] % 37) + 1;
-                                $imageIndex = str_pad($imageIndex, 2, '0', STR_PAD_LEFT);
-                                ?>
-                                <img src="<?= base_url('assets/images/gallery/' . $imageIndex . '.png') ?>" alt="<?= $barang['namabarang'] ?>" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
-                            <?php endif; ?>
+                            <img src="<?= get_barang_image_url($barang['foto'] ?? null, $barang['kdbarang']) ?>" alt="<?= $barang['namabarang'] ?>" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
                         </div>
                         <div class="p-4">
                             <div class="flex justify-between items-start mb-2">

@@ -1,4 +1,4 @@
-<?= $this->extend('home/layouts/main') ?>
+<?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
 <!-- Hero Section -->
@@ -10,7 +10,7 @@
                 <?= $barang['namabarang'] ?>
             </h1>
             <p class="mt-4 text-xl text-white opacity-90 max-w-3xl mx-auto">
-                Sewa Barang
+                Detail Barang Sewa
             </p>
         </div>
     </div>
@@ -23,28 +23,7 @@
             <!-- Gambar Barang -->
             <div>
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                    <?php if (!empty($barang['foto'])) : ?>
-                        <img src="<?= base_url('uploads/barang/' . $barang['foto']) ?>" alt="<?= $barang['namabarang'] ?>" class="w-full h-auto">
-                    <?php else : ?>
-                        <?php
-                        // Menggunakan gambar dari gallery berdasarkan id barang
-                        $imageIndex = ($barang['kdbarang'] % 37) + 1;
-                        $imageIndex = str_pad($imageIndex, 2, '0', STR_PAD_LEFT);
-                        ?>
-                        <img src="<?= base_url('assets/images/gallery/' . $imageIndex . '.png') ?>" alt="<?= $barang['namabarang'] ?>" class="w-full h-auto">
-                    <?php endif; ?>
-                </div>
-
-                <!-- Gambar Tambahan (dummy) -->
-                <div class="grid grid-cols-4 gap-4 mt-4">
-                    <?php for ($i = 1; $i <= 4; $i++) :
-                        $additionalImageIndex = (($barang['kdbarang'] + $i) % 37) + 1;
-                        $additionalImageIndex = str_pad($additionalImageIndex, 2, '0', STR_PAD_LEFT);
-                    ?>
-                        <div class="bg-white rounded-lg shadow overflow-hidden cursor-pointer">
-                            <img src="<?= base_url('assets/images/gallery/' . $additionalImageIndex . '.png') ?>" alt="<?= $barang['namabarang'] ?> <?= $i ?>" class="w-full h-24 object-cover">
-                        </div>
-                    <?php endfor; ?>
+                    <img src="<?= get_barang_image_url($barang['foto'] ?? null, $barang['kdbarang']) ?>" alt="<?= $barang['namabarang'] ?>" class="w-full h-auto object-contain" style="max-height: 500px;">
                 </div>
             </div>
 
@@ -76,8 +55,8 @@
                     <div class="mb-8">
                         <h3 class="text-lg font-medium text-secondary-900 mb-2">Deskripsi:</h3>
                         <p class="text-secondary-600">
-                            <?= $barang['namabarang'] ?> adalah pilihan yang tepat untuk menyempurnakan acara Anda.
-                            Dengan kualitas terbaik dan perawatan yang baik, kami menjamin kepuasan Anda dalam menggunakan barang ini.
+                            <?= $barang['namabarang'] ?> adalah pilihan yang tepat untuk menyempurnakan acara pernikahan Anda.
+                            Dengan kualitas terbaik dan perawatan yang baik, kami menjamin kepuasan Anda dalam menggunakan barang sewa ini.
                         </p>
                     </div>
 

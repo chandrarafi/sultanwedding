@@ -1,4 +1,4 @@
-<?= $this->extend('home/layouts/main') ?>
+<?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
 <!-- Hero Section -->
@@ -41,10 +41,26 @@
                                     Rp <?= number_format($paket['harga'], 0, ',', '.') ?>
                                 </div>
                             </div>
+                            <!-- Debug Info -->
+                            <?php if (ENVIRONMENT === 'development'): ?>
+                                <div class="bg-gray-100 p-2 mb-2 text-xs rounded">
+                                    <p>Debug Session:</p>
+                                    <p>Logged in: <?= session()->has('logged_in') ? 'Ya' : 'Tidak' ?></p>
+                                    <p>Role: <?= session()->get('role') ?? 'Tidak ada' ?></p>
+                                    <p>User ID: <?= session()->get('user_id') ?? 'Tidak ada' ?></p>
+                                    <p>KdPelanggan: <?= session()->get('kdpelanggan') ?? 'Tidak ada' ?></p>
+                                </div>
+                            <?php endif; ?>
                             <div class="mt-6">
-                                <a href="<?= site_url('auth/login') ?>" class="block w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium text-center rounded-md transition-colors duration-300">
-                                    Pesan Sekarang
-                                </a>
+                                <?php if (session()->has('logged_in') && session()->get('role') === 'pelanggan') : ?>
+                                    <a href="<?= site_url('pelanggan/pemesanan/paket/' . $paket['kdpaket']) ?>" class="block w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium text-center rounded-md transition-colors duration-300">
+                                        Pesan Sekarang
+                                    </a>
+                                <?php else : ?>
+                                    <a href="<?= site_url('auth/login') ?>" class="block w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium text-center rounded-md transition-colors duration-300">
+                                        Login untuk Memesan
+                                    </a>
+                                <?php endif; ?>
                                 <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20dengan%20paket%20<?= urlencode($paket['namapaket']) ?>" target="_blank" class="block w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-medium text-center rounded-md transition-colors duration-300 mt-3">
                                     <i class="fab fa-whatsapp mr-2"></i> Hubungi via WhatsApp
                                 </a>
@@ -121,9 +137,15 @@
                     <h3 class="text-2xl font-semibold text-secondary-900 mb-4">Tertarik dengan paket ini?</h3>
                     <p class="text-secondary-600 mb-6">Jangan ragu untuk menghubungi kami atau melakukan pemesanan sekarang juga!</p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <a href="<?= site_url('auth/login') ?>" class="py-3 px-6 bg-primary-600 hover:bg-primary-700 text-white font-medium text-center rounded-md transition-colors duration-300">
-                            Pesan Sekarang
-                        </a>
+                        <?php if (session()->has('logged_in') && session()->get('role') === 'pelanggan') : ?>
+                            <a href="<?= site_url('pelanggan/pemesanan/paket/' . $paket['kdpaket']) ?>" class="py-3 px-6 bg-primary-600 hover:bg-primary-700 text-white font-medium text-center rounded-md transition-colors duration-300">
+                                Pesan Sekarang
+                            </a>
+                        <?php else : ?>
+                            <a href="<?= site_url('auth/login') ?>" class="py-3 px-6 bg-primary-600 hover:bg-primary-700 text-white font-medium text-center rounded-md transition-colors duration-300">
+                                Login untuk Memesan
+                            </a>
+                        <?php endif; ?>
                         <a href="<?= site_url('kontak') ?>" class="py-3 px-6 bg-white border border-primary-600 text-primary-600 hover:bg-primary-50 font-medium text-center rounded-md transition-colors duration-300">
                             Hubungi Kami
                         </a>

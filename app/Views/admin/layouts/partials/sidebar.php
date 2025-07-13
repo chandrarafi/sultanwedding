@@ -39,19 +39,18 @@
         </li>
 
         <li class="menu-label">TRANSAKSI</li>
+        <!-- Pemesanan -->
         <li>
-            <a href="<?= site_url('admin/pemesananbarang') ?>">
-                <div class="parent-icon"><i class='bx bx-cart'></i>
+            <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class="bx bx-calendar-check"></i>
                 </div>
-                <div class="menu-title">Pemesanan Barang</div>
+                <div class="menu-title">Pemesanan</div>
             </a>
-        </li>
-        <li>
-            <a href="<?= site_url('admin/pemesananpaket') ?>">
-                <div class="parent-icon"><i class='bx bx-package'></i>
-                </div>
-                <div class="menu-title">Pemesanan Paket</div>
-            </a>
+            <ul>
+                <li>
+                    <a href="<?= site_url('admin/pemesananpaket') ?>"><i class="bx bx-right-arrow-alt"></i>Daftar Pemesanan</a>
+                </li>
+            </ul>
         </li>
         <li>
             <a href="<?= site_url('admin/pembayaran') ?>">

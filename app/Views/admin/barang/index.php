@@ -330,8 +330,8 @@
                         $('#detailHarga').text(formatRupiah(barang.hargasewa));
 
                         // Handle image
-                        if (barang.gambar) {
-                            $('#detailImage').attr('src', '<?= base_url('uploads/barang') ?>/' + barang.gambar);
+                        if (barang.foto) {
+                            $('#detailImage').attr('src', '<?= site_url('uploads/barang') ?>/' + barang.foto);
                             $('#detailImage').show();
                         } else {
                             $('#detailImage').hide();
@@ -445,7 +445,7 @@
 
                         // Show image preview if exists
                         if (barang.foto) {
-                            $('#preview-image').attr('src', '<?= base_url('uploads/barang') ?>/' + barang.foto);
+                            $('#preview-image').attr('src', '<?= site_url('uploads/barang') ?>/' + barang.foto);
                             $('#preview-container').removeClass('d-none');
                         } else {
                             $('#preview-container').addClass('d-none');
@@ -480,7 +480,7 @@
 
                         // Show image if exists
                         if (barang.foto) {
-                            $('#detailImage').attr('src', '<?= base_url('uploads/barang') ?>/' + barang.foto);
+                            $('#detailImage').attr('src', '<?= site_url('uploads/barang') ?>/' + barang.foto);
                             $('#detailImage').parent().show();
                         } else {
                             // Show default image or hide image container

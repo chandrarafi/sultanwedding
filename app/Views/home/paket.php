@@ -1,4 +1,4 @@
-x<?= $this->extend('home/layouts/main') ?>
+<?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
 <!-- Hero Section -->

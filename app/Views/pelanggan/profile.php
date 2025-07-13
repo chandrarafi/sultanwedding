@@ -1,4 +1,4 @@
-<?= $this->extend('pelanggan/layouts/main') ?>
+<?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
 <section class="py-12 bg-gray-50">
