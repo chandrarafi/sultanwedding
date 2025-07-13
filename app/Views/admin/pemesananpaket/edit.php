@@ -91,6 +91,7 @@
                 <div class="col-md-6">
                     <label for="jumlahhari" class="form-label">Jumlah Hari <span class="text-danger">*</span></label>
                     <input type="number" class="form-control" id="jumlahhari" name="jumlahhari" min="1" value="<?= old('jumlahhari', $pemesanan['jumlahhari']) ?>" required>
+                    <small class="text-info">Jika jumlah hari melebihi 4 hari, akan dikenakan biaya tambahan 10% dari harga paket.</small>
                 </div>
             </div>
 

@@ -86,6 +86,7 @@
                                 <input type="number" class="w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 p-2.5 text-gray-700"
                                     id="jumlahhari" name="jumlahhari" min="1" value="1" required>
                                 <div class="text-red-500 text-xs mt-1 hidden" id="jumlahhari-error"></div>
+                                <p class="text-xs text-blue-500 mt-1">Jika jumlah hari melebihi 4 hari, akan dikenakan biaya tambahan 10% dari harga paket.</p>
                             </div>
                             <div>
                                 <label for="luaslokasi" class="block text-sm font-medium text-secondary-700 mb-2">Luas Lokasi</label>
@@ -171,7 +172,15 @@
             const basePrice = <?= $paket['harga'] ?>;
             const jumlahHari = $('#jumlahhari').val() || 1;
 
-            const total = basePrice * jumlahHari;
+            let total = basePrice;
+
+            // Tambahkan biaya tambahan jika jumlah hari melebihi 4 hari
+            if (jumlahHari > 4) {
+                // Tambahkan 10% dari harga paket sebagai biaya tambahan
+                const biayaTambahan = basePrice * 0.1;
+                total = basePrice + biayaTambahan;
+            }
+
             const dp = total * 0.1;
 
             $('#totalHarga').val(formatRupiah(total));

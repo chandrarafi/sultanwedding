@@ -154,7 +154,14 @@ class PemesananController extends BaseController
         }
 
         // Hitung grand total berdasarkan harga paket dan jumlah hari
-        $grandTotal = $paket['harga'] * $jumlahhari;
+        $grandTotal = $paket['harga'];
+
+        // Jika jumlah hari lebih dari 4, tambahkan biaya tambahan 10%
+        if ($jumlahhari > 4) {
+            // Hitung biaya tambahan 10% dari harga paket
+            $biayaTambahan = $paket['harga'] * 0.1;
+            $grandTotal = $paket['harga'] + $biayaTambahan;
+        }
 
         // Buat pembayaran DP 10%
         $kdpembayaran = $this->pembayaranModel->createBookingPayment($grandTotal, $metodepembayaran);

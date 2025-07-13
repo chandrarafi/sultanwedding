@@ -65,7 +65,12 @@
                             </div>
                             <div class="flex justify-between items-center py-2">
                                 <span class="font-medium text-secondary-700">Jumlah Hari</span>
-                                <span><?= $pemesanan['jumlahhari'] ?> hari</span>
+                                <span>
+                                    <?= $pemesanan['jumlahhari'] ?> hari
+                                    <?php if ($pemesanan['jumlahhari'] > 4) : ?>
+                                        <span class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full">Biaya tambahan 10%</span>
+                                    <?php endif; ?>
+                                </span>
                             </div>
                             <div class="flex justify-between items-center py-2">
                                 <span class="font-medium text-secondary-700">Luas Lokasi</span>
@@ -77,7 +82,15 @@
                             </div>
                             <div class="flex justify-between items-center py-2">
                                 <span class="font-medium text-secondary-700">Grand Total</span>
-                                <span class="font-bold text-lg text-primary-600">Rp <?= number_format($pemesanan['grandtotal'], 0, ',', '.') ?></span>
+                                <span class="font-bold text-lg text-primary-600">
+                                    Rp <?= number_format($pemesanan['grandtotal'], 0, ',', '.') ?>
+                                    <?php if ($pemesanan['jumlahhari'] > 4) : ?>
+                                        <div class="text-xs text-gray-500 mt-1 text-right">
+                                            Harga Paket: Rp <?= number_format($pemesanan['hargapaket'], 0, ',', '.') ?><br>
+                                            Biaya Tambahan (10%): Rp <?= number_format($pemesanan['hargapaket'] * 0.1, 0, ',', '.') ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </span>
                             </div>
                         </div>
                     </div>

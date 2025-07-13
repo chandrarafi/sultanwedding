@@ -117,12 +117,27 @@ class PemesananPaket extends BaseController
             return redirect()->to('/admin/pemesananpaket')->with('error', 'Pemesanan yang sudah selesai atau dibatalkan tidak dapat diedit');
         }
 
+        // Ambil data paket untuk menghitung ulang grand total
+        $paket = $this->paketModel->find($pemesanan['kdpaket']);
+
+        // Hitung grand total berdasarkan harga paket
+        $jumlahhari = $this->request->getPost('jumlahhari');
+        $grandTotal = $paket['harga'];
+
+        // Jika jumlah hari lebih dari 4, tambahkan biaya tambahan 10%
+        if ($jumlahhari > 4) {
+            // Hitung biaya tambahan 10% dari harga paket
+            $biayaTambahan = $paket['harga'] * 0.1;
+            $grandTotal = $paket['harga'] + $biayaTambahan;
+        }
+
         // Update order data
         $updateData = [
             'tgl' => $this->request->getPost('tgl'),
             'alamatpesanan' => $this->request->getPost('alamatpesanan'),
-            'jumlahhari' => $this->request->getPost('jumlahhari'),
+            'jumlahhari' => $jumlahhari,
             'luaslokasi' => $this->request->getPost('luaslokasi'),
+            'grandtotal' => $grandTotal
         ];
 
         $success = $this->pemesananModel->update($kdpemesananpaket, $updateData);
@@ -264,6 +279,14 @@ class PemesananPaket extends BaseController
 
         // Calculate grand total
         $grandTotal = $paket['harga'];
+
+        // Jika jumlah hari lebih dari 4, tambahkan biaya tambahan 10%
+        $jumlahhari = $this->request->getPost('jumlahhari');
+        if ($jumlahhari > 4) {
+            // Hitung biaya tambahan 10% dari harga paket
+            $biayaTambahan = $paket['harga'] * 0.1;
+            $grandTotal = $paket['harga'] + $biayaTambahan;
+        }
 
         // Create payment record
         $metodepembayaran = $this->request->getPost('metodepembayaran');

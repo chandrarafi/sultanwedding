@@ -67,6 +67,19 @@ $routes->group('admin', ['filter' => 'role:admin'], function ($routes) {
     $routes->post('pemesananpaket/update/(:any)', 'Admin\PemesananPaket::update/$1');
     $routes->get('pemesananpaket/delete/(:any)', 'Admin\PemesananPaket::delete/$1');
 
+    // PemesananBarang routes
+    $routes->get('pemesananbarang', 'Admin\PemesananBarang::index');
+    $routes->get('pemesananbarang/create', 'Admin\PemesananBarang::create');
+    $routes->get('pemesananbarang/detail/(:num)', 'Admin\PemesananBarang::detail/$1');
+    $routes->get('pemesananbarang/edit/(:num)', 'Admin\PemesananBarang::edit/$1');
+    $routes->post('pemesananbarang/store', 'Admin\PemesananBarang::store');
+    $routes->post('pemesananbarang/update/(:num)', 'Admin\PemesananBarang::update/$1');
+    $routes->delete('pemesananbarang/delete/(:num)', 'Admin\PemesananBarang::delete/$1');
+    $routes->get('pemesananbarang/getBarang', 'Admin\PemesananBarang::getBarang');
+    $routes->get('pemesananbarang/getPelanggan', 'Admin\PemesananBarang::getPelanggan');
+    $routes->post('pemesananbarang/bayar-h1/(:num)', 'Admin\PemesananBarang::bayarH1/$1');
+    $routes->post('pemesananbarang/bayar-pelunasan/(:num)', 'Admin\PemesananBarang::bayarPelunasan/$1');
+
     // Pemesanan routes (for walk-in customers)
     $routes->get('pemesanan', 'Admin\PemesananPaket::index');
     $routes->get('pemesanan/create', 'Admin\PemesananPaket::create');
@@ -177,6 +190,18 @@ $routes->group('pelanggan', ['filter' => 'role:pelanggan'], function ($routes) {
     $routes->post('pemesanan/pembayaran/full', 'Pelanggan\PemesananController::processFullPayment');
     $routes->get('pemesanan', 'Pelanggan\PemesananController::daftarPemesanan');
     $routes->get('pemesanan/check-status/(:any)', 'Pelanggan\PemesananController::checkPaymentStatus/$1');
+
+    // Pemesanan barang routes
+    $routes->get('pemesananbarang', 'Pelanggan\PemesananBarangController::index');
+    $routes->get('pemesananbarang/pesan/(:num)', 'Pelanggan\PemesananBarangController::pemesanBarang/$1');
+    $routes->post('pemesananbarang/store', 'Pelanggan\PemesananBarangController::store');
+    $routes->get('pemesananbarang/pembayaran/(:num)', 'Pelanggan\PemesananBarangController::pembayaran/$1');
+    $routes->post('pemesananbarang/bayar-dp/(:num)', 'Pelanggan\PemesananBarangController::bayarDP/$1');
+    $routes->post('pemesananbarang/bayar-h1/(:num)', 'Pelanggan\PemesananBarangController::bayarH1/$1');
+    $routes->post('pemesananbarang/bayar-pelunasan/(:num)', 'Pelanggan\PemesananBarangController::bayarPelunasan/$1');
+    $routes->get('pemesananbarang/daftar', 'Pelanggan\PemesananBarangController::daftarPemesanan');
+    $routes->get('pemesananbarang/detail/(:num)', 'Pelanggan\PemesananBarangController::detail/$1');
+    $routes->get('pemesananbarang/getBarang', 'Pelanggan\PemesananBarangController::getBarang');
 
     // Notifikasi Routes
     $routes->get('pemesanan/check-rejected-payments', 'Pelanggan\Notifikasi::checkRejectedPayments');
