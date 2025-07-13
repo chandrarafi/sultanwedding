@@ -98,7 +98,12 @@
 
                 <div class="row mb-3">
                     <div class="col-md-4 fw-bold">Jumlah Hari</div>
-                    <div class="col-md-8"><?= $pemesanan['jumlahhari'] ?> hari</div>
+                    <div class="col-md-8">
+                        <?= $pemesanan['jumlahhari'] ?> hari
+                        <?php if ($pemesanan['jumlahhari'] > 4) : ?>
+                            <span class="badge bg-info">Dikenakan biaya tambahan 10%</span>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
                 <div class="row mb-3">
@@ -113,7 +118,15 @@
 
                 <div class="row mb-3">
                     <div class="col-md-4 fw-bold">Grand Total</div>
-                    <div class="col-md-8 fw-bold text-primary">Rp <?= number_format($pemesanan['grandtotal'], 0, ',', '.') ?></div>
+                    <div class="col-md-8 fw-bold text-primary">
+                        Rp <?= number_format($pemesanan['grandtotal'], 0, ',', '.') ?>
+                        <?php if ($pemesanan['jumlahhari'] > 4) : ?>
+                            <div class="small text-muted mt-1">
+                                Harga Paket: Rp <?= number_format($pemesanan['hargapaket'], 0, ',', '.') ?><br>
+                                Biaya Tambahan (10%): Rp <?= number_format($pemesanan['hargapaket'] * 0.1, 0, ',', '.') ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>

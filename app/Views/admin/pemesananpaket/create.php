@@ -76,6 +76,7 @@
                 <div class="col-md-6">
                     <label for="jumlahhari" class="form-label">Jumlah Hari <span class="text-danger">*</span></label>
                     <input type="number" class="form-control" id="jumlahhari" name="jumlahhari" min="1" value="<?= old('jumlahhari', 1) ?>" required>
+                    <small class="text-info">Jika jumlah hari melebihi 4 hari, akan dikenakan biaya tambahan 10% dari harga paket.</small>
                     <?php if (isset(session('errors')['jumlahhari'])) : ?>
                         <div class="text-danger"><?= session('errors')['jumlahhari'] ?></div>
                     <?php endif; ?>
