@@ -33,7 +33,7 @@ Events::on('pre_system', static function (): void {
             ob_end_flush();
         }
 
-        ob_start(static fn ($buffer) => $buffer);
+        ob_start(static fn($buffer) => $buffer);
     }
 
     /*
@@ -51,5 +51,18 @@ Events::on('pre_system', static function (): void {
                 (new HotReloader())->run();
             });
         }
+    }
+});
+
+// Handle CSRF failures
+Events::on('failedCSRFCheck', static function (): void {
+    // Log CSRF failures for debugging
+    log_message('error', 'CSRF verification failed. URI: ' . service('request')->getUri());
+
+    // Redirect with error message for better user experience
+    if (strpos(service('request')->getUri()->getPath(), 'sewa/checkout') !== false) {
+        session()->setFlashdata('error', 'Formulir kedaluwarsa atau tidak valid. Silakan coba lagi.');
+        header('Location: ' . site_url('sewa/cart'));
+        exit;
     }
 });

@@ -1,6 +1,17 @@
 <?= $this->extend('admin/layouts/main') ?>
 
 <?= $this->section('content') ?>
+<?php if (isset($pemesananForReturn) && count($pemesananForReturn) > 0): ?>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <h5><i class="bx bx-info-circle me-2"></i>Perhatian! Ada <?= count($pemesananForReturn) ?> barang yang perlu diproses pengembaliannya</h5>
+        <p>Segera proses pengembalian barang untuk menjaga inventaris.</p>
+        <a href="<?= site_url('admin/pemesananbarang/pengembalian') ?>" class="btn btn-sm btn-success mt-2">
+            <i class="bx bx-check-circle"></i> Proses Pengembalian
+        </a>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+
 <div class="row">
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card stat-card primary h-100 py-2">

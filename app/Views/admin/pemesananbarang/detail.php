@@ -19,11 +19,26 @@
         <div class="d-flex align-items-center">
             <h5 class="mb-0">Detail Pemesanan Barang</h5>
             <div class="ms-auto">
-                <a href="<?= site_url('admin/pemesananbarang') ?>" class="btn btn-secondary px-3 radius-30">
-                    <i class="bx bx-arrow-back"></i>Kembali
+                <a href="<?= site_url('admin/pemesananbarang/cetakFaktur/' . $pemesanan['kdpemesananbarang']) ?>" class="btn btn-primary px-3 radius-30" target="_blank">
+                    <i class="bx bx-printer"></i>Cetak Faktur
+                </a>
+                <a href="<?= site_url('admin/pemesananbarang/lihatFaktur/' . $pemesanan['kdpemesananbarang']) ?>" class="btn btn-info px-3 radius-30" target="_blank">
+                    <i class="bx bx-file"></i>Lihat Faktur
                 </a>
                 <a href="<?= site_url('admin/pemesananbarang/edit/' . $pemesanan['kdpemesananbarang']) ?>" class="btn btn-warning px-3 radius-30">
                     <i class="bx bx-edit"></i>Edit
+                </a>
+                <?php if ($pemesanan['status'] == 'process'): ?>
+                    <a href="<?= site_url('admin/pemesananbarang/completeStatus/' . $pemesanan['kdpemesananbarang']) ?>" class="btn btn-success px-3 radius-30" onclick="return confirm('Yakin ingin mengubah status menjadi selesai?')">
+                        <i class="bx bx-check-circle"></i>Selesaikan
+                    </a>
+                <?php elseif ($pemesanan['status'] == 'completed' && empty($pemesanan['status_pengembalian'])): ?>
+                    <a href="<?= site_url('admin/pemesananbarang/prosesPengembalian/' . $pemesanan['kdpemesananbarang']) ?>" class="btn btn-success px-3 radius-30">
+                        <i class="bx bx-refresh"></i>Proses Pengembalian
+                    </a>
+                <?php endif; ?>
+                <a href="<?= site_url('admin/pemesananbarang') ?>" class="btn btn-secondary px-3 radius-30">
+                    <i class="bx bx-arrow-back"></i>Kembali
                 </a>
             </div>
         </div>
@@ -100,6 +115,54 @@
                 </table>
             </div>
         </div>
+
+        <?php if (isset($pemesanan['status_pengembalian'])): ?>
+            <div class="mt-4">
+                <h5>Informasi Pengembalian</h5>
+                <div class="card border">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <th width="40%">Tanggal Kembali</th>
+                                        <td width="60%">: <?= date('d F Y', strtotime($pemesanan['tgl_kembali'])) ?></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Status Pengembalian</th>
+                                        <td>:
+                                            <?php if ($pemesanan['status_pengembalian'] == 'baik'): ?>
+                                                <span class="badge bg-success">Baik</span>
+                                            <?php elseif ($pemesanan['status_pengembalian'] == 'rusak'): ?>
+                                                <span class="badge bg-warning text-dark">Rusak</span>
+                                            <?php elseif ($pemesanan['status_pengembalian'] == 'hilang'): ?>
+                                                <span class="badge bg-danger">Hilang</span>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Catatan Pengembalian:</h6>
+                                <p><?= $pemesanan['catatan_pengembalian'] ?: 'Tidak ada catatan' ?></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php elseif ($pemesanan['status'] == 'completed'): ?>
+            <div class="mt-4">
+                <div class="alert alert-info">
+                    <h5><i class="bx bx-info-circle me-2"></i>Barang Belum Dikembalikan</h5>
+                    <p class="mb-0">Pesanan sudah selesai, namun barang belum dikembalikan. Silahkan proses pengembalian barang.</p>
+                    <div class="mt-3">
+                        <a href="<?= site_url('admin/pemesananbarang/prosesPengembalian/' . $pemesanan['kdpemesananbarang']) ?>" class="btn btn-success">
+                            <i class="bx bx-check-circle me-1"></i>Proses Pengembalian
+                        </a>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
 
         <div class="mt-4">
             <h5>Detail Barang</h5>

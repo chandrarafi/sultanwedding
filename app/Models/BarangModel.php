@@ -86,4 +86,74 @@ class BarangModel extends Model
 
         return $builder->get()->getResultArray();
     }
+
+    /**
+     * Reduce stock of a product
+     * 
+     * @param int $kdbarang Product ID
+     * @param int $quantity Quantity to reduce
+     * @return bool True if successful, false otherwise
+     */
+    public function reduceStock($kdbarang, $quantity)
+    {
+        // Get current stock
+        $barang = $this->find($kdbarang);
+
+        if (!$barang) {
+            log_message('error', 'Barang dengan ID ' . $kdbarang . ' tidak ditemukan');
+            return false;
+        }
+
+        // Check if stock is sufficient
+        if ($barang['jumlah'] < $quantity) {
+            log_message('error', 'Stok tidak mencukupi untuk barang ID ' . $kdbarang . '. Tersedia: ' . $barang['jumlah'] . ', Diminta: ' . $quantity);
+            return false;
+        }
+
+        // Reduce stock
+        $newStock = $barang['jumlah'] - $quantity;
+
+        // Update stock
+        $result = $this->update($kdbarang, ['jumlah' => $newStock]);
+
+        if (!$result) {
+            log_message('error', 'Gagal mengurangi stok barang ID ' . $kdbarang);
+            return false;
+        }
+
+        log_message('info', 'Stok barang ID ' . $kdbarang . ' berhasil dikurangi dari ' . $barang['jumlah'] . ' menjadi ' . $newStock);
+        return true;
+    }
+
+    /**
+     * Add stock of a product (for return process)
+     * 
+     * @param int $kdbarang Product ID
+     * @param int $quantity Quantity to add
+     * @return bool True if successful, false otherwise
+     */
+    public function addStock($kdbarang, $quantity)
+    {
+        // Get current stock
+        $barang = $this->find($kdbarang);
+
+        if (!$barang) {
+            log_message('error', 'Barang dengan ID ' . $kdbarang . ' tidak ditemukan');
+            return false;
+        }
+
+        // Add stock
+        $newStock = $barang['jumlah'] + $quantity;
+
+        // Update stock
+        $result = $this->update($kdbarang, ['jumlah' => $newStock]);
+
+        if (!$result) {
+            log_message('error', 'Gagal menambah stok barang ID ' . $kdbarang);
+            return false;
+        }
+
+        log_message('info', 'Stok barang ID ' . $kdbarang . ' berhasil ditambah dari ' . $barang['jumlah'] . ' menjadi ' . $newStock);
+        return true;
+    }
 }

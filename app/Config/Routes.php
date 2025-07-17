@@ -38,6 +38,9 @@ $routes->group('admin', ['filter' => 'role:admin'], function ($routes) {
     $routes->post('profile/update', 'Admin\Profile::update');
     $routes->post('profile/update-password', 'Admin\Profile::updatePassword');
 
+    // Utility
+    $routes->get('utility/migrate-files', 'MigrateFileUploads::index');
+
     // User Management (hanya admin)
     $routes->group('', ['filter' => 'role:admin'], function ($routes) {
         $routes->get('users', 'Admin::users');
@@ -55,6 +58,43 @@ $routes->group('admin', ['filter' => 'role:admin'], function ($routes) {
         $routes->delete('users/delete/(:num)', 'Admin::deleteUser/$1'); // Route untuk delete user
         $routes->get('getRoles', 'Admin::getRoles');
     });
+
+    // Laporan Routes
+    $routes->get('laporan/paket', 'Admin\Laporan::paket');
+    $routes->get('laporan/cetakPaket', 'Admin\Laporan::cetakPaket');
+    $routes->get('laporan/barang', 'Admin\Laporan::barang');
+    $routes->get('laporan/cetakBarang', 'Admin\Laporan::cetakBarang');
+    $routes->get('laporan/pelanggan', 'Admin\Laporan::pelanggan');
+    $routes->get('laporan/cetakPelanggan', 'Admin\Laporan::cetakPelanggan');
+    // Tambahkan rute baru untuk laporan pemesanan
+    $routes->get('laporan/pemesananPaket', 'Admin\Laporan::pemesananPaket');
+    $routes->get('laporan/cetakLaporanPaket', 'Admin\Laporan::cetakLaporanPaket');
+    $routes->get('laporan/pemesananBarang', 'Admin\Laporan::pemesananBarang');
+    $routes->get('laporan/cetakLaporanBarang', 'Admin\Laporan::cetakLaporanBarang');
+    $routes->get('laporan/pembayaran', 'Admin\Laporan::pembayaran');
+    $routes->get('laporan/cetakLaporanPembayaran', 'Admin\Laporan::cetakLaporanPembayaran');
+
+    // Routes untuk laporan bulanan
+    $routes->get('laporan/pemesananPaketBulanan', 'Admin\Laporan::pemesananPaketBulanan');
+    $routes->get('laporan/cetakLaporanPaketBulanan', 'Admin\Laporan::cetakLaporanPaketBulanan');
+    $routes->get('laporan/pemesananBarangBulanan', 'Admin\Laporan::pemesananBarangBulanan');
+    $routes->get('laporan/cetakLaporanBarangBulanan', 'Admin\Laporan::cetakLaporanBarangBulanan');
+    $routes->get('laporan/pembayaranBulanan', 'Admin\Laporan::pembayaranBulanan');
+    $routes->get('laporan/cetakLaporanPembayaranBulanan', 'Admin\Laporan::cetakLaporanPembayaranBulanan');
+
+    // Routes untuk laporan tahunan
+    $routes->get('laporan/pemesananPaketTahunan', 'Admin\Laporan::pemesananPaketTahunan');
+    $routes->get('laporan/cetakLaporanPaketTahunan', 'Admin\Laporan::cetakLaporanPaketTahunan');
+    $routes->get('laporan/pemesananBarangTahunan', 'Admin\Laporan::pemesananBarangTahunan');
+    $routes->get('laporan/cetakLaporanBarangTahunan', 'Admin\Laporan::cetakLaporanBarangTahunan');
+    $routes->get('laporan/pembayaranTahunan', 'Admin\Laporan::pembayaranTahunan');
+    $routes->get('laporan/cetakLaporanPembayaranTahunan', 'Admin\Laporan::cetakLaporanPembayaranTahunan');
+
+    // Routes untuk laporan data master
+    $routes->get('laporan/pelanggan', 'Admin\Laporan::pelanggan');
+    $routes->get('laporan/cetakLaporanPelanggan', 'Admin\Laporan::cetakLaporanPelanggan');
+    $routes->get('laporan/dataBarang', 'Admin\Laporan::dataBarang');
+    $routes->get('laporan/cetakLaporanDataBarang', 'Admin\Laporan::cetakLaporanDataBarang');
 
     // PemesananPaket routes
     $routes->get('pemesananpaket', 'Admin\PemesananPaket::index');
@@ -75,6 +115,7 @@ $routes->group('admin', ['filter' => 'role:admin'], function ($routes) {
     $routes->post('pemesananbarang/store', 'Admin\PemesananBarang::store');
     $routes->post('pemesananbarang/update/(:num)', 'Admin\PemesananBarang::update/$1');
     $routes->delete('pemesananbarang/delete/(:num)', 'Admin\PemesananBarang::delete/$1');
+    $routes->get('pemesananbarang/getAll', 'Admin\PemesananBarang::getAll');
     $routes->get('pemesananbarang/getBarang', 'Admin\PemesananBarang::getBarang');
     $routes->get('pemesananbarang/getPelanggan', 'Admin\PemesananBarang::getPelanggan');
     $routes->post('pemesananbarang/bayar-h1/(:num)', 'Admin\PemesananBarang::bayarH1/$1');
@@ -120,6 +161,7 @@ $routes->group('admin', ['filter' => 'role:admin'], function ($routes) {
     $routes->post('barang/create', 'Admin\Barang::create');
     $routes->post('barang/update/(:num)', 'Admin\Barang::update/$1');
     $routes->delete('barang/delete/(:num)', 'Admin\Barang::delete/$1');
+    $routes->get('barang/history/(:num)', 'Admin\Barang::history/$1');
 
     // Paket routes
     $routes->get('paket', 'Admin\Paket::index');
@@ -172,6 +214,13 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->get('dashboard', 'Pelanggan::index');
 });
 
+// Self-service routes
+$routes->group('sewa', static function ($routes) {
+    $routes->get('/', 'Home::barang');
+    $routes->get('barang', 'Home::barang');
+    $routes->get('barang/(:num)', 'Home::barangDetail/$1');
+});
+
 // Tambahkan route untuk pemesanan paket
 $routes->group('pelanggan', ['filter' => 'role:pelanggan'], function ($routes) {
     $routes->get('/', 'Pelanggan\Dashboard::index');
@@ -191,19 +240,28 @@ $routes->group('pelanggan', ['filter' => 'role:pelanggan'], function ($routes) {
     $routes->get('pemesanan', 'Pelanggan\PemesananController::daftarPemesanan');
     $routes->get('pemesanan/check-status/(:any)', 'Pelanggan\PemesananController::checkPaymentStatus/$1');
 
-    // Pemesanan barang routes
-    $routes->get('pemesananbarang', 'Pelanggan\PemesananBarangController::index');
-    $routes->get('pemesananbarang/pesan/(:num)', 'Pelanggan\PemesananBarangController::pemesanBarang/$1');
-    $routes->post('pemesananbarang/store', 'Pelanggan\PemesananBarangController::store');
-    $routes->get('pemesananbarang/pembayaran/(:num)', 'Pelanggan\PemesananBarangController::pembayaran/$1');
-    $routes->post('pemesananbarang/bayar-dp/(:num)', 'Pelanggan\PemesananBarangController::bayarDP/$1');
-    $routes->post('pemesananbarang/bayar-h1/(:num)', 'Pelanggan\PemesananBarangController::bayarH1/$1');
-    $routes->post('pemesananbarang/bayar-pelunasan/(:num)', 'Pelanggan\PemesananBarangController::bayarPelunasan/$1');
-    $routes->get('pemesananbarang/daftar', 'Pelanggan\PemesananBarangController::daftarPemesanan');
-    $routes->get('pemesananbarang/detail/(:num)', 'Pelanggan\PemesananBarangController::detail/$1');
-    $routes->get('pemesananbarang/getBarang', 'Pelanggan\PemesananBarangController::getBarang');
-
     // Notifikasi Routes
     $routes->get('pemesanan/check-rejected-payments', 'Pelanggan\Notifikasi::checkRejectedPayments');
     $routes->get('notifikasi', 'Pelanggan\Notifikasi::index');
+});
+
+// Pemesanan Barang
+$routes->group('admin/pemesananbarang', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'Admin\PemesananBarang::index');
+    $routes->get('getAll', 'Admin\PemesananBarang::getAll');
+    $routes->get('create', 'Admin\PemesananBarang::create');
+    $routes->post('store', 'Admin\PemesananBarang::store');
+    $routes->get('edit/(:segment)', 'Admin\PemesananBarang::edit/$1');
+    $routes->post('update/(:segment)', 'Admin\PemesananBarang::update/$1');
+    $routes->post('delete/(:segment)', 'Admin\PemesananBarang::delete/$1');
+    $routes->get('detail/(:segment)', 'Admin\PemesananBarang::detail/$1');
+    $routes->get('getBarang', 'Admin\PemesananBarang::getBarang');
+    $routes->get('getPelanggan', 'Admin\PemesananBarang::getPelanggan');
+    $routes->get('bayarPelunasan/(:segment)', 'Admin\PemesananBarang::bayarPelunasan/$1');
+    $routes->get('cetakFaktur/(:segment)', 'Admin\PemesananBarang::cetakFaktur/$1');
+    $routes->get('lihatFaktur/(:segment)', 'Admin\PemesananBarang::lihatFaktur/$1');
+    $routes->get('pengembalian', 'Admin\PemesananBarang::pengembalian');
+    $routes->get('prosesPengembalian/(:segment)', 'Admin\PemesananBarang::prosesPengembalian/$1');
+    $routes->post('simpanPengembalian/(:segment)', 'Admin\PemesananBarang::simpanPengembalian/$1');
+    $routes->get('completeStatus/(:segment)', 'Admin\PemesananBarang::completeStatus/$1');
 });

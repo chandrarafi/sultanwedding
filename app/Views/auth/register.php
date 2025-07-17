@@ -111,6 +111,7 @@
                     </div>
 
                     <form id="registerForm" method="post">
+                        <?= csrf_field() ?>
                         <div class="mb-5">
                             <label for="name" class="block text-secondary-700 font-medium mb-2">Nama Lengkap</label>
                             <div class="relative">
@@ -282,11 +283,16 @@
                 $('#btnRegister').html('<i class="fas fa-spinner fa-spin mr-2"></i> Memproses...');
                 $('#btnRegister').prop('disabled', true);
 
+                const formData = $(this).serialize();
+
                 $.ajax({
                     url: '<?= site_url('auth/registerProcess') ?>',
                     type: 'POST',
-                    data: $(this).serialize(),
+                    data: formData,
                     dataType: 'json',
+                    headers: {
+                        'X-CSRF-TOKEN': $('input[name="<?= csrf_token() ?>"]').val()
+                    },
                     success: function(response) {
                         if (response.status === 'success') {
                             // Show success message

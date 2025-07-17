@@ -102,6 +102,42 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
 
+    <!-- Update Cart Count -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to update cart count from session
+            function updateCartCount() {
+                <?php if (session()->get('logged_in') === true): ?>
+                    fetch('<?= site_url('sewa/cart/count') ?>')
+                        .then(response => response.json())
+                        .then(data => {
+                            const cartCountElements = document.querySelectorAll('.cart-count');
+                            cartCountElements.forEach(element => {
+                                if (data.count > 0) {
+                                    element.textContent = data.count;
+                                    element.classList.remove('hidden');
+                                } else {
+                                    element.classList.add('hidden');
+                                }
+                            });
+                        })
+                        .catch(error => console.error('Error updating cart count:', error));
+                <?php endif; ?>
+            }
+
+            // Call on page load
+            updateCartCount();
+
+            // Set interval to update periodically
+            setInterval(updateCartCount, 30000); // Update every 30 seconds
+
+            // Listen for custom event that might be triggered after cart operations
+            document.addEventListener('cartUpdated', function() {
+                updateCartCount();
+            });
+        });
+    </script>
+
     <!-- Notification Script -->
     <script>
         document.addEventListener('alpine:init', () => {

@@ -1,6 +1,30 @@
 <?= $this->extend('admin/layouts/main') ?>
 
 <?= $this->section('content') ?>
+<!-- Inline styles for this page -->
+<style>
+    .table .d-flex.gap-2 {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 5px !important;
+    }
+
+    .table .btn {
+        width: 34px !important;
+        height: 34px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-radius: 4px !important;
+    }
+
+    .table .btn i {
+        font-size: 16px !important;
+        margin: 0 !important;
+    }
+</style>
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
     <div class="breadcrumb-title pe-3">Master Data</div>
     <div class="ps-3">
@@ -29,11 +53,11 @@
                 <thead class="table-light">
                     <tr>
                         <th width="5%">No</th>
-                        <th width="30%">Nama Barang</th>
+                        <th width="25%">Nama Barang</th>
                         <th width="10%">Satuan</th>
                         <th width="10%">Jumlah</th>
                         <th width="20%">Harga Sewa</th>
-                        <th width="15%">Aksi</th>
+                        <th width="30%" class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -54,8 +78,8 @@
             </div>
             <form id="formBarang" enctype="multipart/form-data">
                 <div class="modal-body">
-                    <input type="hidden" id="id" name="kdbarang">
-
+                    <input type="hidden" name="kdbarang" id="kdbarang">
+                    <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
                     <div class="mb-3">
                         <label for="namabarang" class="form-label">Nama Barang</label>
                         <input type="text" class="form-control" id="namabarang" name="namabarang" required>
@@ -157,6 +181,17 @@
             }],
         });
 
+        // Initialize tooltips function
+        function initTooltips() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+                new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        }
+
+        // Call initialization
+        initTooltips();
+
         // Load data
         loadBarang();
 
@@ -176,7 +211,15 @@
             resetForm();
         });
 
-        // Handle form submission
+        // Update CSRF token function
+        function updateCsrfToken(token) {
+            // Update hidden field in form
+            $('input[name="<?= csrf_token() ?>"]').val(token);
+            // Update meta tag
+            $('meta[name="csrf_token"]').attr('content', token);
+        }
+
+        // Submit form for add/edit barang
         $('#formBarang').submit(function(e) {
             e.preventDefault();
 
@@ -208,6 +251,11 @@
                     $('#btnSave').attr('disabled', false);
                 },
                 success: function(response) {
+                    // Update CSRF token if available
+                    if (response.csrf_token) {
+                        updateCsrfToken(response.csrf_token);
+                    }
+
                     if (response.status) {
                         $('#modalBarang').modal('hide');
                         Swal.fire({
@@ -256,7 +304,15 @@
                 url: '<?= base_url('admin/barang/getAll') ?>',
                 type: 'GET',
                 dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')
+                },
                 success: function(response) {
+                    // Update CSRF token if available
+                    if (response.csrf_token) {
+                        updateCsrfToken(response.csrf_token);
+                    }
+
                     if (response.status) {
                         // Clear table
                         table.clear();
@@ -267,15 +323,18 @@
                             let hargaFormatted = formatRupiah(item.hargasewa);
                             let actions = `
                                 <div class="d-flex gap-2">
-                                    <button class="btn btn-sm btn-info btn-detail" data-id="${item.kdbarang}" title="Detail">
+                                    <button type="button" class="btn btn-info btn-detail" data-id="${item.kdbarang}" data-bs-toggle="tooltip" data-bs-placement="top" title="Detail">
                                         <i class="bx bx-show"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-warning btn-edit" data-id="${item.kdbarang}" title="Edit">
+                                    <button type="button" class="btn btn-warning btn-edit" data-id="${item.kdbarang}" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
                                         <i class="bx bx-edit"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-danger btn-delete" data-id="${item.kdbarang}" data-name="${item.namabarang}" title="Hapus">
+                                    <button type="button" class="btn btn-danger btn-delete" data-id="${item.kdbarang}" data-name="${item.namabarang}" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus">
                                         <i class="bx bx-trash"></i>
                                     </button>
+                                    <a href="<?= site_url('admin/barang/history') ?>/${item.kdbarang}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="History Stok">
+                                        <i class="bx bx-history"></i>
+                                    </a>
                                 </div>
                             `;
 
@@ -291,6 +350,11 @@
 
                         // Draw table
                         table.draw();
+
+                        // Reinitialize tooltips after table is redrawn
+                        setTimeout(function() {
+                            initTooltips();
+                        }, 200);
                     } else {
                         Swal.fire('Error', 'Gagal memuat data barang', 'error');
                     }
@@ -303,7 +367,7 @@
 
         // Function to reset form
         function resetForm() {
-            $('#id').val('');
+            $('#kdbarang').val(''); // Changed from $('#id').val('')
             $('#formBarang')[0].reset();
             $('.is-invalid').removeClass('is-invalid');
             $('#modalBarangLabel').text('Tambah Barang');
@@ -315,69 +379,31 @@
             return new Intl.NumberFormat('id-ID').format(number);
         }
 
-        // Make functions globally accessible
-        window.viewBarang = function(id) {
-            $.ajax({
-                url: '<?= base_url('admin/barang/getById') ?>/' + id,
-                type: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status) {
-                        let barang = response.data;
-                        $('#detailNama').text(barang.namabarang);
-                        $('#detailSatuan').text(barang.satuan);
-                        $('#detailJumlah').text(barang.jumlah);
-                        $('#detailHarga').text(formatRupiah(barang.hargasewa));
+        // No longer need global functions as we're using document event handlers instead
 
-                        // Handle image
-                        if (barang.foto) {
-                            $('#detailImage').attr('src', '<?= site_url('uploads/barang') ?>/' + barang.foto);
-                            $('#detailImage').show();
-                        } else {
-                            $('#detailImage').hide();
-                        }
-
-                        $('#modalDetail').modal('show');
-                    } else {
-                        Swal.fire('Error', response.message, 'error');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    Swal.fire('Error', 'Terjadi kesalahan saat memuat data', 'error');
+        // Preview image when file is selected
+        $('#foto').change(function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#preview-image').attr('src', e.target.result);
+                    $('#preview-container').removeClass('d-none');
                 }
-            });
-        };
+                reader.readAsDataURL(file);
+            } else {
+                $('#preview-container').addClass('d-none');
+            }
+        });
 
-        window.editBarang = function(id) {
-            $.ajax({
-                url: '<?= base_url('admin/barang/getById') ?>/' + id,
-                type: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status) {
-                        let barang = response.data;
-                        $('#id').val(barang.kdbarang);
-                        $('#namabarang').val(barang.namabarang);
-                        $('#satuan').val(barang.satuan);
-                        $('#jumlah').val(barang.jumlah);
-                        $('#hargasewa').val(barang.hargasewa);
+        // Delete button
+        $(document).on('click', '.btn-delete', function() {
+            const id = $(this).data('id');
+            const name = $(this).data('name');
 
-                        $('#modalBarangLabel').text('Edit Barang');
-                        $('#modalBarang').modal('show');
-                    } else {
-                        Swal.fire('Error', response.message, 'error');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    Swal.fire('Error', 'Terjadi kesalahan saat memuat data', 'error');
-                }
-            });
-        };
-
-        window.deleteBarang = function(id) {
             Swal.fire({
                 title: 'Konfirmasi Hapus',
-                text: "Apakah Anda yakin ingin menghapus barang ini?",
+                text: `Apakah Anda yakin ingin menghapus ${name}?`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -390,7 +416,15 @@
                         url: '<?= base_url('admin/barang/delete') ?>/' + id,
                         type: 'DELETE',
                         dataType: 'json',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')
+                        },
                         success: function(response) {
+                            // Update CSRF token if available
+                            if (response.csrf_token) {
+                                updateCsrfToken(response.csrf_token);
+                            }
+
                             if (response.status) {
                                 Swal.fire({
                                     icon: 'success',
@@ -410,21 +444,6 @@
                     });
                 }
             });
-        };
-
-        // Preview image when file is selected
-        $('#foto').change(function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#preview-image').attr('src', e.target.result);
-                    $('#preview-container').removeClass('d-none');
-                }
-                reader.readAsDataURL(file);
-            } else {
-                $('#preview-container').addClass('d-none');
-            }
         });
 
         // Edit barang
@@ -435,9 +454,14 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
+                    // Update CSRF token if available
+                    if (response.csrf_token) {
+                        updateCsrfToken(response.csrf_token);
+                    }
+
                     if (response.status) {
                         const barang = response.data;
-                        $('#id').val(barang.kdbarang);
+                        $('#kdbarang').val(barang.kdbarang); // Changed from $('#id').val(barang.kdbarang)
                         $('#namabarang').val(barang.namabarang);
                         $('#satuan').val(barang.satuan);
                         $('#jumlah').val(barang.jumlah);
@@ -445,7 +469,7 @@
 
                         // Show image preview if exists
                         if (barang.foto) {
-                            $('#preview-image').attr('src', '<?= site_url('uploads/barang') ?>/' + barang.foto);
+                            $('#preview-image').attr('src', '<?= base_url('uploads/barang') ?>/' + barang.foto);
                             $('#preview-container').removeClass('d-none');
                         } else {
                             $('#preview-container').addClass('d-none');
@@ -480,7 +504,7 @@
 
                         // Show image if exists
                         if (barang.foto) {
-                            $('#detailImage').attr('src', '<?= site_url('uploads/barang') ?>/' + barang.foto);
+                            $('#detailImage').attr('src', '<?= base_url('uploads/barang') ?>/' + barang.foto);
                             $('#detailImage').parent().show();
                         } else {
                             // Show default image or hide image container

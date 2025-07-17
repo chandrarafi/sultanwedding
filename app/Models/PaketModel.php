@@ -86,6 +86,20 @@ class PaketModel extends Model
     }
 
     /**
+     * Get paket with kategori information filtered by kategori
+     */
+    public function getPaketByKategori($kdkategori)
+    {
+        return $this->db->table('paket p')
+            ->select('p.*, k.namakategori')
+            ->join('kategori k', 'k.kdkategori = p.kdkategori')
+            ->where('p.kdkategori', $kdkategori)
+            ->orderBy('p.created_at', 'DESC')
+            ->get()
+            ->getResultArray();
+    }
+
+    /**
      * Get paket with kategori information
      */
     public function getPaketDetail($kdpaket)

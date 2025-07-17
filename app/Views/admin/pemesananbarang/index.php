@@ -16,24 +16,28 @@
 
 <div class="card">
     <div class="card-body">
-        <div class="d-flex align-items-center">
+        <div class="d-flex align-items-center mb-3">
             <h5 class="mb-0">Data Pemesanan Barang</h5>
             <div class="ms-auto">
+                <a href="<?= site_url('admin/pemesananbarang/pengembalian') ?>" class="btn btn-success px-3 radius-30 me-2">
+                    <i class="bx bx-check-circle"></i>Pengembalian Barang
+                </a>
                 <a href="<?= site_url('admin/pemesananbarang/create') ?>" class="btn btn-primary px-3 radius-30">
-                    <i class="bx bx-plus"></i>Tambah Pemesanan (Walk-in)
+                    <i class="bx bx-plus"></i>Tambah Pemesanan
                 </a>
             </div>
         </div>
-        <div class="table-responsive mt-3">
-            <table class="table align-middle table-striped table-hover" id="dataTable">
+        <div class="table-responsive-md">
+            <table class="table align-middle table-striped table-hover w-100" id="dataTable">
                 <thead class="table-light">
                     <tr>
                         <th width="5%">No</th>
+                        <th width="10%">Kode</th>
                         <th width="15%">Tanggal</th>
-                        <th width="20%">Pelanggan</th>
+                        <th width="15%">Pelanggan</th>
                         <th width="15%">Total</th>
-                        <th width="15%">Status</th>
-                        <th width="15%">Aksi</th>
+                        <th width="5%">Status</th>
+                        <th width="40%" class="action-column">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -83,6 +87,9 @@
                     render: function(data, type, row, meta) {
                         return meta.row + 1;
                     }
+                },
+                {
+                    data: 'kdpemesananbarang',
                 },
                 {
                     data: 'tgl',
@@ -141,41 +148,126 @@
                             }
                         }
 
-                        return badge + ' ' + paymentBadge;
+                        // Tambahkan badge status pengembalian jika ada
+                        let returnBadge = '';
+                        if (row.status_pengembalian) {
+                            switch (row.status_pengembalian) {
+                                case 'baik':
+                                    returnBadge = '<span class="badge bg-success ms-1">Dikembalikan (Baik)</span>';
+                                    break;
+                                case 'rusak':
+                                    returnBadge = '<span class="badge bg-warning text-dark ms-1">Dikembalikan (Rusak)</span>';
+                                    break;
+                                case 'hilang':
+                                    returnBadge = '<span class="badge bg-danger ms-1">Barang Hilang</span>';
+                                    break;
+                                default:
+                                    returnBadge = '';
+                            }
+                        }
+
+                        return badge + ' ' + paymentBadge + ' ' + returnBadge;
                     }
                 },
                 {
                     data: null,
                     render: function(data, type, row) {
                         return `
-                            <div class="d-flex gap-2">
-                                <a href="<?= site_url('admin/pemesananbarang/detail') ?>/${row.kdpemesananbarang}" class="btn btn-sm btn-info"><i class="bx bx-detail"></i></a>
-                                <a href="<?= site_url('admin/pemesananbarang/edit') ?>/${row.kdpemesananbarang}" class="btn btn-sm btn-warning"><i class="bx bx-edit"></i></a>
-                                <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="${row.kdpemesananbarang}"><i class="bx bx-trash"></i></button>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <a href="<?= site_url('admin/pemesananbarang/detail') ?>/${row.kdpemesananbarang}" class="btn btn-sm btn-info">
+                                    <i class="bx bx-detail"></i> Detail
+                                </a>
+                                <a href="<?= site_url('admin/pemesananbarang/edit') ?>/${row.kdpemesananbarang}" class="btn btn-sm btn-warning">
+                                    <i class="bx bx-edit"></i> Edit
+                                </a>
+                                <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="${row.kdpemesananbarang}">
+                                    <i class="bx bx-trash"></i> Hapus
+                                </button>
+                                <a href="<?= site_url('admin/pemesananbarang/cetakFaktur') ?>/${row.kdpemesananbarang}" class="btn btn-sm btn-primary" target="_blank">
+                                    <i class="bx bx-printer"></i> Cetak
+                                </a>
+                                <a href="<?= site_url('admin/pemesananbarang/lihatFaktur') ?>/${row.kdpemesananbarang}" class="btn btn-sm btn-secondary" target="_blank">
+                                    <i class="bx bx-file"></i> Lihat
+                                </a>
+                                ${row.status === 'process' ? `
+                                <a href="<?= site_url('admin/pemesananbarang/completeStatus') ?>/${row.kdpemesananbarang}" class="btn btn-sm btn-success" onclick="return confirm('Yakin ingin mengubah status menjadi selesai?')">
+                                    <i class="bx bx-check-circle"></i> Selesaikan
+                                </a>
+                                ` : ''}
+                                ${row.status === 'completed' && !row.status_pengembalian ? `
+                                <a href="<?= site_url('admin/pemesananbarang/prosesPengembalian') ?>/${row.kdpemesananbarang}" class="btn btn-sm btn-success">
+                                    <i class="bx bx-refresh"></i> Proses Pengembalian
+                                </a>
+                                ` : ''}
                             </div>
                         `;
-                    }
+                    },
+                    orderable: false
                 }
             ],
-            responsive: true,
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json',
+            responsive: {
+                details: {
+                    display: $.fn.dataTable.Responsive.display.modal({
+                        header: function(row) {
+                            var data = row.data();
+                            return 'Detail Pemesanan: ' + data.kdpemesananbarang;
+                        }
+                    }),
+                    renderer: $.fn.dataTable.Responsive.renderer.tableAll({
+                        tableClass: 'table table-striped'
+                    })
+                }
             },
+            language: {
+                url: '<?= base_url('assets/plugins/datatable/i18n/id.json') ?>',
+            },
+            columnDefs: [{
+                    className: "text-center",
+                    targets: [0, 1, 5]
+                },
+                {
+                    className: "text-end",
+                    targets: [4]
+                },
+                {
+                    className: "action-column",
+                    targets: [6]
+                },
+                {
+                    responsivePriority: 1,
+                    targets: [0, 1]
+                }, // No dan Kode selalu terlihat
+                {
+                    responsivePriority: 2,
+                    targets: [6]
+                }, // Aksi prioritas kedua
+                {
+                    responsivePriority: 3,
+                    targets: [4]
+                }, // Total prioritas ketiga
+                {
+                    responsivePriority: 10000,
+                    targets: [2, 3, 5]
+                } // Kolom lain bisa disembunyikan
+            ]
         });
 
-        // Handle tombol hapus
-        let deleteId = null;
-        $('#dataTable').on('click', '.btn-delete', function() {
-            deleteId = $(this).data('id');
+        // Event untuk tombol hapus
+        $(document).on('click', '.btn-delete', function() {
+            const id = $(this).data('id');
             $('#deleteModal').modal('show');
-        });
 
-        // Handle konfirmasi hapus
-        $('#confirmDelete').on('click', function() {
-            if (deleteId) {
+            $('#confirmDelete').off('click').on('click', function() {
+                // CSRF token untuk keamanan
+                const csrfName = '<?= csrf_token() ?>';
+                const csrfHash = '<?= csrf_hash() ?>';
+
                 $.ajax({
-                    url: `<?= site_url('admin/pemesananbarang/delete') ?>/${deleteId}`,
-                    type: 'DELETE',
+                    url: '<?= site_url('admin/pemesananbarang/delete') ?>/' + id,
+                    type: 'POST',
+                    data: {
+                        [csrfName]: csrfHash
+                    },
                     dataType: 'json',
                     success: function(response) {
                         if (response.status) {
@@ -206,7 +298,7 @@
                         $('#deleteModal').modal('hide');
                     }
                 });
-            }
+            });
         });
 
         // Format tanggal

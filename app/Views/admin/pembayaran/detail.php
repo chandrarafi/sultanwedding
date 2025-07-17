@@ -191,6 +191,19 @@
                 <div class="mt-4">
                     <h6 class="mb-3">Aksi Pembayaran</h6>
 
+                    <!-- Debug info (hanya untuk admin) -->
+                    <div class="alert alert-secondary mb-3">
+                        <h6>Debug Info (Admin Only)</h6>
+                        <p class="mb-1">Status: <?= $pemesanan['status'] ?? 'not set' ?></p>
+                        <p class="mb-1">Tipe Pembayaran: <?= $pemesanan['tipepembayaran'] ?? 'not set' ?></p>
+                        <p class="mb-1">Full Confirmed: <?= isset($pemesanan['full_confirmed']) ? $pemesanan['full_confirmed'] : 'not set' ?></p>
+                        <p class="mb-1">Full Paid: <?= isset($pemesanan['full_paid']) ? $pemesanan['full_paid'] : 'not set' ?></p>
+                        <p class="mb-1">H1 Confirmed: <?= isset($pemesanan['h1_confirmed']) ? $pemesanan['h1_confirmed'] : 'not set' ?></p>
+                        <p class="mb-1">H1 Paid: <?= isset($pemesanan['h1_paid']) ? $pemesanan['h1_paid'] : 'not set' ?></p>
+                        <p class="mb-1">DP Confirmed: <?= isset($pemesanan['dp_confirmed']) ? $pemesanan['dp_confirmed'] : 'not set' ?></p>
+                        <p class="mb-1">Kondisi Tombol Konfirmasi Pelunasan: <?= ($pemesanan['status'] == 'partial' && isset($pemesanan['tipepembayaran']) && $pemesanan['tipepembayaran'] == 'lunas' && (!isset($pemesanan['full_confirmed']) || empty($pemesanan['full_confirmed']))) ? 'true' : 'false' ?></p>
+                    </div>
+
                     <div class="d-flex flex-wrap gap-2">
                         <?php if ($pemesanan['status'] == 'pending' && (!isset($pemesanan['dp_confirmed']) || empty($pemesanan['dp_confirmed']))): ?>
                             <!-- Konfirmasi DP -->
@@ -212,6 +225,15 @@
                             </button>
                         <?php elseif ($pemesanan['status'] == 'partial' && isset($pemesanan['tipepembayaran']) && $pemesanan['tipepembayaran'] == 'lunas' && (!isset($pemesanan['full_confirmed']) || empty($pemesanan['full_confirmed']))): ?>
                             <!-- Konfirmasi Pelunasan -->
+                            <button type="button" class="btn btn-success confirm-action"
+                                data-action="konfirmasi-pelunasan"
+                                data-url="<?= site_url('admin/pembayaran/konfirmasi-pelunasan/' . $pemesanan['kdpemesananpaket']) ?>"
+                                data-title="Konfirmasi Pelunasan"
+                                data-message="Anda yakin akan mengkonfirmasi pelunasan ini?">
+                                <i class="bx bx-check-circle"></i> Konfirmasi Pelunasan
+                            </button>
+                        <?php elseif (($pemesanan['sisa'] == 0 || isset($pemesanan['full_paid']) && $pemesanan['full_paid'] == '1') && (!isset($pemesanan['full_confirmed']) || empty($pemesanan['full_confirmed']))): ?>
+                            <!-- Konfirmasi Pelunasan (Alternatif) -->
                             <button type="button" class="btn btn-success confirm-action"
                                 data-action="konfirmasi-pelunasan"
                                 data-url="<?= site_url('admin/pembayaran/konfirmasi-pelunasan/' . $pemesanan['kdpemesananpaket']) ?>"
