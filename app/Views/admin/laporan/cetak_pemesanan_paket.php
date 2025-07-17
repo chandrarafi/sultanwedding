@@ -27,7 +27,6 @@
             left: 0;
             width: 80px;
             height: auto;
-            margin-top: 10px;
         }
 
         .header h1 {
