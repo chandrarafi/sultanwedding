@@ -33,6 +33,9 @@ class Kategori extends BaseController
 
             $response = $this->kategoriModel->getDataTables($postData);
 
+            // Tambahkan token CSRF baru untuk request berikutnya
+            $response['csrf_token'] = csrf_hash();
+
             return $this->respond($response);
         }
 
@@ -56,7 +59,8 @@ class Kategori extends BaseController
                     if ($result) {
                         return $this->respond([
                             'status' => true,
-                            'message' => 'Data kategori berhasil diperbarui'
+                            'message' => 'Data kategori berhasil diperbarui',
+                            'csrf_token' => csrf_hash()
                         ]);
                     } else {
                         return $this->fail('Gagal memperbarui data kategori');
@@ -72,7 +76,8 @@ class Kategori extends BaseController
                     if ($result) {
                         return $this->respond([
                             'status' => true,
-                            'message' => 'Data kategori berhasil ditambahkan'
+                            'message' => 'Data kategori berhasil ditambahkan',
+                            'csrf_token' => csrf_hash()
                         ]);
                     } else {
                         return $this->fail('Gagal menambahkan data kategori');
@@ -96,7 +101,8 @@ class Kategori extends BaseController
             if ($data) {
                 return $this->respond([
                     'status' => true,
-                    'data' => $data
+                    'data' => $data,
+                    'csrf_token' => csrf_hash()
                 ]);
             } else {
                 return $this->fail('Data kategori tidak ditemukan');
@@ -117,7 +123,8 @@ class Kategori extends BaseController
                 if ($result) {
                     return $this->respond([
                         'status' => true,
-                        'message' => 'Data kategori berhasil dihapus'
+                        'message' => 'Data kategori berhasil dihapus',
+                        'csrf_token' => csrf_hash()
                     ]);
                 } else {
                     return $this->fail('Gagal menghapus data kategori');

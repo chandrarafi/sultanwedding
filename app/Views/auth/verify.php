@@ -37,6 +37,7 @@
             <div class="mt-8">
                 <form id="verifyForm" class="space-y-6" action="<?= site_url('auth/verifyProcess') ?>" method="POST">
                     <input type="hidden" name="user_id" value="<?= $userId ?>">
+                    <?= csrf_field() ?>
 
                     <div>
                         <label for="otp" class="block text-sm font-medium text-gray-700">Kode OTP</label>
@@ -103,6 +104,9 @@
                     url: $(this).attr('action'),
                     data: formData,
                     dataType: 'json',
+                    headers: {
+                        'X-CSRF-TOKEN': $('input[name="<?= csrf_token() ?>"]').val()
+                    },
                     success: function(response) {
                         if (response.status === 'success') {
                             showAlert('success', response.message);
@@ -134,9 +138,13 @@
                     type: 'POST',
                     url: '<?= site_url('auth/resendOTP') ?>',
                     data: {
-                        user_id: userId
+                        user_id: userId,
+                        '<?= csrf_token() ?>': $('input[name="<?= csrf_token() ?>"]').val()
                     },
                     dataType: 'json',
+                    headers: {
+                        'X-CSRF-TOKEN': $('input[name="<?= csrf_token() ?>"]').val()
+                    },
                     success: function(response) {
                         if (response.status === 'success') {
                             showAlert('success', response.message);

@@ -23,7 +23,7 @@
             <!-- Gambar Barang -->
             <div>
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                    <img src="<?= get_barang_image_url($barang['foto'] ?? null, $barang['kdbarang']) ?>" alt="<?= $barang['namabarang'] ?>" class="w-full h-auto object-contain" style="max-height: 500px;">
+                    <img src="<?= !empty($barang['foto']) ? base_url('uploads/barang/' . $barang['foto']) : base_url('assets/images/gallery/' . str_pad(($barang['kdbarang'] % 37) + 1, 2, '0', STR_PAD_LEFT) . '.png') ?>" alt="<?= $barang['namabarang'] ?>" class="w-full h-auto object-contain" style="max-height: 500px;">
                 </div>
             </div>
 
@@ -60,14 +60,37 @@
                         </p>
                     </div>
 
-                    <div class="space-y-4">
-                        <a href="<?= site_url('auth/login') ?>" class="block w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium text-center rounded-md transition-colors duration-300">
-                            Pesan Sekarang
-                        </a>
-                        <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20untuk%20menyewa%20<?= urlencode($barang['namabarang']) ?>" target="_blank" class="block w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-medium text-center rounded-md transition-colors duration-300">
-                            <i class="fab fa-whatsapp mr-2"></i> Hubungi via WhatsApp
-                        </a>
-                    </div>
+                    <?php if (session()->get('logged_in')): ?>
+                        <!-- Form Pemesanan untuk user yang sudah login -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-medium text-secondary-900 mb-3">Informasi Pemesanan:</h3>
+                            <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+                                <p class="text-secondary-800">
+                                    <i class="fas fa-info-circle text-yellow-500 mr-2"></i>
+                                    Pemesanan barang hanya dapat dilakukan melalui admin. Silakan hubungi admin atau kunjungi kantor kami untuk melakukan pemesanan.
+                                </p>
+                                <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20untuk%20menyewa%20<?= urlencode($barang['namabarang']) ?>" target="_blank" class="mt-4 inline-block py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition-colors duration-300">
+                                    <i class="fab fa-whatsapp mr-2"></i> Hubungi via WhatsApp
+                                </a>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <!-- CTA untuk user yang belum login -->
+                        <div class="space-y-4">
+                            <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-md mb-4">
+                                <p class="text-secondary-800">
+                                    <i class="fas fa-info-circle text-yellow-500 mr-2"></i>
+                                    Pemesanan barang hanya dapat dilakukan melalui admin. Silakan hubungi admin atau kunjungi kantor kami untuk melakukan pemesanan.
+                                </p>
+                            </div>
+                            <a href="<?= site_url('auth/login') ?>" class="block w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium text-center rounded-md transition-colors duration-300">
+                                Login untuk Melihat Detail
+                            </a>
+                            <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20untuk%20menyewa%20<?= urlencode($barang['namabarang']) ?>" target="_blank" class="block w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-medium text-center rounded-md transition-colors duration-300">
+                                <i class="fab fa-whatsapp mr-2"></i> Hubungi via WhatsApp
+                            </a>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -96,4 +119,12 @@
         </div>
     </div>
 </section>
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tidak ada script yang diperlukan lagi karena fitur tambahkan ke keranjang telah dihapus
+    });
+</script>
 <?= $this->endSection() ?>

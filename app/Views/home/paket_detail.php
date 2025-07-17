@@ -42,7 +42,7 @@
                                 </div>
                             </div>
                             <!-- Debug Info -->
-                            <?php if (ENVIRONMENT === 'development'): ?>
+                            <!-- <?php if (ENVIRONMENT === 'development'): ?>
                                 <div class="bg-gray-100 p-2 mb-2 text-xs rounded">
                                     <p>Debug Session:</p>
                                     <p>Logged in: <?= session()->has('logged_in') ? 'Ya' : 'Tidak' ?></p>
@@ -50,7 +50,7 @@
                                     <p>User ID: <?= session()->get('user_id') ?? 'Tidak ada' ?></p>
                                     <p>KdPelanggan: <?= session()->get('kdpelanggan') ?? 'Tidak ada' ?></p>
                                 </div>
-                            <?php endif; ?>
+                            <?php endif; ?> -->
                             <div class="mt-6">
                                 <?php if (session()->has('logged_in') && session()->get('role') === 'pelanggan') : ?>
                                     <a href="<?= site_url('pelanggan/pemesanan/paket/' . $paket['kdpaket']) ?>" class="block w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium text-center rounded-md transition-colors duration-300">

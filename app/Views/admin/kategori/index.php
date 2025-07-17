@@ -53,6 +53,7 @@
             <form id="formKategori">
                 <div class="modal-body">
                     <input type="hidden" name="kdkategori" id="kdkategori">
+                    <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
                     <div class="mb-3">
                         <label for="namakategori" class="form-label">Nama Kategori</label>
                         <input type="text" class="form-control" id="namakategori" name="namakategori" required>
@@ -171,6 +172,7 @@
                 url: "<?= site_url('admin/kategori/getAll') ?>",
                 type: "POST",
                 data: function(d) {
+                    d.<?= csrf_token() ?> = "<?= csrf_hash() ?>";
                     return d;
                 }
             },
@@ -266,7 +268,8 @@
                 url: "<?= site_url('admin/kategori/edit') ?>",
                 type: "POST",
                 data: {
-                    kdkategori: id
+                    kdkategori: id,
+                    <?= csrf_token() ?>: "<?= csrf_hash() ?>"
                 },
                 dataType: "JSON",
                 success: function(response) {
@@ -300,7 +303,8 @@
                 url: "<?= site_url('admin/kategori/delete') ?>",
                 type: "POST",
                 data: {
-                    kdkategori: id
+                    kdkategori: id,
+                    <?= csrf_token() ?>: "<?= csrf_hash() ?>"
                 },
                 dataType: "JSON",
                 success: function(response) {
@@ -360,6 +364,12 @@
                             showConfirmButton: false
                         });
                         table.ajax.reload();
+
+                        // Update CSRF token jika ada dalam response
+                        if (response.csrf_token) {
+                            $('input[name="<?= csrf_token() ?>"]').val(response.csrf_token);
+                            $('meta[name="csrf_token"]').attr('content', response.csrf_token);
+                        }
                     } else {
                         if (response.errors) {
                             showErrors(response.errors);

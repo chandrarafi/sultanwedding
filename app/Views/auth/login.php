@@ -118,6 +118,7 @@
                     </div>
 
                     <form id="loginForm" method="post">
+                        <?= csrf_field() ?>
                         <div class="mb-6">
                             <label for="username" class="block text-secondary-700 font-medium mb-2">Username atau Email</label>
                             <div class="relative">
@@ -223,6 +224,9 @@
                     type: 'POST',
                     data: $(this).serialize(),
                     dataType: 'json',
+                    headers: {
+                        'X-CSRF-TOKEN': $('input[name="<?= csrf_token() ?>"]').val()
+                    },
                     success: function(response) {
                         if (response.status === 'success') {
                             // Show success message

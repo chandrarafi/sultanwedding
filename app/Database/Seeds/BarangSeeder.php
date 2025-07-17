@@ -10,8 +10,8 @@ class BarangSeeder extends Seeder
     {
         $data = [
             [
-                'namabarang' => 'Kursi Tiffany',
-                'satuan'     => 'Unit',
+                'namabarang' => 'Kursi Plastik',
+                'satuan'     => 'Lusin',
                 'jumlah'     => 100,
                 'hargasewa'  => 50000,
                 'created_at' => date('Y-m-d H:i:s'),
@@ -34,7 +34,7 @@ class BarangSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s')
             ],
             [
-                'namabarang' => 'Kotak Angpau',
+                'namabarang' => 'Kotak Tamu',
                 'satuan'     => 'Unit',
                 'jumlah'     => 10,
                 'hargasewa'  => 100000,

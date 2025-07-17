@@ -1,0 +1,153 @@
+/* Custom CSS for Sultan Wedding */
+
+/* Reset DataTable action buttons styling */
+.table .d-flex.gap-2 {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 5px !important;
+  width: auto !important;
+}
+
+.table .d-flex.gap-2 .btn,
+.table .d-flex.gap-2 a.btn {
+  width: auto !important;
+  min-width: auto !important;
+  margin: 0 !important;
+  padding: 5px 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 4px !important;
+}
+
+.table .d-flex.gap-2 .btn i,
+.table .d-flex.gap-2 a.btn i {
+  font-size: 16px !important;
+  margin: 0 !important;
+}
+
+/* Button colors */
+.table .btn-info {
+  background-color: #0dcaf0 !important;
+  border-color: #0dcaf0 !important;
+  color: #fff !important;
+}
+
+.table .btn-warning {
+  background-color: #ffc107 !important;
+  border-color: #ffc107 !important;
+  color: #000 !important;
+}
+
+.table .btn-danger {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  color: #fff !important;
+}
+
+.table .btn-primary {
+  background-color: #0d6efd !important;
+  border-color: #0d6efd !important;
+  color: #fff !important;
+}
+
+/* Hover effects */
+.table .btn:hover {
+  opacity: 0.9 !important;
+}
+
+/* Improve table responsiveness */
+.table-responsive {
+  overflow-x: auto;
+}
+
+/* Responsive handling */
+@media (max-width: 768px) {
+  .table .d-flex.gap-2 {
+    flex-wrap: wrap !important;
+  }
+}
+
+/* Improve DataTable responsive behavior */
+table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control:before,
+table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
+  background-color: #008cff;
+}
+
+/* Make sure action column is always visible */
+.table .action-column {
+  white-space: nowrap;
+  min-width: 180px;
+}
+
+/* Responsive modal styling */
+div.dtr-modal {
+  width: 90%;
+  max-width: 600px;
+}
+
+div.dtr-modal div.dtr-modal-display {
+  width: 100%;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+div.dtr-modal div.dtr-modal-content {
+  padding: 1rem;
+}
+
+div.dtr-modal div.dtr-modal-close {
+  top: 8px;
+  right: 8px;
+  font-size: 24px;
+  background-color: #f44336;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+}
+
+/* Adjust table header on small screens */
+@media (max-width: 768px) {
+  table.dataTable > thead > tr > th:not(.sorting_disabled) {
+    padding-right: 25px;
+  }
+
+  .dataTables_wrapper .dataTables_length,
+  .dataTables_wrapper .dataTables_filter {
+    text-align: left;
+    margin-bottom: 0.5rem;
+  }
+
+  .dataTables_wrapper .dataTables_filter {
+    margin-top: 0.5rem;
+  }
+}
+
+/* Fix modal display on mobile */
+@media (max-width: 576px) {
+  div.dtr-modal {
+    width: 95%;
+  }
+
+  div.dtr-modal div.dtr-modal-content {
+    padding: 0.5rem;
+  }
+
+  div.dtr-modal table.table.dtr-details {
+    margin: 0;
+  }
+
+  div.dtr-modal table.table.dtr-details tr td.dtr-title {
+    font-weight: bold;
+    padding: 0.3rem;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  div.dtr-modal table.table.dtr-details tr td.dtr-data {
+    padding: 0.3rem;
+    white-space: normal;
+    word-break: break-word;
+  }
+}

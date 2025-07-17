@@ -70,12 +70,13 @@ class Filters extends BaseFilters
     /**
      * List of filter aliases that are always
      * applied before and after every request.
+     *
+     * @var array<string, array<string, array<string, string>>>|array<string, array<string>>
      */
     public array $globals = [
         'before' => [
-            'fileaccess',
             // 'honeypot',
-            // 'csrf',
+            'csrf',
             // 'invalidchars',
         ],
         'after' => [
@@ -108,6 +109,27 @@ class Filters extends BaseFilters
     public array $filters = [
         'auth' => ['before' => ['admin/*', 'admin']],
         'role:admin' => ['before' => ['admin/*', 'admin']],
-        'role:pelanggan' => ['before' => ['pelanggan/*', 'pelanggan']]
+
+        'role:pelanggan' => ['before' => ['pelanggan/*', 'pelanggan']],
+        'csrf' => [
+            'except' => [
+                'sewa/cart/update',
+                'sewa/cart/remove/*',
+                'sewa/checkout',
+                'sewa/cart/add',
+                'auth/loginProcess',
+                'auth/registerProcess',
+                'auth/verifyProcess',
+                'auth/resendOTP',
+                'admin/pemesananbarang/store',
+                'admin/pemesananbarang/update/*',
+                'admin/pemesananbarang/delete/*',
+                'admin/kategori/getAll',
+                'admin/pelanggan/getAll',
+                'admin/barang/update/*',
+                'admin/barang/create',
+                'admin/barang/delete/*'
+            ]
+        ]
     ];
 }

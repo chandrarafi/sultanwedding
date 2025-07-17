@@ -8,6 +8,15 @@ class AddConfirmationFieldsToPembayaran extends Migration
 {
     public function up()
     {
+        // Check if column exists first to avoid duplicate column error
+        $fields = $this->db->getFieldData('pembayaran');
+        $existingColumns = array_column($fields, 'name');
+
+        if (in_array('dp_confirmed', $existingColumns)) {
+            // Column already exists, do nothing
+            return;
+        }
+
         $this->forge->addColumn('pembayaran', [
             'dp_confirmed' => [
                 'type' => 'TINYINT',

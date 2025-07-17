@@ -18,6 +18,11 @@ class FileAccessFilter implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
+        // Skip processing for non-GET requests
+        if ($request->getMethod() !== 'get') {
+            return;
+        }
+
         // Use getPath() method on the URI object properly
         $path = $request->getUri()->getPath();
 

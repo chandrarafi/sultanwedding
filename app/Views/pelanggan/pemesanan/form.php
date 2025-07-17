@@ -103,10 +103,10 @@
                                     <input class="form-radio mr-2 h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500" type="radio" name="metodepembayaran" id="metodeTransfer" value="transfer" checked>
                                     <span class="text-gray-700">Transfer Bank</span>
                                 </label>
-                                <label class="flex items-center">
+                                <!-- <label class="flex items-center">
                                     <input class="form-radio mr-2 h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500" type="radio" name="metodepembayaran" id="metodeCash" value="cash">
                                     <span class="text-gray-700">Cash</span>
-                                </label>
+                                </label> -->
                             </div>
                             <div class="text-red-500 text-xs mt-1 hidden" id="metodepembayaran-error"></div>
                         </div>

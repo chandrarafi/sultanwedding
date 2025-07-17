@@ -51,7 +51,7 @@
                         data-harga="<?= $barang['hargasewa'] ?>"
                         data-nama="<?= $barang['namabarang'] ?>">
                         <div class="h-48 overflow-hidden">
-                            <img src="<?= get_barang_image_url($barang['foto'] ?? null, $barang['kdbarang']) ?>" alt="<?= $barang['namabarang'] ?>" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                            <img src="<?= !empty($barang['foto']) ? base_url('uploads/barang/' . $barang['foto']) : base_url('assets/images/gallery/' . str_pad(($barang['kdbarang'] % 37) + 1, 2, '0', STR_PAD_LEFT) . '.png') ?>" alt="<?= $barang['namabarang'] ?>" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
                         </div>
                         <div class="p-4">
                             <div class="flex justify-between items-start mb-2">

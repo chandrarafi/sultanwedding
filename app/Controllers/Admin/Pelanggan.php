@@ -36,6 +36,10 @@ class Pelanggan extends BaseController
         if ($this->request->isAJAX()) {
             $postData = $this->request->getPost();
             $response = $this->pelangganModel->getDataTables($postData);
+
+            // Tambahkan token CSRF baru untuk request berikutnya
+            $response['csrf_token'] = csrf_hash();
+
             return $this->respond($response);
         }
 
@@ -50,7 +54,8 @@ class Pelanggan extends BaseController
             if ($data) {
                 return $this->respond([
                     'status' => true,
-                    'data' => $data
+                    'data' => $data,
+                    'csrf_token' => csrf_hash()
                 ]);
             } else {
                 return $this->fail('Data pelanggan tidak ditemukan');

@@ -383,6 +383,7 @@
                                         <form id="formPaymentDP" action="<?= site_url('pelanggan/pemesanan/upload-bukti') ?>" method="post" enctype="multipart/form-data" class="space-y-4">
                                             <input type="hidden" name="kdpemesanan" id="kdpemesanan" value="<?= $pemesanan['kdpemesananpaket'] ?>">
                                             <input type="hidden" name="metodepembayaran" value="<?= $pemesanan['metodepembayaran'] ?>">
+                                            <?= csrf_field() ?>
 
                                             <div>
                                                 <label class="font-medium mb-2 block">Metode Pembayaran</label>
@@ -439,6 +440,7 @@
                                             <form id="formPaymentH1" action="<?= site_url('pelanggan/pemesanan/pembayaran/h1') ?>" method="post" enctype="multipart/form-data" class="space-y-4">
                                                 <input type="hidden" name="kdpemesanan" value="<?= $pemesanan['kdpemesananpaket'] ?>">
                                                 <input type="hidden" name="metodepembayaran" value="<?= $pemesanan['metodepembayaran'] ?>">
+                                                <?= csrf_field() ?>
 
                                                 <div>
                                                     <label class="font-medium mb-2 block">Metode Pembayaran</label>
@@ -535,11 +537,37 @@
                                 <?php endif; ?>
 
                                 <!-- Form untuk pembayaran pelunasan -->
-                                <?php if ((isset($pemesanan['h1_confirmed']) && $pemesanan['h1_confirmed'] == 1) &&
-                                    ((!isset($pemesanan['full_confirmed']) || $pemesanan['full_confirmed'] == 0) &&
-                                        (!isset($pemesanan['full_paid']) || $pemesanan['full_paid'] === '' ||
-                                            (isset($pemesanan['rejected_reason']) && !empty($pemesanan['rejected_reason']))))
-                                ): ?>
+                                <?php
+                                // Debug values
+                                $h1_confirmed = isset($pemesanan['h1_confirmed']) ? $pemesanan['h1_confirmed'] : 'not set';
+                                $full_confirmed = isset($pemesanan['full_confirmed']) ? $pemesanan['full_confirmed'] : 'not set';
+                                $full_paid = isset($pemesanan['full_paid']) ? $pemesanan['full_paid'] : 'not set';
+                                $rejected_reason = isset($pemesanan['rejected_reason']) ? $pemesanan['rejected_reason'] : 'not set';
+
+                                // Kondisi sederhana: Tampilkan form jika H1 sudah dikonfirmasi dan belum ada pelunasan
+                                $show_form = isset($pemesanan['h1_confirmed']) && $pemesanan['h1_confirmed'] == 1 &&
+                                    (
+                                        // Belum ada pelunasan
+                                        ((!isset($pemesanan['full_confirmed']) || $pemesanan['full_confirmed'] == 0) &&
+                                            (!isset($pemesanan['full_paid']) || $pemesanan['full_paid'] === '' || $pemesanan['full_paid'] === null || $pemesanan['full_paid'] === '0'))
+                                        ||
+                                        // Atau pembayaran ditolak
+                                        (isset($pemesanan['rejected_reason']) && !empty($pemesanan['rejected_reason']))
+                                    );
+                                ?>
+                                <!-- Debug info -->
+                                <div class="bg-gray-100 p-2 mb-4 text-xs">
+                                    <p>Debug info (admin only):</p>
+                                    <ul>
+                                        <li>h1_confirmed: <?= $h1_confirmed ?></li>
+                                        <li>full_confirmed: <?= $full_confirmed ?></li>
+                                        <li>full_paid: <?= $full_paid ?></li>
+                                        <li>rejected_reason: <?= $rejected_reason ?></li>
+                                        <li>show_form: <?= $show_form ? 'true' : 'false' ?></li>
+                                    </ul>
+                                </div>
+
+                                <?php if ($show_form): ?>
                                     <div class="border border-green-200 rounded-lg overflow-hidden">
                                         <div class="bg-green-600 py-3 px-4 text-white">
                                             <h3 class="font-bold">Pembayaran Pelunasan</h3>
@@ -548,6 +576,7 @@
                                             <form id="formPaymentFull" action="<?= site_url('pelanggan/pemesanan/pembayaran/full') ?>" method="post" enctype="multipart/form-data" class="space-y-4">
                                                 <input type="hidden" name="kdpemesanan" value="<?= $pemesanan['kdpemesananpaket'] ?>">
                                                 <input type="hidden" name="metodepembayaran" value="<?= $pemesanan['metodepembayaran'] ?>">
+                                                <?= csrf_field() ?>
 
                                                 <div>
                                                     <label class="font-medium mb-2 block">Metode Pembayaran</label>

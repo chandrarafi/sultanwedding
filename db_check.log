@@ -1,0 +1,97 @@
+Koneksi ke database berhasil!
+
+=== STRUKTUR TABEL PEMBAYARAN ===
+kdpembayaran - varchar(20) - PRIMARY KEY
+tgl - date - 
+metodepembayaran - varchar(50) - 
+tipepembayaran - varchar(20) - 
+jumlahbayar - decimal(15,2) - 
+sisa - decimal(15,2) - 
+totalpembayaran - decimal(15,2) - 
+buktipembayaran - varchar(255) - 
+status - enum('pending','partial','success','failed') - 
+dp_confirmed - tinyint(1) - 
+dp_confirmed_at - datetime - 
+dp_confirmed_by - int - 
+h1_paid - tinyint(1) - 
+h1_confirmed - tinyint(1) - 
+h1_confirmed_at - datetime - 
+h1_confirmed_by - int - 
+full_confirmed - tinyint(1) - 
+full_confirmed_at - datetime - 
+full_confirmed_by - int - 
+full_paid - char(20) - 
+rejected_reason - text - 
+rejected_at - datetime - 
+rejected_by - int - 
+created_at - datetime - 
+updated_at - datetime - 
+
+Jumlah record di tabel pembayaran: 4
+
+=== MENCOBA INSERT RECORD BARU ===
+Record berhasil dibuat dengan ID: TEST-20250715072719
+Record test berhasil dihapus
+
+=== CEK KOLOM YANG DIPERLUKAN ===
+Kolom 'dp_confirmed' ada dalam tabel pembayaran.
+Kolom 'dp_confirmed_at' ada dalam tabel pembayaran.
+Kolom 'dp_confirmed_by' ada dalam tabel pembayaran.
+Kolom 'h1_paid' ada dalam tabel pembayaran.
+Kolom 'h1_confirmed' ada dalam tabel pembayaran.
+Kolom 'h1_confirmed_at' ada dalam tabel pembayaran.
+Kolom 'h1_confirmed_by' ada dalam tabel pembayaran.
+Kolom 'full_paid' ada dalam tabel pembayaran.
+Kolom 'full_confirmed' ada dalam tabel pembayaran.
+Kolom 'full_confirmed_at' ada dalam tabel pembayaran.
+Kolom 'full_confirmed_by' ada dalam tabel pembayaran.
+
+Selesai!Koneksi ke database berhasil!
+
+=== STRUKTUR TABEL PEMBAYARAN ===
+kdpembayaran - varchar(20) - PRIMARY KEY
+tgl - date - 
+metodepembayaran - varchar(50) - 
+tipepembayaran - varchar(20) - 
+jumlahbayar - decimal(15,2) - 
+sisa - decimal(15,2) - 
+totalpembayaran - decimal(15,2) - 
+buktipembayaran - varchar(255) - 
+status - enum('pending','partial','success','failed') - 
+dp_confirmed - tinyint(1) - 
+dp_confirmed_at - datetime - 
+dp_confirmed_by - int - 
+h1_paid - tinyint(1) - 
+h1_confirmed - tinyint(1) - 
+h1_confirmed_at - datetime - 
+h1_confirmed_by - int - 
+full_confirmed - tinyint(1) - 
+full_confirmed_at - datetime - 
+full_confirmed_by - int - 
+full_paid - char(20) - 
+rejected_reason - text - 
+rejected_at - datetime - 
+rejected_by - int - 
+created_at - datetime - 
+updated_at - datetime - 
+
+Jumlah record di tabel pembayaran: 4
+
+=== MENCOBA INSERT RECORD BARU ===
+Record berhasil dibuat dengan ID: TEST-20250715072720
+Record test berhasil dihapus
+
+=== CEK KOLOM YANG DIPERLUKAN ===
+Kolom 'dp_confirmed' ada dalam tabel pembayaran.
+Kolom 'dp_confirmed_at' ada dalam tabel pembayaran.
+Kolom 'dp_confirmed_by' ada dalam tabel pembayaran.
+Kolom 'h1_paid' ada dalam tabel pembayaran.
+Kolom 'h1_confirmed' ada dalam tabel pembayaran.
+Kolom 'h1_confirmed_at' ada dalam tabel pembayaran.
+Kolom 'h1_confirmed_by' ada dalam tabel pembayaran.
+Kolom 'full_paid' ada dalam tabel pembayaran.
+Kolom 'full_confirmed' ada dalam tabel pembayaran.
+Kolom 'full_confirmed_at' ada dalam tabel pembayaran.
+Kolom 'full_confirmed_by' ada dalam tabel pembayaran.
+
+Selesai!
