@@ -323,6 +323,14 @@
     <a href="<?= site_url('admin/pemesananpaket') ?>" class="btn btn-secondary">
         <i class="bx bx-arrow-back"></i> Kembali
     </a>
+
+    <!-- Invoice Buttons -->
+    <a href="<?= site_url('admin/pemesananpaket/lihat-faktur/' . $pemesanan['kdpemesananpaket']) ?>" class="btn btn-info" target="_blank">
+        <i class="bx bx-show"></i> Lihat Faktur
+    </a>
+    <a href="<?= site_url('admin/pemesananpaket/cetak-faktur/' . $pemesanan['kdpemesananpaket']) ?>" class="btn btn-primary">
+        <i class="bx bx-printer"></i> Cetak Faktur
+    </a>
 </div>
 
 <!-- Update Status Modal -->

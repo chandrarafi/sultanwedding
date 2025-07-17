@@ -334,4 +334,73 @@ class PemesananPaket extends BaseController
 
         return redirect()->to('/admin/pemesananpaket')->with('success', 'Pemesanan berhasil ditambahkan');
     }
+
+    /**
+     * Cetak faktur pemesanan paket dalam format PDF
+     *
+     * @param string $kdpemesananpaket
+     * @return void
+     */
+    public function cetakFaktur($kdpemesananpaket)
+    {
+        // Ambil data pemesanan
+        $pemesanan = $this->pemesananModel->getPemesananWithPayment($kdpemesananpaket);
+
+        if (!$pemesanan) {
+            return redirect()->to('/admin/pemesananpaket')->with('error', 'Pemesanan tidak ditemukan');
+        }
+
+        $data = [
+            'pemesanan' => $pemesanan,
+            'title' => 'Faktur Pemesanan Paket',
+        ];
+
+        // Load library DOMPDF
+        $dompdf = new \Dompdf\Dompdf();
+
+        // Load view faktur
+        $html = view('admin/pemesananpaket/faktur', $data);
+
+        // Set options
+        $options = new \Dompdf\Options();
+        $options->set('isRemoteEnabled', true);
+        $dompdf->setOptions($options);
+
+        // Load HTML content
+        $dompdf->loadHtml($html);
+
+        // Set paper size (A4)
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Render PDF (generate)
+        $dompdf->render();
+
+        // Stream PDF (force download)
+        $dompdf->stream("Faktur_Pemesanan_Paket_" . $kdpemesananpaket . ".pdf", [
+            "Attachment" => true
+        ]);
+    }
+
+    /**
+     * Tampilkan faktur pemesanan paket dalam browser
+     *
+     * @param string $kdpemesananpaket
+     * @return void
+     */
+    public function lihatFaktur($kdpemesananpaket)
+    {
+        // Ambil data pemesanan
+        $pemesanan = $this->pemesananModel->getPemesananWithPayment($kdpemesananpaket);
+
+        if (!$pemesanan) {
+            return redirect()->to('/admin/pemesananpaket')->with('error', 'Pemesanan tidak ditemukan');
+        }
+
+        $data = [
+            'pemesanan' => $pemesanan,
+            'title' => 'Faktur Pemesanan Paket',
+        ];
+
+        return view('admin/pemesananpaket/faktur', $data);
+    }
 }

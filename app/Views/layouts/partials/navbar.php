@@ -13,29 +13,29 @@
                         Beranda
                     </a>
 
-                    <?php if (!session()->get('logged_in') || session()->get('role') !== 'pelanggan') : ?>
+                    <!-- <?php if (!session()->get('logged_in') || session()->get('role') !== 'pelanggan') : ?>
                         <a href="<?= site_url('about') ?>" class="<?= current_url() == site_url('about') ? 'border-primary-500 text-primary-600' : 'border-transparent text-secondary-500 hover:border-secondary-300 hover:text-secondary-700' ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Tentang Kami
                         </a>
-                    <?php endif; ?>
+                    <?php endif; ?> -->
 
                     <a href="<?= site_url('paket') ?>" class="<?= strpos(current_url(), site_url('paket')) !== false ? 'border-primary-500 text-primary-600' : 'border-transparent text-secondary-500 hover:border-secondary-300 hover:text-secondary-700' ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                        Paket Wedding
+                        Paket
                     </a>
 
                     <a href="<?= site_url('barang') ?>" class="<?= strpos(current_url(), site_url('barang')) !== false ? 'border-primary-500 text-primary-600' : 'border-transparent text-secondary-500 hover:border-secondary-300 hover:text-secondary-700' ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                         Sewa Barang
                     </a>
 
-                    <a href="<?= site_url('galeri') ?>" class="<?= strpos(current_url(), site_url('galeri')) !== false ? 'border-primary-500 text-primary-600' : 'border-transparent text-secondary-500 hover:border-secondary-300 hover:text-secondary-700' ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                    <!-- <a href="<?= site_url('galeri') ?>" class="<?= strpos(current_url(), site_url('galeri')) !== false ? 'border-primary-500 text-primary-600' : 'border-transparent text-secondary-500 hover:border-secondary-300 hover:text-secondary-700' ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                         Galeri
-                    </a>
+                    </a> -->
 
-                    <?php if (!session()->get('logged_in') || session()->get('role') !== 'pelanggan') : ?>
+                    <!-- <?php if (!session()->get('logged_in') || session()->get('role') !== 'pelanggan') : ?>
                         <a href="<?= site_url('kontak') ?>" class="<?= current_url() == site_url('kontak') ? 'border-primary-500 text-primary-600' : 'border-transparent text-secondary-500 hover:border-secondary-300 hover:text-secondary-700' ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Kontak
                         </a>
-                    <?php endif; ?>
+                    <?php endif; ?> -->
 
                     <?php if (session()->get('logged_in') === true && session()->get('role') === 'pelanggan') : ?>
                         <a href="<?= site_url('pemesanan') ?>" class="<?= strpos(current_url(), site_url('pemesanan')) !== false ? 'border-primary-500 text-primary-600' : 'border-transparent text-secondary-500 hover:border-secondary-300 hover:text-secondary-700' ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">

@@ -55,13 +55,13 @@
                 </li>
             </ul>
         </li>
-        <li>
+        <!-- <li>
             <a href="<?= site_url('admin/pembayaran') ?>">
                 <div class="parent-icon"><i class='bx bx-money'></i>
                 </div>
                 <div class="menu-title">Pembayaran</div>
             </a>
-        </li>
+        </li> -->
 
         <!-- Laporan -->
         <li>
