@@ -328,9 +328,9 @@
     <a href="<?= site_url('admin/pemesananpaket/lihat-faktur/' . $pemesanan['kdpemesananpaket']) ?>" class="btn btn-info" target="_blank">
         <i class="bx bx-show"></i> Lihat Faktur
     </a>
-    <a href="<?= site_url('admin/pemesananpaket/cetak-faktur/' . $pemesanan['kdpemesananpaket']) ?>" class="btn btn-primary">
+    <!-- <a href="<?= site_url('admin/pemesananpaket/cetak-faktur/' . $pemesanan['kdpemesananpaket']) ?>" class="btn btn-primary">
         <i class="bx bx-printer"></i> Cetak Faktur
-    </a>
+    </a> -->
 </div>
 
 <!-- Update Status Modal -->
