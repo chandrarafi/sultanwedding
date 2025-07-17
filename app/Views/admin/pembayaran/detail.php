@@ -192,7 +192,7 @@
                     <h6 class="mb-3">Aksi Pembayaran</h6>
 
                     <!-- Debug info (hanya untuk admin) -->
-                    <div class="alert alert-secondary mb-3">
+                    <!-- <div class="alert alert-secondary mb-3">
                         <h6>Debug Info (Admin Only)</h6>
                         <p class="mb-1">Status: <?= $pemesanan['status'] ?? 'not set' ?></p>
                         <p class="mb-1">Tipe Pembayaran: <?= $pemesanan['tipepembayaran'] ?? 'not set' ?></p>
@@ -202,7 +202,7 @@
                         <p class="mb-1">H1 Paid: <?= isset($pemesanan['h1_paid']) ? $pemesanan['h1_paid'] : 'not set' ?></p>
                         <p class="mb-1">DP Confirmed: <?= isset($pemesanan['dp_confirmed']) ? $pemesanan['dp_confirmed'] : 'not set' ?></p>
                         <p class="mb-1">Kondisi Tombol Konfirmasi Pelunasan: <?= ($pemesanan['status'] == 'partial' && isset($pemesanan['tipepembayaran']) && $pemesanan['tipepembayaran'] == 'lunas' && (!isset($pemesanan['full_confirmed']) || empty($pemesanan['full_confirmed']))) ? 'true' : 'false' ?></p>
-                    </div>
+                    </div> -->
 
                     <div class="d-flex flex-wrap gap-2">
                         <?php if ($pemesanan['status'] == 'pending' && (!isset($pemesanan['dp_confirmed']) || empty($pemesanan['dp_confirmed']))): ?>

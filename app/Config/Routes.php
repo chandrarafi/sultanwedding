@@ -106,6 +106,8 @@ $routes->group('admin', ['filter' => 'role:admin'], function ($routes) {
     $routes->get('pemesananpaket/edit/(:any)', 'Admin\PemesananPaket::edit/$1');
     $routes->post('pemesananpaket/update/(:any)', 'Admin\PemesananPaket::update/$1');
     $routes->get('pemesananpaket/delete/(:any)', 'Admin\PemesananPaket::delete/$1');
+    $routes->get('pemesananpaket/cetak-faktur/(:any)', 'Admin\PemesananPaket::cetakFaktur/$1');
+    $routes->get('pemesananpaket/lihat-faktur/(:any)', 'Admin\PemesananPaket::lihatFaktur/$1');
 
     // PemesananBarang routes
     $routes->get('pemesananbarang', 'Admin\PemesananBarang::index');
