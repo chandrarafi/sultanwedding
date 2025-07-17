@@ -38,7 +38,7 @@
                     <?php endif; ?> -->
 
                     <?php if (session()->get('logged_in') === true && session()->get('role') === 'pelanggan') : ?>
-                        <a href="<?= site_url('pemesanan') ?>" class="<?= strpos(current_url(), site_url('pemesanan')) !== false ? 'border-primary-500 text-primary-600' : 'border-transparent text-secondary-500 hover:border-secondary-300 hover:text-secondary-700' ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        <a href="<?= site_url('pelanggan/pemesanan') ?>" class="<?= strpos(current_url(), site_url('pelanggan/pemesanan')) !== false ? 'border-primary-500 text-primary-600' : 'border-transparent text-secondary-500 hover:border-secondary-300 hover:text-secondary-700' ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Pemesanan
                         </a>
                         <a href="<?= site_url('pelanggan/notifikasi') ?>" class="<?= strpos(current_url(), site_url('pelanggan/notifikasi')) !== false ? 'border-primary-500 text-primary-600' : 'border-transparent text-secondary-500 hover:border-secondary-300 hover:text-secondary-700' ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
