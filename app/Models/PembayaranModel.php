@@ -14,7 +14,7 @@ class PembayaranModel extends Model
     protected $protectFields    = false; // Allow all fields
     protected $allowedFields    = [];
 
-    // Dates
+
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
@@ -31,7 +31,7 @@ class PembayaranModel extends Model
         $prefix = 'INV-' . date('Ymd') . '-';
         $db = \Config\Database::connect();
 
-        // Get the last payment code with the same prefix
+
         $lastPayment = $db->table($this->table)
             ->like('kdpembayaran', $prefix, 'after')
             ->orderBy('kdpembayaran', 'DESC')
@@ -40,11 +40,11 @@ class PembayaranModel extends Model
             ->getRowArray();
 
         if ($lastPayment) {
-            // Extract the sequential number and increment
+
             $lastNumber = substr($lastPayment['kdpembayaran'], -4);
             $nextNumber = str_pad((int)$lastNumber + 1, 4, '0', STR_PAD_LEFT);
         } else {
-            // First payment of the day
+
             $nextNumber = '0001';
         }
 
@@ -59,12 +59,12 @@ class PembayaranModel extends Model
      */
     public function createPayment($data)
     {
-        // Generate payment code if not provided
+
         if (!isset($data['kdpembayaran'])) {
             $data['kdpembayaran'] = $this->generatePaymentCode();
         }
 
-        // Set default values
+
         $data['tgl'] = $data['tgl'] ?? date('Y-m-d');
         $data['status'] = $data['status'] ?? 'pending';
         $data['created_at'] = date('Y-m-d H:i:s');
@@ -87,13 +87,13 @@ class PembayaranModel extends Model
      */
     public function createBookingPayment($grandTotal, $metodepembayaran = 'transfer')
     {
-        // Calculate DP amount (30% of grand total)
+
         $dpAmount = $grandTotal * 0.3;
 
-        // Remaining payment (70%)
+
         $sisa = $grandTotal - $dpAmount;
 
-        // Generate payment code
+
         $kdpembayaran = $this->generatePaymentCode();
 
         $data = [
@@ -130,16 +130,16 @@ class PembayaranModel extends Model
             return false;
         }
 
-        // Calculate total paid so far
+
         $originalTotal = $payment['totalpembayaran'] + $payment['sisa'];
 
-        // Additional 40%
+
         $additionalPayment = $originalTotal * 0.4;
 
-        // New total paid
+
         $totalPaid = $payment['totalpembayaran'] + $additionalPayment;
 
-        // New remaining
+
         $newSisa = $originalTotal - $totalPaid;
 
         $data = [
@@ -153,7 +153,7 @@ class PembayaranModel extends Model
             'h1_paid' => 1 // Tandai bahwa H1 telah dibayar
         ];
 
-        // Add bukti pembayaran if provided
+
         if ($buktipembayaran) {
             $data['buktipembayaran'] = $buktipembayaran;
         }
@@ -177,7 +177,7 @@ class PembayaranModel extends Model
             return false;
         }
 
-        // Total amount
+
         $finalPayment = $payment['sisa'];
 
         $data = [
@@ -191,12 +191,12 @@ class PembayaranModel extends Model
             'full_paid' => '1' // Mark that full payment has been made - use string since it's a CHAR field
         ];
 
-        // Add bukti pembayaran if provided
+
         if ($buktipembayaran) {
             $data['buktipembayaran'] = $buktipembayaran;
         }
 
-        // Debug log
+
         log_message('debug', 'Processing full payment with data: ' . json_encode($data));
 
         return $this->update($kdpembayaran, $data);
@@ -323,19 +323,19 @@ class PembayaranModel extends Model
                 ELSE \'Lainnya\'
             END as jenis_pemesanan');
 
-        // Join dengan pemesanan paket
+
         $builder->join('pemesananpaket pp', 'pp.kdpembayaran = p.kdpembayaran', 'left');
         $builder->join('pelanggan plg1', 'plg1.kdpelanggan = pp.kdpelanggan', 'left');
 
-        // Join dengan pemesanan barang
+
         $builder->join('pemesananbarang pb', 'pb.kdpembayaran = p.kdpembayaran', 'left');
         $builder->join('pelanggan plg2', 'plg2.kdpelanggan = pb.kdpelanggan', 'left');
 
-        // Filter berdasarkan tanggal
+
         $builder->where('DATE(p.tgl) >=', $tanggal_awal);
         $builder->where('DATE(p.tgl) <=', $tanggal_akhir);
 
-        // Filter berdasarkan status jika ada
+
         if (!empty($status)) {
             if ($status == 'pending') {
                 $builder->where('p.status', 'pending');
@@ -374,15 +374,15 @@ class PembayaranModel extends Model
             END as jenis_pemesanan,
             DAY(p.tgl) as hari');
 
-        // Join dengan pemesanan paket
+
         $builder->join('pemesananpaket pp', 'pp.kdpembayaran = p.kdpembayaran', 'left');
         $builder->join('pelanggan plg1', 'plg1.kdpelanggan = pp.kdpelanggan', 'left');
 
-        // Join dengan pemesanan barang
+
         $builder->join('pemesananbarang pb', 'pb.kdpembayaran = p.kdpembayaran', 'left');
         $builder->join('pelanggan plg2', 'plg2.kdpelanggan = pb.kdpelanggan', 'left');
 
-        // Filter berdasarkan bulan dan tahun
+
         $builder->where('MONTH(p.tgl)', $bulan);
         $builder->where('YEAR(p.tgl)', $tahun);
 
@@ -390,7 +390,7 @@ class PembayaranModel extends Model
 
         $data = $builder->get()->getResultArray();
 
-        // Hitung statistik
+
         $totalPendapatan = 0;
         $totalPembayaran = count($data);
         $statusCount = [
@@ -413,12 +413,12 @@ class PembayaranModel extends Model
         ];
 
         foreach ($data as $item) {
-            // Hitung total pendapatan dari pembayaran sukses atau terkonfirmasi
+
             if ($item['status'] == 'success' || $item['status'] == 'confirmed') {
                 $totalPendapatan += $item['jumlahbayar'];
             }
 
-            // Hitung jumlah per status
+
             if ($item['status'] == 'pending') {
                 $statusCount['pending']++;
             } else if ($item['status'] == 'partial') {
@@ -429,7 +429,7 @@ class PembayaranModel extends Model
                 $statusCount['confirmed']++;
             }
 
-            // Hitung jenis pemesanan
+
             if ($item['jenis_pemesanan'] == 'Paket') {
                 $jenisPemesananCount['Paket']++;
             } else if ($item['jenis_pemesanan'] == 'Barang') {
@@ -438,7 +438,7 @@ class PembayaranModel extends Model
                 $jenisPemesananCount['Lainnya']++;
             }
 
-            // Hitung metode pembayaran
+
             if (isset($item['metodepembayaran'])) {
                 if ($item['metodepembayaran'] == 'transfer') {
                     $metodePembayaranCount['transfer']++;
@@ -450,7 +450,7 @@ class PembayaranModel extends Model
             }
         }
 
-        // Hitung pembayaran harian untuk grafik
+
         $harian = array_fill(1, 31, 0); // Inisialisasi array dengan 0 untuk 31 hari
         $pendapatanHarian = array_fill(1, 31, 0);
 
@@ -497,22 +497,22 @@ class PembayaranModel extends Model
             END as jenis_pemesanan,
             MONTH(p.tgl) as bulan');
 
-        // Join dengan pemesanan paket
+
         $builder->join('pemesananpaket pp', 'pp.kdpembayaran = p.kdpembayaran', 'left');
         $builder->join('pelanggan plg1', 'plg1.kdpelanggan = pp.kdpelanggan', 'left');
 
-        // Join dengan pemesanan barang
+
         $builder->join('pemesananbarang pb', 'pb.kdpembayaran = p.kdpembayaran', 'left');
         $builder->join('pelanggan plg2', 'plg2.kdpelanggan = pb.kdpelanggan', 'left');
 
-        // Filter berdasarkan tahun
+
         $builder->where('YEAR(p.tgl)', $tahun);
 
         $builder->orderBy('p.tgl', 'ASC');
 
         $data = $builder->get()->getResultArray();
 
-        // Hitung statistik
+
         $totalPendapatan = 0;
         $totalPembayaran = count($data);
         $statusCount = [
@@ -535,12 +535,12 @@ class PembayaranModel extends Model
         ];
 
         foreach ($data as $item) {
-            // Hitung total pendapatan dari pembayaran sukses atau terkonfirmasi
+
             if ($item['status'] == 'success' || $item['status'] == 'confirmed') {
                 $totalPendapatan += $item['jumlahbayar'];
             }
 
-            // Hitung jumlah per status
+
             if ($item['status'] == 'pending') {
                 $statusCount['pending']++;
             } else if ($item['status'] == 'partial') {
@@ -551,7 +551,7 @@ class PembayaranModel extends Model
                 $statusCount['confirmed']++;
             }
 
-            // Hitung jenis pemesanan
+
             if ($item['jenis_pemesanan'] == 'Paket') {
                 $jenisPemesananCount['Paket']++;
             } else if ($item['jenis_pemesanan'] == 'Barang') {
@@ -560,7 +560,7 @@ class PembayaranModel extends Model
                 $jenisPemesananCount['Lainnya']++;
             }
 
-            // Hitung metode pembayaran
+
             if (isset($item['metodepembayaran'])) {
                 if ($item['metodepembayaran'] == 'transfer') {
                     $metodePembayaranCount['transfer']++;
@@ -572,7 +572,7 @@ class PembayaranModel extends Model
             }
         }
 
-        // Hitung pembayaran bulanan untuk grafik
+
         $bulanan = array_fill(1, 12, 0); // Inisialisasi array dengan 0 untuk 12 bulan
         $pendapatanBulanan = array_fill(1, 12, 0);
 

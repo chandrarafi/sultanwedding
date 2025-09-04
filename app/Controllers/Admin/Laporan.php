@@ -39,10 +39,10 @@ class Laporan extends BaseController
     {
         $kdkategori = $this->request->getGet('kategori') ?? '';
 
-        // Ambil data kategori untuk dropdown filter
+
         $kategori = $this->kategoriModel->findAll();
 
-        // Ambil data paket dengan filter kategori jika ada
+
         if ($kdkategori != '') {
             $pakets = $this->paketModel->getPaketByKategori($kdkategori);
         } else {
@@ -67,13 +67,13 @@ class Laporan extends BaseController
         $kdkategori = $this->request->getGet('kategori') ?? '';
         $tanggal = date('d/m/Y');
 
-        // Ambil data kategori untuk dropdown filter
+
         $kategori = $this->kategoriModel->findAll();
 
-        // Ambil data paket dengan filter kategori jika ada
+
         if ($kdkategori != '') {
             $pakets = $this->paketModel->getPaketByKategori($kdkategori);
-            // Ambil nama kategori jika ada filter
+
             $kategoriName = '';
             foreach ($kategori as $kat) {
                 if ($kat['kdkategori'] == $kdkategori) {
@@ -93,7 +93,7 @@ class Laporan extends BaseController
             'tanggal' => $tanggal
         ];
 
-        // Tampilkan langsung sebagai HTML di tab baru
+
         return view('admin/laporan/cetak_paket', $data);
     }
 
@@ -106,16 +106,16 @@ class Laporan extends BaseController
         $tanggal_akhir = $this->request->getGet('tanggal_akhir') ?? date('Y-m-d');
         $status = $this->request->getGet('status') ?? '';
 
-        // Ambil data pemesanan paket
+
         $pemesanan = $this->pemesananPaketModel->getLaporanPemesananPaket($tanggal_awal, $tanggal_akhir, $status);
 
-        // Hitung total pendapatan
+
         $totalPendapatan = 0;
         foreach ($pemesanan as $item) {
             if ($item['statuspembayaran'] == 'success') {
                 $totalPendapatan += $item['grandtotal'];
             } else if ($item['statuspembayaran'] == 'partial') {
-                // Hanya hitung yang sudah dibayar
+
                 $totalPendapatan += $item['totalpembayaran'] ?? 0;
             }
         }
@@ -141,16 +141,16 @@ class Laporan extends BaseController
         $tanggal_akhir = $this->request->getGet('tanggal_akhir') ?? date('Y-m-d');
         $status = $this->request->getGet('status') ?? '';
 
-        // Ambil data pemesanan paket
+
         $pemesanan = $this->pemesananPaketModel->getLaporanPemesananPaket($tanggal_awal, $tanggal_akhir, $status);
 
-        // Hitung total pendapatan
+
         $totalPendapatan = 0;
         foreach ($pemesanan as $item) {
             if ($item['statuspembayaran'] == 'success') {
                 $totalPendapatan += $item['grandtotal'];
             } else if ($item['statuspembayaran'] == 'partial') {
-                // Hanya hitung yang sudah dibayar
+
                 $totalPendapatan += $item['totalpembayaran'] ?? 0;
             }
         }
@@ -164,7 +164,7 @@ class Laporan extends BaseController
             'totalPendapatan' => $totalPendapatan
         ];
 
-        // Tampilkan langsung sebagai HTML di tab baru
+
         return view('admin/laporan/cetak_pemesanan_paket', $data);
     }
 
@@ -177,16 +177,16 @@ class Laporan extends BaseController
         $tanggal_akhir = $this->request->getGet('tanggal_akhir') ?? date('Y-m-d');
         $status = $this->request->getGet('status') ?? '';
 
-        // Ambil data pemesanan barang
+
         $pemesanan = $this->pemesananBarangModel->getLaporanPemesananBarang($tanggal_awal, $tanggal_akhir, $status);
 
-        // Hitung total pendapatan
+
         $totalPendapatan = 0;
         foreach ($pemesanan as $item) {
             if ($item['statuspembayaran'] == 'success') {
                 $totalPendapatan += $item['grandtotal'];
             } else if ($item['statuspembayaran'] == 'partial') {
-                // Hanya hitung yang sudah dibayar
+
                 $totalPendapatan += $item['totalpembayaran'] ?? 0;
             }
         }
@@ -212,16 +212,16 @@ class Laporan extends BaseController
         $tanggal_akhir = $this->request->getGet('tanggal_akhir') ?? date('Y-m-d');
         $status = $this->request->getGet('status') ?? '';
 
-        // Ambil data pemesanan barang
+
         $pemesanan = $this->pemesananBarangModel->getLaporanPemesananBarang($tanggal_awal, $tanggal_akhir, $status);
 
-        // Hitung total pendapatan
+
         $totalPendapatan = 0;
         foreach ($pemesanan as $item) {
             if ($item['statuspembayaran'] == 'success') {
                 $totalPendapatan += $item['grandtotal'];
             } else if ($item['statuspembayaran'] == 'partial') {
-                // Hanya hitung yang sudah dibayar
+
                 $totalPendapatan += $item['totalpembayaran'] ?? 0;
             }
         }
@@ -235,7 +235,7 @@ class Laporan extends BaseController
             'totalPendapatan' => $totalPendapatan
         ];
 
-        // Tampilkan langsung sebagai HTML di tab baru
+
         return view('admin/laporan/cetak_pemesanan_barang', $data);
     }
 
@@ -248,10 +248,10 @@ class Laporan extends BaseController
         $tanggal_akhir = $this->request->getGet('tanggal_akhir') ?? date('Y-m-d');
         $status = $this->request->getGet('status') ?? '';
 
-        // Ambil data pembayaran
+
         $pembayaran = $this->pembayaranModel->getLaporanPembayaran($tanggal_awal, $tanggal_akhir, $status);
 
-        // Hitung total pendapatan
+
         $totalPendapatan = 0;
         foreach ($pembayaran as $item) {
             if ($item['status'] == 'success' || $item['status'] == 'confirmed') {
@@ -280,10 +280,10 @@ class Laporan extends BaseController
         $tanggal_akhir = $this->request->getGet('tanggal_akhir') ?? date('Y-m-d');
         $status = $this->request->getGet('status') ?? '';
 
-        // Ambil data pembayaran
+
         $pembayaran = $this->pembayaranModel->getLaporanPembayaran($tanggal_awal, $tanggal_akhir, $status);
 
-        // Hitung total pendapatan
+
         $totalPendapatan = 0;
         foreach ($pembayaran as $item) {
             if ($item['status'] == 'success' || $item['status'] == 'confirmed') {
@@ -300,7 +300,7 @@ class Laporan extends BaseController
             'totalPendapatan' => $totalPendapatan
         ];
 
-        // Tampilkan langsung sebagai HTML di tab baru
+
         return view('admin/laporan/cetak_pembayaran', $data);
     }
 
@@ -312,7 +312,7 @@ class Laporan extends BaseController
         $bulan = $this->request->getGet('bulan') ?? date('m');
         $tahun = $this->request->getGet('tahun') ?? date('Y');
 
-        // Ambil data laporan bulanan
+
         $laporan = $this->pemesananPaketModel->getLaporanBulanan($bulan, $tahun);
 
         $data = [
@@ -334,7 +334,7 @@ class Laporan extends BaseController
         $bulan = $this->request->getGet('bulan') ?? date('m');
         $tahun = $this->request->getGet('tahun') ?? date('Y');
 
-        // Ambil data laporan bulanan
+
         $laporan = $this->pemesananPaketModel->getLaporanBulanan($bulan, $tahun);
 
         $data = [
@@ -345,7 +345,7 @@ class Laporan extends BaseController
             'nama_bulan' => $this->getNamaBulan($bulan)
         ];
 
-        // Tampilkan langsung sebagai HTML di tab baru
+
         return view('admin/laporan/cetak_pemesanan_paket_bulanan', $data);
     }
 
@@ -356,7 +356,7 @@ class Laporan extends BaseController
     {
         $tahun = $this->request->getGet('tahun') ?? date('Y');
 
-        // Ambil data laporan tahunan
+
         $laporan = $this->pemesananPaketModel->getLaporanTahunan($tahun);
 
         $data = [
@@ -375,7 +375,7 @@ class Laporan extends BaseController
     {
         $tahun = $this->request->getGet('tahun') ?? date('Y');
 
-        // Ambil data laporan tahunan
+
         $laporan = $this->pemesananPaketModel->getLaporanTahunan($tahun);
 
         $data = [
@@ -384,7 +384,7 @@ class Laporan extends BaseController
             'tahun' => $tahun
         ];
 
-        // Tampilkan langsung sebagai HTML di tab baru
+
         return view('admin/laporan/cetak_pemesanan_paket_tahunan', $data);
     }
 
@@ -396,7 +396,7 @@ class Laporan extends BaseController
         $bulan = $this->request->getGet('bulan') ?? date('m');
         $tahun = $this->request->getGet('tahun') ?? date('Y');
 
-        // Ambil data laporan bulanan
+
         $laporan = $this->pemesananBarangModel->getLaporanBulanan($bulan, $tahun);
 
         $data = [
@@ -418,7 +418,7 @@ class Laporan extends BaseController
         $bulan = $this->request->getGet('bulan') ?? date('m');
         $tahun = $this->request->getGet('tahun') ?? date('Y');
 
-        // Ambil data laporan bulanan
+
         $laporan = $this->pemesananBarangModel->getLaporanBulanan($bulan, $tahun);
 
         $data = [
@@ -429,7 +429,7 @@ class Laporan extends BaseController
             'nama_bulan' => $this->getNamaBulan($bulan)
         ];
 
-        // Tampilkan langsung sebagai HTML di tab baru
+
         return view('admin/laporan/cetak_pemesanan_barang_bulanan', $data);
     }
 
@@ -440,7 +440,7 @@ class Laporan extends BaseController
     {
         $tahun = $this->request->getGet('tahun') ?? date('Y');
 
-        // Ambil data laporan tahunan
+
         $laporan = $this->pemesananBarangModel->getLaporanTahunan($tahun);
 
         $data = [
@@ -459,7 +459,7 @@ class Laporan extends BaseController
     {
         $tahun = $this->request->getGet('tahun') ?? date('Y');
 
-        // Ambil data laporan tahunan
+
         $laporan = $this->pemesananBarangModel->getLaporanTahunan($tahun);
 
         $data = [
@@ -468,7 +468,7 @@ class Laporan extends BaseController
             'tahun' => $tahun
         ];
 
-        // Tampilkan langsung sebagai HTML di tab baru
+
         return view('admin/laporan/cetak_pemesanan_barang_tahunan', $data);
     }
 
@@ -480,7 +480,7 @@ class Laporan extends BaseController
         $bulan = $this->request->getGet('bulan') ?? date('m');
         $tahun = $this->request->getGet('tahun') ?? date('Y');
 
-        // Ambil data laporan bulanan
+
         $laporan = $this->pembayaranModel->getLaporanBulanan($bulan, $tahun);
 
         $data = [
@@ -502,7 +502,7 @@ class Laporan extends BaseController
         $bulan = $this->request->getGet('bulan') ?? date('m');
         $tahun = $this->request->getGet('tahun') ?? date('Y');
 
-        // Ambil data laporan bulanan
+
         $laporan = $this->pembayaranModel->getLaporanBulanan($bulan, $tahun);
 
         $data = [
@@ -513,7 +513,7 @@ class Laporan extends BaseController
             'nama_bulan' => $this->getNamaBulan($bulan)
         ];
 
-        // Tampilkan langsung sebagai HTML di tab baru
+
         return view('admin/laporan/cetak_pembayaran_bulanan', $data);
     }
 
@@ -524,7 +524,7 @@ class Laporan extends BaseController
     {
         $tahun = $this->request->getGet('tahun') ?? date('Y');
 
-        // Ambil data laporan tahunan
+
         $laporan = $this->pembayaranModel->getLaporanTahunan($tahun);
 
         $data = [
@@ -543,7 +543,7 @@ class Laporan extends BaseController
     {
         $tahun = $this->request->getGet('tahun') ?? date('Y');
 
-        // Ambil data laporan tahunan
+
         $laporan = $this->pembayaranModel->getLaporanTahunan($tahun);
 
         $data = [
@@ -552,7 +552,7 @@ class Laporan extends BaseController
             'tahun' => $tahun
         ];
 
-        // Tampilkan langsung sebagai HTML di tab baru
+
         return view('admin/laporan/cetak_pembayaran_tahunan', $data);
     }
 
@@ -584,7 +584,7 @@ class Laporan extends BaseController
      */
     public function pelanggan()
     {
-        // Ambil data pelanggan
+
         $db = \Config\Database::connect();
         $pelanggan = $db->table('pelanggan p')
             ->select('p.*, u.username, u.email')
@@ -606,7 +606,7 @@ class Laporan extends BaseController
      */
     public function cetakLaporanPelanggan()
     {
-        // Ambil data pelanggan
+
         $db = \Config\Database::connect();
         $pelanggan = $db->table('pelanggan p')
             ->select('p.*, u.username, u.email')
@@ -621,7 +621,7 @@ class Laporan extends BaseController
             'tanggal' => date('d/m/Y')
         ];
 
-        // Tampilkan langsung sebagai HTML di tab baru
+
         return view('admin/laporan/cetak_pelanggan', $data);
     }
 
@@ -630,7 +630,7 @@ class Laporan extends BaseController
      */
     public function dataBarang()
     {
-        // Ambil data barang
+
         $barang = $this->barangModel->orderBy('namabarang', 'ASC')->findAll();
 
         $data = [
@@ -646,7 +646,7 @@ class Laporan extends BaseController
      */
     public function cetakLaporanDataBarang()
     {
-        // Ambil data barang
+
         $barang = $this->barangModel->orderBy('namabarang', 'ASC')->findAll();
 
         $data = [
@@ -655,7 +655,7 @@ class Laporan extends BaseController
             'tanggal' => date('d/m/Y')
         ];
 
-        // Tampilkan langsung sebagai HTML di tab baru
+
         return view('admin/laporan/cetak_data_barang', $data);
     }
 }

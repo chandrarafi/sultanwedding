@@ -22,14 +22,14 @@ class DetailPaketModel extends Model
         'updated_at'
     ];
 
-    // Dates
+
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
 
-    // Validation
+
     protected $validationRules = [
         'kdpaket'    => 'required|integer|is_not_unique[paket.kdpaket]',
         'kdbarang'   => 'required|integer|is_not_unique[barang.kdbarang]',

@@ -37,7 +37,7 @@ class Pelanggan extends BaseController
             $postData = $this->request->getPost();
             $response = $this->pelangganModel->getDataTables($postData);
 
-            // Tambahkan token CSRF baru untuk request berikutnya
+
             $response['csrf_token'] = csrf_hash();
 
             return $this->respond($response);
@@ -78,7 +78,7 @@ class Pelanggan extends BaseController
             $createUser = $this->request->getPost('create_user') == 'yes';
             $userId = $this->request->getPost('iduser');
 
-            // Validasi data pelanggan
+
             if (!$this->pelangganModel->validate($data)) {
                 return $this->respond([
                     'status' => false,
@@ -87,11 +87,11 @@ class Pelanggan extends BaseController
                 ], 400);
             }
 
-            // Mulai transaksi database
+
             $this->db->transBegin();
 
             try {
-                // Jika membuat user baru
+
                 if ($createUser && empty($userId)) {
                     $userData = [
                         'username' => $this->request->getPost('username'),
@@ -103,7 +103,7 @@ class Pelanggan extends BaseController
                         'is_verified' => 1 // Admin membuat akun langsung terverifikasi
                     ];
 
-                    // Validasi data user
+
                     if (!$this->userModel->validate($userData)) {
                         $this->db->transRollback();
                         return $this->response->setStatusCode(400)->setJSON([
@@ -113,34 +113,32 @@ class Pelanggan extends BaseController
                         ]);
                     }
 
-                    // Simpan data user
+
                     $this->userModel->save($userData);
                     $userId = $this->userModel->getInsertID();
                     $data['iduser'] = $userId;
-                }
-                // Jika update user yang sudah ada
-                elseif ($createUser && !empty($userId)) {
+                } elseif ($createUser && !empty($userId)) {
                     $userData = [
                         'id' => $userId,
                         'name' => $data['namapelanggan']
                     ];
 
-                    // Update password jika diisi
+
                     if ($password = $this->request->getPost('password')) {
                         $userData['password'] = $password;
                     }
 
-                    // Update email jika diisi
+
                     if ($email = $this->request->getPost('email')) {
                         $userData['email'] = $email;
                     }
 
-                    // Update username jika diisi
+
                     if ($username = $this->request->getPost('username')) {
                         $userData['username'] = $username;
                     }
 
-                    // Validasi data user
+
                     if (!$this->userModel->validate($userData)) {
                         $this->db->transRollback();
                         return $this->response->setStatusCode(400)->setJSON([
@@ -150,27 +148,25 @@ class Pelanggan extends BaseController
                         ]);
                     }
 
-                    // Update data user
+
                     $this->userModel->save($userData);
                     $data['iduser'] = $userId;
-                }
-                // Jika tidak membuat user, hapus relasi jika ada
-                elseif (!$createUser && !empty($kdpelanggan)) {
+                } elseif (!$createUser && !empty($kdpelanggan)) {
                     $data['iduser'] = null;
                 }
 
-                // Update atau insert data pelanggan
+
                 if (!empty($kdpelanggan)) {
-                    // Update
+
                     $this->pelangganModel->update($kdpelanggan, $data);
                     $message = 'Data pelanggan berhasil diperbarui';
                 } else {
-                    // Insert
+
                     $this->pelangganModel->insert($data);
                     $message = 'Data pelanggan berhasil ditambahkan';
                 }
 
-                // Commit transaksi jika semua berhasil
+
                 $this->db->transCommit();
 
                 return $this->respond([
@@ -178,7 +174,7 @@ class Pelanggan extends BaseController
                     'message' => $message
                 ]);
             } catch (\Exception $e) {
-                // Rollback transaksi jika ada error
+
                 $this->db->transRollback();
 
                 return $this->response->setStatusCode(400)->setJSON([
@@ -198,25 +194,25 @@ class Pelanggan extends BaseController
                 $kdpelanggan = $this->request->getPost('kdpelanggan');
             }
 
-            // Cek apakah data pelanggan ada
+
             $pelanggan = $this->pelangganModel->find($kdpelanggan);
             if (!$pelanggan) {
                 return $this->fail('Data pelanggan tidak ditemukan');
             }
 
-            // Mulai transaksi database
+
             $this->db->transBegin();
 
             try {
-                // Jika pelanggan memiliki user, hapus juga user
+
                 if (!empty($pelanggan['iduser'])) {
                     $this->userModel->delete($pelanggan['iduser']);
                 }
 
-                // Hapus data pelanggan
+
                 $this->pelangganModel->delete($kdpelanggan);
 
-                // Commit transaksi jika semua berhasil
+
                 $this->db->transCommit();
 
                 return $this->respond([
@@ -224,7 +220,7 @@ class Pelanggan extends BaseController
                     'message' => 'Data pelanggan berhasil dihapus'
                 ]);
             } catch (\Exception $e) {
-                // Rollback transaksi jika ada error
+
                 $this->db->transRollback();
 
                 return $this->fail('Gagal menghapus data pelanggan: ' . $e->getMessage());

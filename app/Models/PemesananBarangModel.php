@@ -37,7 +37,7 @@ class PemesananBarangModel extends Model
         'statuspembayaran'
     ];
 
-    // Dates
+
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
@@ -53,17 +53,17 @@ class PemesananBarangModel extends Model
     {
         $prefix = 'BR-' . date('Ymd') . '-';
 
-        // Get the last booking code with the same prefix
+
         $lastBooking = $this->like('kdpemesananbarang', $prefix, 'after')
             ->orderBy('kdpemesananbarang', 'DESC')
             ->first();
 
         if ($lastBooking) {
-            // Extract the sequential number and increment
+
             $lastNumber = substr($lastBooking['kdpemesananbarang'], -4);
             $nextNumber = str_pad((int)$lastNumber + 1, 4, '0', STR_PAD_LEFT);
         } else {
-            // First booking of the day
+
             $nextNumber = '0001';
         }
 
@@ -126,9 +126,9 @@ class PemesananBarangModel extends Model
 
         $result = $this->first();
 
-        // Add default values for missing fields
+
         if ($result) {
-            // Add confirmation fields if they don't exist
+
             if (!isset($result['dp_confirmed'])) $result['dp_confirmed'] = 0;
             if (!isset($result['h1_paid'])) $result['h1_paid'] = 0;
             if (!isset($result['h1_confirmed'])) $result['h1_confirmed'] = 0;
@@ -188,11 +188,11 @@ class PemesananBarangModel extends Model
         $this->join('pelanggan', 'pelanggan.kdpelanggan = pemesananbarang.kdpelanggan', 'left');
         $this->join('pembayaran', 'pembayaran.kdpembayaran = pemesananbarang.kdpembayaran', 'left');
 
-        // Filter berdasarkan tanggal
+
         $this->where('DATE(pemesananbarang.tgl) >=', $tanggal_awal);
         $this->where('DATE(pemesananbarang.tgl) <=', $tanggal_akhir);
 
-        // Filter berdasarkan status jika ada
+
         if (!empty($status)) {
             if ($status == 'pending') {
                 $this->where('pembayaran.status', 'pending');
@@ -223,7 +223,7 @@ class PemesananBarangModel extends Model
     {
         $db = \Config\Database::connect();
 
-        // Ambil data pemesanan barang bulan ini
+
         $this->select('pemesananbarang.*, pelanggan.namapelanggan, pembayaran.status as statuspembayaran, 
             pembayaran.totalpembayaran, pembayaran.sisa, pembayaran.jumlahbayar, pembayaran.metodepembayaran, 
             pembayaran.tipepembayaran, DATE(pemesananbarang.tgl) as tanggal_pemesanan, 
@@ -231,7 +231,7 @@ class PemesananBarangModel extends Model
         $this->join('pelanggan', 'pelanggan.kdpelanggan = pemesananbarang.kdpelanggan', 'left');
         $this->join('pembayaran', 'pembayaran.kdpembayaran = pemesananbarang.kdpembayaran', 'left');
 
-        // Filter berdasarkan bulan dan tahun
+
         $this->where('MONTH(pemesananbarang.tgl)', $bulan);
         $this->where('YEAR(pemesananbarang.tgl)', $tahun);
 
@@ -239,7 +239,7 @@ class PemesananBarangModel extends Model
 
         $data = $this->findAll();
 
-        // Hitung statistik
+
         $totalPendapatan = 0;
         $totalPemesanan = count($data);
         $statusCount = [
@@ -257,7 +257,7 @@ class PemesananBarangModel extends Model
                 $totalPendapatan += $item['totalpembayaran'] ?? 0;
             }
 
-            // Hitung jumlah per status
+
             if (isset($item['statuspembayaran'])) {
                 if ($item['statuspembayaran'] == 'pending') {
                     $statusCount['pending']++;
@@ -277,7 +277,7 @@ class PemesananBarangModel extends Model
             }
         }
 
-        // Hitung pemesanan harian untuk grafik
+
         $harian = array_fill(1, 31, 0); // Inisialisasi array dengan 0 untuk 31 hari
         $pendapatanHarian = array_fill(1, 31, 0);
 
@@ -314,21 +314,21 @@ class PemesananBarangModel extends Model
     {
         $db = \Config\Database::connect();
 
-        // Ambil data pemesanan barang tahun ini
+
         $this->select('pemesananbarang.*, pelanggan.namapelanggan, pembayaran.status as statuspembayaran, 
             pembayaran.totalpembayaran, pembayaran.sisa, pembayaran.jumlahbayar, pembayaran.metodepembayaran, 
             pembayaran.tipepembayaran, MONTH(pemesananbarang.tgl) as bulan');
         $this->join('pelanggan', 'pelanggan.kdpelanggan = pemesananbarang.kdpelanggan', 'left');
         $this->join('pembayaran', 'pembayaran.kdpembayaran = pemesananbarang.kdpembayaran', 'left');
 
-        // Filter berdasarkan tahun
+
         $this->where('YEAR(pemesananbarang.tgl)', $tahun);
 
         $this->orderBy('pemesananbarang.tgl', 'ASC');
 
         $data = $this->findAll();
 
-        // Hitung statistik
+
         $totalPendapatan = 0;
         $totalPemesanan = count($data);
         $statusCount = [
@@ -346,7 +346,7 @@ class PemesananBarangModel extends Model
                 $totalPendapatan += $item['totalpembayaran'] ?? 0;
             }
 
-            // Hitung jumlah per status
+
             if (isset($item['statuspembayaran'])) {
                 if ($item['statuspembayaran'] == 'pending') {
                     $statusCount['pending']++;
@@ -366,7 +366,7 @@ class PemesananBarangModel extends Model
             }
         }
 
-        // Hitung pemesanan bulanan untuk grafik
+
         $bulanan = array_fill(1, 12, 0); // Inisialisasi array dengan 0 untuk 12 bulan
         $pendapatanBulanan = array_fill(1, 12, 0);
 

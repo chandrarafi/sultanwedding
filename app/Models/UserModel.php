@@ -15,20 +15,20 @@ class UserModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = ['username', 'email', 'password', 'role', 'name', 'status', 'last_login', 'remember_token', 'is_verified', 'verification_code', 'verification_expiry'];
 
-    // Dates
+
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
 
-    // Validation
+
     protected $validationRules = [];
     protected $validationMessages = [];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
-    // Callbacks
+
     protected $allowCallbacks = true;
     protected $beforeInsert   = ['hashPassword'];
     protected $beforeUpdate   = ['hashPassword'];
@@ -95,7 +95,7 @@ class UserModel extends Model
 
     public function save($data): bool
     {
-        // Jika ini adalah update, ubah validasi password menjadi opsional
+
         if (!empty($data['id'])) {
             $this->validationRules['password']['rules'] = 'permit_empty|min_length[6]';
         }
@@ -122,13 +122,13 @@ class UserModel extends Model
      */
     public function generateOTP($userId)
     {
-        // Generate random 6 digit code
+
         $code = random_int(100000, 999999);
 
-        // Set expiry to 24 hours from now
+
         $expiry = date('Y-m-d H:i:s', strtotime('+24 hours'));
 
-        // Update user with verification code and expiry
+
         $this->update($userId, [
             'verification_code' => $code,
             'verification_expiry' => $expiry,
@@ -153,9 +153,9 @@ class UserModel extends Model
             return false;
         }
 
-        // Check if code matches and hasn't expired
+
         if ($user['verification_code'] == $code && strtotime($user['verification_expiry']) > time()) {
-            // Update user as verified
+
             $this->update($userId, [
                 'is_verified' => 1,
                 'verification_code' => null,

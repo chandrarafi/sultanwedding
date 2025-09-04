@@ -22,14 +22,14 @@ class PaketModel extends Model
         'updated_at'
     ];
 
-    // Dates
+
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
 
-    // Validation
+
     protected $validationRules = [
         'namapaket'    => 'required|min_length[3]|max_length[100]',
         'detailpaket'  => 'permit_empty',
@@ -58,7 +58,7 @@ class PaketModel extends Model
     protected $skipValidation     = false;
     protected $cleanValidationRules = true;
 
-    // Callbacks
+
     protected $allowCallbacks = true;
     protected $beforeInsert   = [];
     protected $afterInsert    = [];
@@ -117,14 +117,14 @@ class PaketModel extends Model
      */
     public function getPaketWithItems($kdpaket)
     {
-        // Get paket data
+
         $paket = $this->getPaketDetail($kdpaket);
 
         if (!$paket) {
             return null;
         }
 
-        // Get detail paket items
+
         $detailPaketModel = new DetailPaketModel();
         $paket['items'] = $detailPaketModel->getDetailPaket($kdpaket);
 
