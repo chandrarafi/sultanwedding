@@ -15,14 +15,14 @@ class PelangganModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = ['namapelanggan', 'alamat', 'nohp', 'iduser', 'created_at', 'updated_at'];
 
-    // Dates
+
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
 
-    // Validation
+
     protected $validationRules      = [
         'namapelanggan' => 'required|min_length[3]|max_length[100]',
         'nohp' => 'required|min_length[10]|max_length[20]',
@@ -66,36 +66,36 @@ class PelangganModel extends Model
         $db->transBegin();
 
         try {
-            // Create user account first
+
             $userModel = new UserModel();
-            // Set user as unverified by default
+
             $userData['is_verified'] = 0;
             $userData['status'] = 'inactive'; // Status inactive sampai diverifikasi
 
             $userModel->save($userData);
             $userId = $db->insertID();
 
-            // Generate OTP for verification
+
             $otp = $userModel->generateOTP($userId);
 
-            // Set user ID for pelanggan
+
             $pelangganData['iduser'] = $userId;
 
-            // Create pelanggan record
+
             $this->save($pelangganData);
             $pelangganId = $db->insertID();
 
-            // Commit transaction
+
             $db->transCommit();
 
-            // Return data with OTP and user ID
+
             return [
                 'pelanggan_id' => $pelangganId,
                 'user_id' => $userId,
                 'otp' => $otp
             ];
         } catch (\Exception $e) {
-            // Rollback transaction on error
+
             $db->transRollback();
             log_message('error', 'Error creating pelanggan with user: ' . $e->getMessage());
             return false;
@@ -114,7 +114,7 @@ class PelangganModel extends Model
             ->select('p.*, u.username, u.email')
             ->join('users u', 'u.id = p.iduser', 'left');
 
-        // Jika ada postData untuk pencarian
+
         if ($postData && isset($postData['search']['value']) && !empty($postData['search']['value'])) {
             $searchValue = $postData['search']['value'];
             $builder->groupStart()
@@ -126,7 +126,7 @@ class PelangganModel extends Model
                 ->groupEnd();
         }
 
-        // Pengurutan
+
         if ($postData && isset($postData['order'])) {
             $columns = ['', 'p.namapelanggan', 'p.alamat', 'p.nohp', 'u.username', ''];
             $columnIndex = $postData['order'][0]['column'];
@@ -140,17 +140,17 @@ class PelangganModel extends Model
             $builder->orderBy('p.namapelanggan', 'ASC');
         }
 
-        // Limit & offset
+
         if ($postData && isset($postData['start']) && isset($postData['length'])) {
             $builder->limit($postData['length'], $postData['start']);
         }
 
         $result = $builder->get()->getResultArray();
 
-        // Hitung total records
+
         $totalRecords = $this->db->table('pelanggan')->countAllResults();
 
-        // Hitung total records dengan filter
+
         $totalRecordsWithFilter = $totalRecords;
         if ($postData && isset($postData['search']['value']) && !empty($postData['search']['value'])) {
             $searchBuilder = $this->db->table('pelanggan p')
@@ -169,7 +169,7 @@ class PelangganModel extends Model
             $totalRecordsWithFilter = $searchBuilder->countAllResults();
         }
 
-        // Format response untuk DataTables
+
         $response = [
             "draw" => intval($postData['draw'] ?? 0),
             "recordsTotal" => $totalRecords,

@@ -55,7 +55,7 @@ class Barang extends BaseController
     {
         $data = $this->request->getPost();
 
-        // Handle upload foto
+
         $foto = $this->request->getFile('foto');
         if ($foto && $foto->isValid() && !$foto->hasMoved()) {
             $newName = $foto->getRandomName();
@@ -83,16 +83,16 @@ class Barang extends BaseController
     {
         $data = $this->request->getPost();
 
-        // Handle upload foto
+
         $foto = $this->request->getFile('foto');
         if ($foto && $foto->isValid() && !$foto->hasMoved()) {
-            // Hapus foto lama jika ada
+
             $barang = $this->barangModel->find($kdbarang);
             if (!empty($barang['foto']) && file_exists(ROOTPATH . 'public/uploads/barang/' . $barang['foto'])) {
                 unlink(ROOTPATH . 'public/uploads/barang/' . $barang['foto']);
             }
 
-            // Upload foto baru
+
             $newName = $foto->getRandomName();
             $foto->move(ROOTPATH . 'public/uploads/barang', $newName);
             $data['foto'] = $newName;
@@ -116,7 +116,7 @@ class Barang extends BaseController
 
     public function delete($kdbarang)
     {
-        // Hapus foto jika ada
+
         $barang = $this->barangModel->find($kdbarang);
         if ($barang && !empty($barang['foto']) && file_exists(ROOTPATH . 'public/uploads/barang/' . $barang['foto'])) {
             unlink(ROOTPATH . 'public/uploads/barang/' . $barang['foto']);
@@ -148,17 +148,17 @@ class Barang extends BaseController
         $barangModel = new \App\Models\BarangModel();
         $detailPemesananModel = new \App\Models\DetailPemesananBarangModel();
 
-        // Ambil data barang
+
         $barang = $barangModel->find($kdbarang);
 
         if (!$barang) {
             return redirect()->to('admin/barang')->with('error', 'Barang tidak ditemukan');
         }
 
-        // Ambil history peminjaman dan pengembalian
+
         $db = \Config\Database::connect();
 
-        // Query untuk mendapatkan peminjaman dan pengembalian
+
         $query = $db->query("
             SELECT 
                 dpb.kddetailpemesananbarang,

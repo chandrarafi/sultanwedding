@@ -71,10 +71,10 @@ class PemesananBarang extends BaseController
         $db->transBegin();
 
         try {
-            // Log data untuk debugging
+
             log_message('debug', 'POST DATA: ' . json_encode($this->request->getPost()));
 
-            // Generate kode pemesanan manual untuk menghindari konflik tipe data
+
             $prefix = 'BR-' . date('Ymd') . '-';
             $lastBooking = $db->table('pemesananbarang')
                 ->like('kdpemesananbarang', $prefix, 'after')
@@ -83,27 +83,27 @@ class PemesananBarang extends BaseController
                 ->getRowArray();
 
             if ($lastBooking) {
-                // Extract the sequential number and increment
+
                 $lastSeq = substr($lastBooking['kdpemesananbarang'], -4);
                 $nextSeq = str_pad((int)$lastSeq + 1, 4, '0', STR_PAD_LEFT);
             } else {
-                // First booking of the day
+
                 $nextSeq = '0001';
             }
 
             $kdPemesananBarang = $prefix . $nextSeq;
             log_message('debug', 'Generated Booking Code: ' . $kdPemesananBarang);
 
-            // Data pemesanan
+
             $lamaPemesanan = $this->request->getPost('lamapemesanan');
 
-            // Pastikan kdpelanggan tidak kosong - Wajib memilih pelanggan yang terdaftar
+
             $kdpelanggan = $this->request->getPost('kdpelanggan');
             if (empty($kdpelanggan)) {
                 throw new \Exception('Pelanggan wajib dipilih. Tidak diperbolehkan pemesanan tanpa data pelanggan.');
             }
 
-            // Simpan data pemesanan secara manual menggunakan query builder
+
             $pemesananData = [
                 'kdpemesananbarang' => $kdPemesananBarang,
                 'tgl' => $this->request->getPost('tgl'),
@@ -118,7 +118,7 @@ class PemesananBarang extends BaseController
 
             log_message('debug', 'Pemesanan Data: ' . json_encode($pemesananData));
 
-            // Insert menggunakan Query Builder
+
             $insertResult = $db->table('pemesananbarang')->insert($pemesananData);
 
             if (!$insertResult) {
@@ -126,7 +126,7 @@ class PemesananBarang extends BaseController
                 throw new \Exception('Gagal menyimpan pemesanan barang: ' . $db->error()['message']);
             }
 
-            // Data barang yang dipesan
+
             $kdbarang = $this->request->getPost('kdbarang');
             $jumlah = $this->request->getPost('jumlah');
             $harga = $this->request->getPost('harga');
@@ -134,12 +134,12 @@ class PemesananBarang extends BaseController
 
             $grandTotal = 0;
 
-            // Pastikan ada barang yang dipesan
+
             if (!is_array($kdbarang) || count($kdbarang) === 0) {
                 throw new \Exception('Tidak ada barang yang dipesan');
             }
 
-            // Simpan detail pemesanan
+
             for ($i = 0; $i < count($kdbarang); $i++) {
                 $detailData = [
                     'kdpemesananbarang' => $kdPemesananBarang,
@@ -153,7 +153,7 @@ class PemesananBarang extends BaseController
 
                 log_message('debug', 'Detail Pemesanan Data #' . ($i + 1) . ': ' . json_encode($detailData));
 
-                // Insert menggunakan Query Builder
+
                 $insertDetailResult = $db->table('detailpemesananbarang')->insert($detailData);
 
                 if (!$insertDetailResult) {
@@ -161,7 +161,7 @@ class PemesananBarang extends BaseController
                     throw new \Exception('Gagal menyimpan detail pemesanan barang: ' . $db->error()['message']);
                 }
 
-                // Kurangi stok barang
+
                 $stokResult = $this->barangModel->reduceStock($kdbarang[$i], $jumlah[$i]);
 
                 if (!$stokResult) {
@@ -172,7 +172,7 @@ class PemesananBarang extends BaseController
                 $grandTotal += (float)$subtotal[$i];
             }
 
-            // Update grand total pada pemesanan untuk memastikan konsistensi data
+
             $updateResult = $db->table('pemesananbarang')
                 ->where('kdpemesananbarang', $kdPemesananBarang)
                 ->update(['grandtotal' => $grandTotal]);
@@ -182,9 +182,9 @@ class PemesananBarang extends BaseController
                 throw new \Exception('Gagal memperbarui total pemesanan');
             }
 
-            // Jika pembayaran langsung lunas
+
             if ($this->request->getPost('is_paid') == '1') {
-                // Buat kode pembayaran
+
                 $kdpembayaran = 'PAY-' . date('Ymd') . '-' . $nextSeq;
 
                 $pembayaranData = [
@@ -209,7 +209,7 @@ class PemesananBarang extends BaseController
 
                 log_message('debug', 'Pembayaran Data: ' . json_encode($pembayaranData));
 
-                // Insert pembayaran menggunakan Query Builder
+
                 $insertPembayaranResult = $db->table('pembayaran')->insert($pembayaranData);
 
                 if (!$insertPembayaranResult) {
@@ -217,7 +217,7 @@ class PemesananBarang extends BaseController
                     throw new \Exception('Gagal menyimpan data pembayaran');
                 }
 
-                // Update kdpembayaran di pemesanan menggunakan Query Builder
+
                 $updatePembayaranResult = $db->table('pemesananbarang')
                     ->where('kdpemesananbarang', $kdPemesananBarang)
                     ->update(['kdpembayaran' => $kdpembayaran]);
@@ -226,13 +226,11 @@ class PemesananBarang extends BaseController
                     log_message('error', 'Update kdpembayaran gagal: ' . json_encode($db->error()));
                     throw new \Exception('Gagal memperbarui referensi pembayaran');
                 }
-            }
-            // Jika pembayaran DP (50%)
-            else if ($this->request->getPost('is_paid') == '2') {
-                // Buat kode pembayaran
+            } else if ($this->request->getPost('is_paid') == '2') {
+
                 $kdpembayaran = 'PAY-' . date('Ymd') . '-' . $nextSeq;
 
-                // Hitung jumlah DP (50% dari total)
+
                 $dpAmount = $grandTotal * 0.5;
                 $sisaPembayaran = $grandTotal - $dpAmount;
 
@@ -256,7 +254,7 @@ class PemesananBarang extends BaseController
 
                 log_message('debug', 'Pembayaran DP Data: ' . json_encode($pembayaranData));
 
-                // Insert pembayaran menggunakan Query Builder
+
                 $insertPembayaranResult = $db->table('pembayaran')->insert($pembayaranData);
 
                 if (!$insertPembayaranResult) {
@@ -264,7 +262,7 @@ class PemesananBarang extends BaseController
                     throw new \Exception('Gagal menyimpan data pembayaran DP');
                 }
 
-                // Update kdpembayaran di pemesanan menggunakan Query Builder
+
                 $updatePembayaranResult = $db->table('pemesananbarang')
                     ->where('kdpemesananbarang', $kdPemesananBarang)
                     ->update(['kdpembayaran' => $kdpembayaran]);
@@ -279,7 +277,7 @@ class PemesananBarang extends BaseController
 
             log_message('info', 'Pemesanan barang berhasil disimpan dengan ID: ' . $kdPemesananBarang);
 
-            // Cek apakah request adalah AJAX
+
             if ($this->request->isAJAX()) {
                 return $this->response->setJSON([
                     'status' => 'success',
@@ -289,14 +287,14 @@ class PemesananBarang extends BaseController
                 ]);
             }
 
-            // Redirect ke halaman lihat faktur setelah penyimpanan berhasil
+
             return redirect()->to('admin/pemesananbarang/lihatFaktur/' . $kdPemesananBarang);
         } catch (\Exception $e) {
             $db->transRollback();
             log_message('error', 'Error saat menyimpan pemesanan: ' . $e->getMessage());
             log_message('error', 'Stack trace: ' . $e->getTraceAsString());
 
-            // Cek apakah request adalah AJAX
+
             if ($this->request->isAJAX()) {
                 return $this->response->setJSON([
                     'status' => 'error',
@@ -334,13 +332,13 @@ class PemesananBarang extends BaseController
      */
     public function edit($id)
     {
-        // $pemesanan = $this->pemesananModel->find($id);
+
         $pemesanan = $this->pemesananModel->getPemesananWithPayment($id);
         if (!$pemesanan) {
             return redirect()->to('admin/pemesananbarang')->with('error', 'Data pemesanan tidak ditemukan');
         }
 
-        // Debug
+
         log_message('debug', 'DATA PEMESANAN: ' . json_encode($pemesanan));
 
         $detailPemesanan = $this->detailPemesananModel->getDetailWithBarang($id);
@@ -364,20 +362,20 @@ class PemesananBarang extends BaseController
         $db->transBegin();
 
         try {
-            // Data pemesanan
+
             $pemesananData = [
                 'tgl' => $this->request->getPost('tgl'),
                 'alamatpesanan' => $this->request->getPost('alamatpesanan'),
                 'lamapemesanan' => $this->request->getPost('lamapemesanan'),
             ];
 
-            // Update pemesanan
+
             $this->pemesananModel->update($id, $pemesananData);
 
-            // Hapus detail pemesanan lama
+
             $this->detailPemesananModel->where('kdpemesananbarang', $id)->delete();
 
-            // Data barang yang dipesan
+
             $kdbarang = $this->request->getPost('kdbarang');
             $jumlah = $this->request->getPost('jumlah');
             $harga = $this->request->getPost('harga');
@@ -385,7 +383,7 @@ class PemesananBarang extends BaseController
 
             $grandTotal = 0;
 
-            // Simpan detail pemesanan baru
+
             for ($i = 0; $i < count($kdbarang); $i++) {
                 $detailData = [
                     'kdpemesananbarang' => $id,
@@ -399,15 +397,15 @@ class PemesananBarang extends BaseController
                 $grandTotal += $subtotal[$i];
             }
 
-            // Update grand total pada pemesanan
+
             $this->pemesananModel->update($id, ['grandtotal' => $grandTotal]);
 
-            // Jika ada pembayaran, update jumlah pembayaran
+
             $pemesanan = $this->pemesananModel->find($id);
             if (!empty($pemesanan['kdpembayaran'])) {
                 $pembayaran = $this->pembayaranModel->find($pemesanan['kdpembayaran']);
                 if ($pembayaran) {
-                    // Hitung ulang sisa pembayaran
+
                     $jumlahBayar = $pembayaran['jumlahbayar'];
                     $sisa = $grandTotal - $jumlahBayar;
 
@@ -435,17 +433,17 @@ class PemesananBarang extends BaseController
         $db->transBegin();
 
         try {
-            // Cek apakah pemesanan memiliki pembayaran
+
             $pemesanan = $this->pemesananModel->find($id);
             if (!empty($pemesanan['kdpembayaran'])) {
-                // Hapus pembayaran
+
                 $this->pembayaranModel->delete($pemesanan['kdpembayaran']);
             }
 
-            // Hapus detail pemesanan
+
             $this->detailPemesananModel->where('kdpemesananbarang', $id)->delete();
 
-            // Hapus pemesanan
+
             $this->pemesananModel->delete($id);
 
             $db->transCommit();
@@ -499,11 +497,11 @@ class PemesananBarang extends BaseController
         $metodepembayaran = $this->request->getPost('metodepembayaran');
         $jumlahBayar = $this->request->getPost('jumlah_bayar');
 
-        // Jika belum ada pembayaran, buat pembayaran baru (langsung lunas)
+
         if (empty($pemesanan['kdpembayaran'])) {
             $kdpembayaran = $this->pembayaranModel->generatePaymentCode();
 
-            // Data pembayaran
+
             $pembayaranData = [
                 'kdpembayaran' => $kdpembayaran,
                 'tgl' => date('Y-m-d'),
@@ -522,15 +520,15 @@ class PemesananBarang extends BaseController
                 'full_confirmed_by' => session()->get('user_id'),
             ];
 
-            // Simpan pembayaran
+
             $this->pembayaranModel->insert($pembayaranData);
 
-            // Update kdpembayaran di pemesanan
+
             $this->pemesananModel->update($id, ['kdpembayaran' => $kdpembayaran, 'status' => 'completed']);
 
             return redirect()->to('admin/pemesananbarang/detail/' . $id)->with('success', 'Pelunasan berhasil diproses');
         } else {
-            // Update pembayaran yang sudah ada
+
             $this->pembayaranModel->update($pemesanan['kdpembayaran'], [
                 'jumlahbayar' => $pemesanan['grandtotal'],
                 'sisa' => 0,
@@ -542,7 +540,7 @@ class PemesananBarang extends BaseController
                 'full_confirmed_by' => session()->get('user_id'),
             ]);
 
-            // Update status pemesanan
+
             $this->pemesananModel->update($id, ['status' => 'completed']);
 
             return redirect()->to('admin/pemesananbarang/detail/' . $id)->with('success', 'Pelunasan berhasil diproses');
@@ -557,14 +555,14 @@ class PemesananBarang extends BaseController
      */
     public function cetakFaktur($kdpemesananbarang)
     {
-        // Ambil data pemesanan
+
         $pemesanan = $this->pemesananModel->getPemesananWithPayment($kdpemesananbarang);
 
         if (!$pemesanan) {
             return redirect()->to('/admin/pemesananbarang')->with('error', 'Pemesanan tidak ditemukan');
         }
 
-        // Ambil detail pemesanan
+
         $detailPemesanan = $this->detailPemesananModel->getDetailWithBarang($kdpemesananbarang);
 
         $data = [
@@ -573,27 +571,27 @@ class PemesananBarang extends BaseController
             'title' => 'Faktur Pemesanan Barang',
         ];
 
-        // Load library DOMPDF
+
         $dompdf = new \Dompdf\Dompdf();
 
-        // Load view faktur
+
         $html = view('admin/pemesananbarang/faktur', $data);
 
-        // Set options
+
         $options = new \Dompdf\Options();
         $options->set('isRemoteEnabled', true);
         $dompdf->setOptions($options);
 
-        // Load HTML content
+
         $dompdf->loadHtml($html);
 
-        // Set paper size (A4)
+
         $dompdf->setPaper('A4', 'portrait');
 
-        // Render PDF (generate)
+
         $dompdf->render();
 
-        // Stream PDF (force download)
+
         $dompdf->stream("Faktur_Pemesanan_Barang_" . $kdpemesananbarang . ".pdf", [
             "Attachment" => true
         ]);
@@ -607,14 +605,14 @@ class PemesananBarang extends BaseController
      */
     public function lihatFaktur($kdpemesananbarang)
     {
-        // Ambil data pemesanan
+
         $pemesanan = $this->pemesananModel->getPemesananWithPayment($kdpemesananbarang);
 
         if (!$pemesanan) {
             return redirect()->to('/admin/pemesananbarang')->with('error', 'Pemesanan tidak ditemukan');
         }
 
-        // Ambil detail pemesanan
+
         $detailPemesanan = $this->detailPemesananModel->getDetailWithBarang($kdpemesananbarang);
 
         $data = [
@@ -672,7 +670,7 @@ class PemesananBarang extends BaseController
         try {
             $tgl_kembali = $this->request->getPost('tgl_kembali');
 
-            // Konversi format tanggal dari d/m/Y ke Y-m-d
+
             if (strpos($tgl_kembali, '/') !== false) {
                 $date = \DateTime::createFromFormat('d/m/Y', $tgl_kembali);
                 if ($date) {
@@ -684,7 +682,7 @@ class PemesananBarang extends BaseController
             $pelunasan = $this->request->getPost('pelunasan');
             $metodepembayaran = $this->request->getPost('metodepembayaran');
 
-            // Simpan data pengembalian
+
             $data = [
                 'tgl_kembali' => $tgl_kembali,
                 'status_pengembalian' => 'baik', // Default status baik
@@ -693,10 +691,10 @@ class PemesananBarang extends BaseController
 
             $this->pemesananModel->updatePengembalian($kdpemesananbarang, $data);
 
-            // Ambil detail pemesanan untuk menambahkan stok barang kembali
+
             $detailPemesanan = $this->detailPemesananModel->getDetailWithBarang($kdpemesananbarang);
 
-            // Update stok barang (tambahkan kembali)
+
             foreach ($detailPemesanan as $detail) {
                 $stokResult = $this->barangModel->addStock($detail['kdbarang'], $detail['jumlah']);
 
@@ -708,11 +706,11 @@ class PemesananBarang extends BaseController
                     $detail['jumlah'] . ' setelah pengembalian');
             }
 
-            // Cek jika perlu proses pelunasan
+
             $pemesanan = $this->pemesananModel->getPemesananWithPayment($kdpemesananbarang);
 
             if ($pelunasan == '1' && $pemesanan['statuspembayaran'] == 'partial') {
-                // Update pembayaran yang sudah ada
+
                 $this->pembayaranModel->update($pemesanan['kdpembayaran'], [
                     'jumlahbayar' => $pemesanan['grandtotal'],
                     'sisa' => 0,

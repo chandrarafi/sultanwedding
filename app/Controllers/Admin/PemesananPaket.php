@@ -70,7 +70,7 @@ class PemesananPaket extends BaseController
             return redirect()->to('/admin/pemesananpaket')->with('error', 'Pemesanan tidak ditemukan');
         }
 
-        // Only allow editing orders that are not completed or cancelled
+
         if ($pemesanan['status'] === 'completed' || $pemesanan['status'] === 'cancelled') {
             return redirect()->to('/admin/pemesananpaket')->with('error', 'Pemesanan yang sudah selesai atau dibatalkan tidak dapat diedit');
         }
@@ -93,7 +93,7 @@ class PemesananPaket extends BaseController
      */
     public function update($kdpemesananpaket)
     {
-        // Validate input
+
         $rules = [
             'tgl' => 'required|valid_date',
             'alamatpesanan' => 'required',
@@ -105,33 +105,33 @@ class PemesananPaket extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        // Get current pemesanan data
+
         $pemesanan = $this->pemesananModel->find($kdpemesananpaket);
 
         if (!$pemesanan) {
             return redirect()->to('/admin/pemesananpaket')->with('error', 'Pemesanan tidak ditemukan');
         }
 
-        // Only allow editing orders that are not completed or cancelled
+
         if ($pemesanan['status'] === 'completed' || $pemesanan['status'] === 'cancelled') {
             return redirect()->to('/admin/pemesananpaket')->with('error', 'Pemesanan yang sudah selesai atau dibatalkan tidak dapat diedit');
         }
 
-        // Ambil data paket untuk menghitung ulang grand total
+
         $paket = $this->paketModel->find($pemesanan['kdpaket']);
 
-        // Hitung grand total berdasarkan harga paket
+
         $jumlahhari = $this->request->getPost('jumlahhari');
         $grandTotal = $paket['harga'];
 
-        // Jika jumlah hari lebih dari 4, tambahkan biaya tambahan 10%
+
         if ($jumlahhari > 4) {
-            // Hitung biaya tambahan 10% dari harga paket
+
             $biayaTambahan = $paket['harga'] * 0.1;
             $grandTotal = $paket['harga'] + $biayaTambahan;
         }
 
-        // Update order data
+
         $updateData = [
             'tgl' => $this->request->getPost('tgl'),
             'alamatpesanan' => $this->request->getPost('alamatpesanan'),
@@ -186,7 +186,7 @@ class PemesananPaket extends BaseController
             return redirect()->to('/admin/pemesananpaket')->with('error', 'Pemesanan tidak ditemukan');
         }
 
-        // Update status
+
         $this->pemesananModel->update($kdpemesananpaket, [
             'status' => $status
         ]);
@@ -205,12 +205,12 @@ class PemesananPaket extends BaseController
             return redirect()->to('/admin/pemesananpaket')->with('error', 'Pemesanan tidak ditemukan');
         }
 
-        // Only allow cancelling orders that are not completed
+
         if ($pemesanan['status'] === 'completed') {
             return redirect()->to('/admin/pemesananpaket')->with('error', 'Pemesanan yang sudah selesai tidak dapat dibatalkan');
         }
 
-        // Update order status
+
         $this->pemesananModel->update($kdpemesananpaket, [
             'status' => 'cancelled'
         ]);
@@ -229,15 +229,15 @@ class PemesananPaket extends BaseController
             return redirect()->to('/admin/pemesananpaket')->with('error', 'Pemesanan tidak ditemukan');
         }
 
-        // Only allow deleting orders that are not completed
+
         if ($pemesanan['status'] === 'completed') {
             return redirect()->to('/admin/pemesananpaket')->with('error', 'Pemesanan yang sudah selesai tidak dapat dihapus');
         }
 
-        // Delete the order
+
         $this->pemesananModel->delete($kdpemesananpaket);
 
-        // Also delete the associated payment if exists
+
         if (!empty($pemesanan['kdpembayaran'])) {
             $this->pembayaranModel->delete($pemesanan['kdpembayaran']);
         }
@@ -250,7 +250,7 @@ class PemesananPaket extends BaseController
      */
     public function store()
     {
-        // Validate input
+
         $rules = [
             'kdpelanggan' => 'required',
             'kdpaket' => 'required',
@@ -262,14 +262,14 @@ class PemesananPaket extends BaseController
         ];
 
         if (!$this->validate($rules)) {
-            // Store the form data in session for repopulating the form
+
             session()->setFlashdata('pelanggan_display', $this->request->getPost('pelanggan_display'));
             session()->setFlashdata('paket_display', $this->request->getPost('paket_display'));
 
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        // Get paket data
+
         $kdpaket = $this->request->getPost('kdpaket');
         $paket = $this->paketModel->find($kdpaket);
 
@@ -277,18 +277,18 @@ class PemesananPaket extends BaseController
             return redirect()->back()->withInput()->with('error', 'Paket tidak ditemukan');
         }
 
-        // Calculate grand total
+
         $grandTotal = $paket['harga'];
 
-        // Jika jumlah hari lebih dari 4, tambahkan biaya tambahan 10%
+
         $jumlahhari = $this->request->getPost('jumlahhari');
         if ($jumlahhari > 4) {
-            // Hitung biaya tambahan 10% dari harga paket
+
             $biayaTambahan = $paket['harga'] * 0.1;
             $grandTotal = $paket['harga'] + $biayaTambahan;
         }
 
-        // Create payment record
+
         $metodepembayaran = $this->request->getPost('metodepembayaran');
         $kdpembayaran = $this->pembayaranModel->createBookingPayment($grandTotal, $metodepembayaran);
 
@@ -296,10 +296,10 @@ class PemesananPaket extends BaseController
             return redirect()->back()->withInput()->with('error', 'Gagal membuat pembayaran');
         }
 
-        // Generate order code
+
         $kdpemesananpaket = $this->pemesananModel->generateBookingCode();
 
-        // Save order data
+
         $pemesananData = [
             'kdpemesananpaket' => $kdpemesananpaket,
             'tgl' => $this->request->getPost('tgl'),
@@ -321,9 +321,9 @@ class PemesananPaket extends BaseController
             return redirect()->back()->withInput()->with('error', 'Gagal menyimpan pemesanan');
         }
 
-        // For cash payments, automatically confirm DP
+
         if ($metodepembayaran === 'cash') {
-            // Update pembayaran
+
             $this->pembayaranModel->update($kdpembayaran, [
                 'status' => 'partial',
                 'dp_confirmed' => 1,
@@ -343,7 +343,7 @@ class PemesananPaket extends BaseController
      */
     public function cetakFaktur($kdpemesananpaket)
     {
-        // Ambil data pemesanan
+
         $pemesanan = $this->pemesananModel->getPemesananWithPayment($kdpemesananpaket);
 
         if (!$pemesanan) {
@@ -355,27 +355,27 @@ class PemesananPaket extends BaseController
             'title' => 'Faktur Pemesanan Paket',
         ];
 
-        // Load library DOMPDF
+
         $dompdf = new \Dompdf\Dompdf();
 
-        // Load view faktur
+
         $html = view('admin/pemesananpaket/faktur', $data);
 
-        // Set options
+
         $options = new \Dompdf\Options();
         $options->set('isRemoteEnabled', true);
         $dompdf->setOptions($options);
 
-        // Load HTML content
+
         $dompdf->loadHtml($html);
 
-        // Set paper size (A4)
+
         $dompdf->setPaper('A4', 'portrait');
 
-        // Render PDF (generate)
+
         $dompdf->render();
 
-        // Stream PDF (force download)
+
         $dompdf->stream("Faktur_Pemesanan_Paket_" . $kdpemesananpaket . ".pdf", [
             "Attachment" => true
         ]);
@@ -389,7 +389,7 @@ class PemesananPaket extends BaseController
      */
     public function lihatFaktur($kdpemesananpaket)
     {
-        // Ambil data pemesanan
+
         $pemesanan = $this->pemesananModel->getPemesananWithPayment($kdpemesananpaket);
 
         if (!$pemesanan) {

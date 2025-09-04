@@ -29,7 +29,7 @@ class PemesananPaketModel extends Model
         'updated_at'
     ];
 
-    // Dates
+
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
@@ -45,17 +45,17 @@ class PemesananPaketModel extends Model
     {
         $prefix = 'BK-' . date('Ymd') . '-';
 
-        // Get the last booking code with the same prefix
+
         $lastBooking = $this->like('kdpemesananpaket', $prefix, 'after')
             ->orderBy('kdpemesananpaket', 'DESC')
             ->first();
 
         if ($lastBooking) {
-            // Extract the sequential number and increment
+
             $lastNumber = substr($lastBooking['kdpemesananpaket'], -4);
             $nextNumber = str_pad((int)$lastNumber + 1, 4, '0', STR_PAD_LEFT);
         } else {
-            // First booking of the day
+
             $nextNumber = '0001';
         }
 
@@ -118,9 +118,9 @@ class PemesananPaketModel extends Model
 
         $result = $this->first();
 
-        // Add default values for missing fields
+
         if ($result) {
-            // Add confirmation fields if they don't exist
+
             if (!isset($result['dp_confirmed'])) $result['dp_confirmed'] = 0;
             if (!isset($result['h1_paid'])) $result['h1_paid'] = 0;
             if (!isset($result['h1_confirmed'])) $result['h1_confirmed'] = 0;
@@ -148,11 +148,11 @@ class PemesananPaketModel extends Model
         $this->join('paket', 'paket.kdpaket = pemesananpaket.kdpaket', 'left');
         $this->join('pembayaran', 'pembayaran.kdpembayaran = pemesananpaket.kdpembayaran', 'left');
 
-        // Filter berdasarkan tanggal pembuatan (created_at)
+
         $this->where('DATE(pemesananpaket.created_at) >=', $tanggal_awal);
         $this->where('DATE(pemesananpaket.created_at) <=', $tanggal_akhir);
 
-        // Filter berdasarkan status jika ada
+
         if (!empty($status)) {
             if ($status == 'pending') {
                 $this->where('pembayaran.status', 'pending');
@@ -181,7 +181,7 @@ class PemesananPaketModel extends Model
     {
         $db = \Config\Database::connect();
 
-        // Query untuk mendapatkan total dan statistik langsung dari database
+
         $queryStats = $db->query("
             SELECT 
                 COUNT(*) as total_pemesanan,
@@ -202,7 +202,7 @@ class PemesananPaketModel extends Model
 
         $stats = $queryStats->getRowArray();
 
-        // Query untuk mendapatkan statistik harian langsung dari database
+
         $queryHarian = $db->query("
             SELECT 
                 DAY(pemesananpaket.created_at) as hari,
@@ -219,18 +219,18 @@ class PemesananPaketModel extends Model
 
         $harianData = $queryHarian->getResultArray();
 
-        // Inisialisasi array dengan 0 untuk 31 hari
+
         $harian = array_fill(1, 31, 0);
         $pendapatanHarian = array_fill(1, 31, 0);
 
-        // Isi array dengan data dari query
+
         foreach ($harianData as $item) {
             $hari = (int)$item['hari'];
             $harian[$hari] = (int)$item['jumlah_pemesanan'];
             $pendapatanHarian[$hari] = (float)$item['pendapatan'];
         }
 
-        // Ambil data pemesanan paket bulan ini dengan LIMIT untuk mengurangi beban memori
+
         $this->select('pemesananpaket.*, pelanggan.namapelanggan, paket.namapaket, pembayaran.status as statuspembayaran, 
             pembayaran.totalpembayaran, pembayaran.sisa, pembayaran.jumlahbayar, pembayaran.metodepembayaran, 
             pembayaran.tipepembayaran');
@@ -270,7 +270,7 @@ class PemesananPaketModel extends Model
     {
         $db = \Config\Database::connect();
 
-        // Query untuk mendapatkan total dan statistik langsung dari database
+
         $queryStats = $db->query("
             SELECT 
                 COUNT(*) as total_pemesanan,
@@ -290,7 +290,7 @@ class PemesananPaketModel extends Model
 
         $stats = $queryStats->getRowArray();
 
-        // Query untuk mendapatkan statistik bulanan langsung dari database
+
         $queryBulanan = $db->query("
             SELECT 
                 MONTH(pemesananpaket.created_at) as bulan,
@@ -306,18 +306,18 @@ class PemesananPaketModel extends Model
 
         $bulananData = $queryBulanan->getResultArray();
 
-        // Inisialisasi array dengan 0 untuk 12 bulan
+
         $bulanan = array_fill(1, 12, 0);
         $pendapatanBulanan = array_fill(1, 12, 0);
 
-        // Isi array dengan data dari query
+
         foreach ($bulananData as $item) {
             $bulan = (int)$item['bulan'];
             $bulanan[$bulan] = (int)$item['jumlah_pemesanan'];
             $pendapatanBulanan[$bulan] = (float)$item['pendapatan'];
         }
 
-        // Ambil data pemesanan paket tahun ini dengan LIMIT untuk mengurangi beban memori
+
         $this->select('pemesananpaket.*, pelanggan.namapelanggan, paket.namapaket, pembayaran.status as statuspembayaran, 
             pembayaran.totalpembayaran, pembayaran.sisa, pembayaran.jumlahbayar, pembayaran.metodepembayaran, 
             pembayaran.tipepembayaran');

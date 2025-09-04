@@ -22,14 +22,14 @@ class BarangModel extends Model
         'updated_at'
     ];
 
-    // Dates
+
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
 
-    // Validation
+
     protected $validationRules = [
         'namabarang' => 'required|min_length[3]|max_length[100]',
         'satuan'     => 'required|max_length[20]',
@@ -62,7 +62,7 @@ class BarangModel extends Model
     protected $skipValidation     = false;
     protected $cleanValidationRules = true;
 
-    // Callbacks
+
     protected $allowCallbacks = true;
     protected $beforeInsert   = [];
     protected $afterInsert    = [];
@@ -96,7 +96,7 @@ class BarangModel extends Model
      */
     public function reduceStock($kdbarang, $quantity)
     {
-        // Get current stock
+
         $barang = $this->find($kdbarang);
 
         if (!$barang) {
@@ -104,16 +104,16 @@ class BarangModel extends Model
             return false;
         }
 
-        // Check if stock is sufficient
+
         if ($barang['jumlah'] < $quantity) {
             log_message('error', 'Stok tidak mencukupi untuk barang ID ' . $kdbarang . '. Tersedia: ' . $barang['jumlah'] . ', Diminta: ' . $quantity);
             return false;
         }
 
-        // Reduce stock
+
         $newStock = $barang['jumlah'] - $quantity;
 
-        // Update stock
+
         $result = $this->update($kdbarang, ['jumlah' => $newStock]);
 
         if (!$result) {
@@ -134,7 +134,7 @@ class BarangModel extends Model
      */
     public function addStock($kdbarang, $quantity)
     {
-        // Get current stock
+
         $barang = $this->find($kdbarang);
 
         if (!$barang) {
@@ -142,10 +142,10 @@ class BarangModel extends Model
             return false;
         }
 
-        // Add stock
+
         $newStock = $barang['jumlah'] + $quantity;
 
-        // Update stock
+
         $result = $this->update($kdbarang, ['jumlah' => $newStock]);
 
         if (!$result) {
